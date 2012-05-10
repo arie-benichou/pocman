@@ -9,14 +9,17 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
-public class BestPacmanMoveSearch implements MoveEmitter {
+@Deprecated
+public class HalfRandomPacmanMoveEmitter implements MoveEmitter {
 
     private final Random random = new Random();
 
     public Move getMove(final Game game) {
         final List<Move> legalMoves = game.getPacmanLegalMoves();
         if (legalMoves.size() == 1) return legalMoves.get(0);
-        return this.getMove(game, modifiedLegalMoves(game, legalMoves));
+        //return this.getMove(game, modifiedLegalMoves(game, legalMoves));
+        final List<Move> modifiedLegalMoves = modifiedLegalMoves(game, legalMoves);
+        return modifiedLegalMoves.get(this.random.nextInt(1024) % modifiedLegalMoves.size());
     }
 
     public static List<Move> modifiedLegalMoves(final Game game, final List<Move> legalMoves) {
@@ -40,7 +43,7 @@ public class BestPacmanMoveSearch implements MoveEmitter {
         }
         modifiedLegalMoves.addAll(oneMoveAwayPill);
 
-        //legalMovesCopy.remove(game.getPacmanLastMove().getOpposite());
+        legalMovesCopy.remove(game.getPacmanLastMove().getOpposite());
         modifiedLegalMoves.addAll(legalMovesCopy);
 
         return modifiedLegalMoves;

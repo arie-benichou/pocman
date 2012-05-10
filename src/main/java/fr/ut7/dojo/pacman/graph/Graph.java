@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Stopwatch;
@@ -21,13 +20,13 @@ import com.google.common.collect.Sets;
 
 import fr.ut7.dojo.pacman.graph.GraphNode.Type;
 import fr.ut7.dojo.pacman.model.BestGhostMoveSearch;
-import fr.ut7.dojo.pacman.model.BestPacmanMoveSearch;
 import fr.ut7.dojo.pacman.model.Board;
 import fr.ut7.dojo.pacman.model.Constants;
 import fr.ut7.dojo.pacman.model.Direction;
 import fr.ut7.dojo.pacman.model.Game;
 import fr.ut7.dojo.pacman.model.GameState;
 import fr.ut7.dojo.pacman.model.GhostReferee;
+import fr.ut7.dojo.pacman.model.HalfRandomPacmanMoveEmitter;
 import fr.ut7.dojo.pacman.model.Levels;
 import fr.ut7.dojo.pacman.model.Move;
 import fr.ut7.dojo.pacman.model.PacmanReferee;
@@ -205,7 +204,7 @@ public final class Graph {
     public static void main(final String[] args) {
 
         final Game game = Game.from(
-                new PacmanReferee(), new Pacman(new BestPacmanMoveSearch()),
+                new PacmanReferee(), new Pacman(new HalfRandomPacmanMoveEmitter()),
                 new GhostReferee(), new Ghost(new BestGhostMoveSearch()),
                 GameState.from(
                         //Levels.DEBUG113
@@ -215,22 +214,15 @@ public final class Graph {
         final Board board = game.getBoard();
         final Graph graph = new Graph(board);
 
-        System.out.println(graph);
+        //System.out.println(graph);
 
         final Stopwatch stopwatch = new Stopwatch().start();
+
         final TreeOfWalk treeOfWalk = graph.getTreeOfWalk(game.getPacmanPosition());
         final List<PathNode> sequence = treeOfWalk.computeInterestingNodesSequence();
         final List<GraphEdge> path = treeOfWalk.computePath(sequence);
-        System.out.println(stopwatch.elapsedTime(TimeUnit.MICROSECONDS)); // 6208610
 
-        /*
-        try {
-            Thread.sleep(10 * 1000);
-        }
-        catch (final InterruptedException e) {
-            e.printStackTrace();
-        }
-        */
+        //System.out.println(stopwatch.elapsedTime(TimeUnit.MICROSECONDS));
 
         TreeOfWalk.showWalk(board, path);
 

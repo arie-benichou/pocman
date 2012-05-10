@@ -11,9 +11,11 @@ public class RandomMoveEmitter implements MoveEmitter {
         /*
         final List<Move> legalMoves = game.getGhostLegalMoves();
         if (legalMoves.size() == 1) return legalMoves.get(0);
-        return legalMoves.get(this.random.nextInt(1024) % legalMoves.size());
+        System.out.println(legalMoves);
+        return legalMoves.get();
         */
-        return Move.GO_RIGHT;
+        //return Move.GO_RIGHT;
+        return Move.values()[this.random.nextInt(1024) % 4 + 1];
     }
 
 }

@@ -6,6 +6,7 @@ import java.util.Random;
 
 import com.google.common.collect.Lists;
 
+@Deprecated
 public class BestGhostMoveSearch implements MoveEmitter {
 
     private final Random random = new Random();

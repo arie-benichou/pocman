@@ -24,7 +24,7 @@ public class TreeOfWalk {
         final Board newBoard = Board.from(array);
         System.out.println(new BoardView().render(newBoard));
         try {
-            Thread.sleep(250);
+            Thread.sleep(350);
         }
         catch (final InterruptedException e) {}
         return newBoard;
