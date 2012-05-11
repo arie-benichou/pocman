@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.google.common.base.Predicate;
-import com.google.common.base.Stopwatch;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.ImmutableSortedMap.Builder;
@@ -19,19 +19,10 @@ import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
 import fr.ut7.dojo.pacman.graph.GraphNode.Type;
-import fr.ut7.dojo.pacman.model.BestGhostMoveSearch;
 import fr.ut7.dojo.pacman.model.Board;
 import fr.ut7.dojo.pacman.model.Constants;
 import fr.ut7.dojo.pacman.model.Direction;
-import fr.ut7.dojo.pacman.model.Game;
-import fr.ut7.dojo.pacman.model.GameState;
-import fr.ut7.dojo.pacman.model.GhostReferee;
-import fr.ut7.dojo.pacman.model.HalfRandomPacmanMoveEmitter;
-import fr.ut7.dojo.pacman.model.Levels;
 import fr.ut7.dojo.pacman.model.Move;
-import fr.ut7.dojo.pacman.model.PacmanReferee;
-import fr.ut7.dojo.pacman.model.characters.Ghost;
-import fr.ut7.dojo.pacman.model.characters.Pacman;
 import fr.ut7.dojo.pacman.view.BoardView;
 
 // TODO ! pathPruning
@@ -113,6 +104,11 @@ public final class Graph {
     */
 
     private final Map<Integer, List<GraphEdge>> edgesById;
+
+    public Map<Integer, List<GraphEdge>> getEdgesById() {
+        return this.edgesById;
+    }
+
     private final Map<Integer, GraphNode> nodeById;
 
     private final int numberOfNodes;
@@ -189,8 +185,8 @@ public final class Graph {
             array[i] = c;
         }
         final StringBuilder sb = new StringBuilder(new BoardView().render(Board.from(array)));
-        sb.append("number of nodes: " + this.getNumberOfNodes()).append("\n");
-        sb.append("number of interesting nodes: " + this.getNumberOfInterestingNodes()).append("\n");
+        sb.append("walkable space length: " + this.getNumberOfNodes()).append("\n");
+        sb.append("      number of nodes: " + Strings.padStart(String.valueOf(this.getNumberOfInterestingNodes()), 3, '0')).append("\n");
         sb.append("\n");
         sb.append("edges: ").append("\n");
         for (final Entry<Integer, List<GraphEdge>> entry : this.edgesById.entrySet()) {
@@ -201,37 +197,4 @@ public final class Graph {
         return sb.toString();
     }
 
-    public static void main(final String[] args) {
-
-        final Game game = Game.from(
-                new PacmanReferee(), new Pacman(new HalfRandomPacmanMoveEmitter()),
-                new GhostReferee(), new Ghost(new BestGhostMoveSearch()),
-                GameState.from(
-                        //Levels.DEBUG113
-                        Levels.LEVEL155
-                        ));
-
-        final Board board = game.getBoard();
-        final Graph graph = new Graph(board);
-
-        //System.out.println(graph);
-
-        final Stopwatch stopwatch = new Stopwatch().start();
-
-        final TreeOfWalk treeOfWalk = graph.getTreeOfWalk(game.getPacmanPosition());
-        final List<PathNode> sequence = treeOfWalk.computeInterestingNodesSequence();
-        final List<GraphEdge> path = treeOfWalk.computePath(sequence);
-
-        //System.out.println(stopwatch.elapsedTime(TimeUnit.MICROSECONDS));
-
-        TreeOfWalk.showWalk(board, path);
-
-        int c = 0;
-        for (final GraphEdge edge : path) {
-            c += edge.getBetweenNodes().size();
-        }
-
-        System.out.println(c);
-
-    }
 }

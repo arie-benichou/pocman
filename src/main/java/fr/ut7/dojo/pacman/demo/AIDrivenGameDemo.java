@@ -1,5 +1,5 @@
 
-package fr.ut7.dojo.pacman;
+package fr.ut7.dojo.pacman.demo;
 
 import fr.ut7.dojo.pacman.model.Game;
 import fr.ut7.dojo.pacman.model.GameLoop;
@@ -12,9 +12,9 @@ import fr.ut7.dojo.pacman.model.PacmanReferee;
 import fr.ut7.dojo.pacman.model.characters.Ghost;
 import fr.ut7.dojo.pacman.model.characters.Pacman;
 
-public final class Launcher1 {
+public final class AIDrivenGameDemo {
 
-    private Launcher1() {}
+    private AIDrivenGameDemo() {}
 
     public static void launch(final String data) {
         new GameLoop().start(
