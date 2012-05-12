@@ -119,11 +119,14 @@ public final class Graph {
 
     private final int numberOfInterestingNodes;
 
+    private final Board board;
+
     public int getNumberOfInterestingNodes() {
         return this.numberOfInterestingNodes;
     }
 
     public Graph(final Board board) {
+        this.board = board;
         this.nodeById = createNodes(board);
         this.numberOfNodes = this.nodeById.size();
         final Map<Integer, GraphNode> interestingNodes = computeInterestingNodes(this.nodeById);
@@ -184,11 +187,13 @@ public final class Graph {
             }
             array[i] = c;
         }
-        final StringBuilder sb = new StringBuilder(new BoardView().render(Board.from(array)));
-        sb.append("walkable space length: " + this.getNumberOfNodes()).append("\n");
-        sb.append("      number of nodes: " + Strings.padStart(String.valueOf(this.getNumberOfInterestingNodes()), 3, '0')).append("\n");
+        final StringBuilder sb = new StringBuilder("\n");
+        sb.append("Graph: ").append("\n");
+        sb.append(new BoardView().render(Board.from(array))).append("\n");
+        sb.append("Walkable space length: " + this.getNumberOfNodes()).append("\n");
+        sb.append("      Number of nodes: " + Strings.padStart(String.valueOf(this.getNumberOfInterestingNodes()), 3, '0')).append("\n");
         sb.append("\n");
-        sb.append("edges: ").append("\n");
+        sb.append("Edges: ").append("\n");
         for (final Entry<Integer, List<GraphEdge>> entry : this.edgesById.entrySet()) {
             sb.append("\n").append(entry.getKey()).append("\n");
             for (final GraphEdge edge : entry.getValue())
@@ -196,5 +201,4 @@ public final class Graph {
         }
         return sb.toString();
     }
-
 }
