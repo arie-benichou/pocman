@@ -67,3 +67,9 @@ board: 27 x 19
 ┃⬛⬛⬛⬛⬛∙⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛∙⬛⬛⬛⬛⬛┃
 ┃⊚∙∙∙∙∙∙∙∙∙∙∙⬤∙∙∙∙∙∙∙∙∙∙∙⊚┃
 ┃⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃
+
+
+6) élaguer les arrêtes qui ne sont pas indispensables lorsque celles ci ne contiennent aucune pilules:
+visiter l'arbre en postorder et élaguer les feuilles qui ne contiennent aucune pilule
+
+

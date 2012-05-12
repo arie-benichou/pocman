@@ -21,6 +21,7 @@ import fr.ut7.dojo.pacman.model.NullMoveEmitter;
 import fr.ut7.dojo.pacman.model.PacmanReferee;
 import fr.ut7.dojo.pacman.model.characters.Ghost;
 import fr.ut7.dojo.pacman.model.characters.Pacman;
+import fr.ut7.dojo.pacman.view.GameView;
 import fr.ut7.dojo.pacman.view.PathView;
 
 public final class GraphAPIDemo {
@@ -38,10 +39,11 @@ public final class GraphAPIDemo {
         final Game game = Game.from(
                 new PacmanReferee(), new Pacman(new NullMoveEmitter()),
                 new GhostReferee(), new Ghost(new NullMoveEmitter()),
-                GameState.from(Levels.LEVEL155)
+                GameState.from(Levels.ADRIAN)
                 );
 
         final Board board = game.getBoard();
+        System.out.println(new GameView().render(game));
 
         /*--------------------8<--------------------*/
 
