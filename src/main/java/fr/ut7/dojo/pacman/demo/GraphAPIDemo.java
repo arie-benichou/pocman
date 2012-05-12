@@ -4,6 +4,7 @@ package fr.ut7.dojo.pacman.demo;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.base.Splitter;
 import com.google.common.base.Stopwatch;
 
 import fr.ut7.dojo.pacman.graph.Graph;
@@ -70,7 +71,15 @@ public final class GraphAPIDemo {
 
         final long elapsedTime2 = stopwatch.elapsedTime(TimeUnit.MICROSECONDS);
 
-        System.out.println(new PathView(board).render(path));
+        final PathView pathView = new PathView(board);
+        for (final String data : Splitter.on("\n\n").split(pathView.render(path))) {
+            System.out.println(data);
+            try {
+                Thread.sleep(600);
+            }
+            catch (final InterruptedException e) {}
+        }
+
         System.out.println("Path computed within " + elapsedTime2 + " μs !");
 
         stopwatch.reset();
