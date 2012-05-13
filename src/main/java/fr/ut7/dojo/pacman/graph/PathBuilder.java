@@ -20,6 +20,7 @@ public final class PathBuilder {
 
     };
 
+    // TODO retourner une map immutable
     public Map<Integer, PathNode> build(final TransientNode mutableTree) {
         final Map<Integer, PathNode> map = Maps.newHashMap();
         this.postorder(mutableTree, map);

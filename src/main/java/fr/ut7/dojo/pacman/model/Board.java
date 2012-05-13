@@ -59,10 +59,10 @@ public final class Board
 
     public Map<Direction, Character> getNeighbours(final int y, final int x) {
         final Map<Direction, Character> neighbours = Maps.newHashMap();
-        if (y - 1 > 0) neighbours.put(Direction.UP, this.board[y - 1][x]);
+        if (y > 0) neighbours.put(Direction.UP, this.board[y - 1][x]);
         if (x + 1 < WIDTH) neighbours.put(Direction.RIGHT, this.board[y][x + 1]);
         if (y + 1 < HEIGHT) neighbours.put(Direction.DOWN, this.board[y + 1][x]);
-        if (x - 1 > 0) neighbours.put(Direction.LEFT, this.board[y][x - 1]);
+        if (x > 0) neighbours.put(Direction.LEFT, this.board[y][x - 1]);
         return neighbours;
     }
 
@@ -72,10 +72,10 @@ public final class Board
 
     public List<Direction> getDirections(final int y, final int x) {
         final List<Direction> directions = Lists.newArrayList();
-        if (y - 1 > 0) directions.add(Direction.UP);
+        if (y > 0) directions.add(Direction.UP);
         if (x + 1 < WIDTH) directions.add(Direction.RIGHT);
         if (y + 1 < HEIGHT) directions.add(Direction.DOWN);
-        if (x - 1 > 0) directions.add(Direction.LEFT);
+        if (x > 0) directions.add(Direction.LEFT);
         return directions;
     }
 

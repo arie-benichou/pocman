@@ -42,6 +42,7 @@ public final class PathNode implements Comparable<PathNode> {
 
     public int compareTo(final PathNode that) {
         return this.getNumberOfDescendants() - that.getNumberOfDescendants();
+        //return that.getNumberOfDescendants() - this.getNumberOfDescendants();
     }
 
     @Override

@@ -34,6 +34,12 @@ public final class Graph {
     private static Map<Integer, GraphNode> createNodes(final Board board) {
         final Builder<Integer, GraphNode> builder = new ImmutableSortedMap.Builder<Integer, GraphNode>(Ordering.natural());
         for (int i = 0; i < Board.SIZE; ++i) {
+            /*
+            System.out.print(i);
+            System.out.print(": ");
+            System.out.print(board.getCell(i));
+            System.out.println();
+            */
             final HashSet<Move> options = Sets.newHashSet();
             if (board.getCell(i) == Constants.PILL || board.getCell(i) == Constants.SPACE) {
                 final List<Direction> directions = board.getDirections(i);
@@ -162,9 +168,13 @@ public final class Graph {
     public TreeOfWalk getTreeOfWalk(final int initialInterestingNode) {
         final TransientNode mutableTree = this.computeTree(initialInterestingNode);
         //debugNode(mutableTree);
+
         final PathBuilder pathBuilder = new PathBuilder();
+        //final PathBuilder2 pathBuilder = new PathBuilder2(this.edgesById, this.board);
+
         final Map<Integer, PathNode> map = pathBuilder.build(mutableTree);
         final TreeOfWalk treeOfWalk = new TreeOfWalk(mutableTree.getId(), map, this.edgesById);
+
         return treeOfWalk;
     }
 

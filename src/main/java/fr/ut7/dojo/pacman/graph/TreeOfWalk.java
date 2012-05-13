@@ -13,12 +13,26 @@ public class TreeOfWalk {
     private final Map<Integer, PathNode> map;
     private final int numberOfInterestingNodes;
     private final int startingNode;
+    private final Map<Integer, List<GraphEdge>> edgesById;
 
     // TODO vérifier au niveau du builder que map.size() == Graph.numberOfInterestingNodes 
     public TreeOfWalk(final int startingNode, final Map<Integer, PathNode> map, final Map<Integer, List<GraphEdge>> edgesById) {
         this.map = map;
         this.numberOfInterestingNodes = map.size();
         this.startingNode = startingNode;
+        this.edgesById = edgesById;
+    }
+
+    public Map<Integer, PathNode> getMap() {
+        return this.map;
+    }
+
+    public Map<Integer, List<GraphEdge>> getEdgesById() {
+        return this.edgesById;
+    }
+
+    public int getStartingNode() {
+        return this.startingNode;
     }
 
     private PathNode findNextNodeToVisit(final PathNode node, final Set<Integer> visitedNodes) {

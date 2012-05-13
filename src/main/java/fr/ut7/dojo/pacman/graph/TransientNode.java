@@ -87,6 +87,7 @@ public class TransientNode implements Comparable<TransientNode> {
 
     public int compareTo(final TransientNode that) {
         return this.getNumberOfDescendants() - that.getNumberOfDescendants();
+        //return that.getNumberOfDescendants() - this.getNumberOfDescendants();
     }
 
 }
