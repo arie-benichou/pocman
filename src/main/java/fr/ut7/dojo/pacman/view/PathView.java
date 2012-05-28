@@ -2,7 +2,7 @@
 package fr.ut7.dojo.pacman.view;
 
 import fr.ut7.dojo.pacman.graph.GraphEdge;
-import fr.ut7.dojo.pacman.graph.GraphNode;
+import fr.ut7.dojo.pacman.graph.Vertex;
 import fr.ut7.dojo.pacman.graph.Path;
 import fr.ut7.dojo.pacman.model.Board;
 import fr.ut7.dojo.pacman.model.Constants;
@@ -21,7 +21,7 @@ public final class PathView {
         final char[] array = board.toCharArray();
         final char c = edge.getMove().toString().charAt(0);
         array[edge.getFirstNode().getId()] = c;
-        for (final GraphNode node : edge.getBetweenNodes())
+        for (final Vertex node : edge.getBetweenNodes())
             array[node.getId()] = c;
         array[edge.getLastNode().getId()] = Constants.PACMAN;
         return Board.from(array);

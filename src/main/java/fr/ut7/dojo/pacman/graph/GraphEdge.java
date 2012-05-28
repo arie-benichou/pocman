@@ -11,13 +11,13 @@ import fr.ut7.dojo.pacman.model.Move;
 public class GraphEdge implements Comparable<GraphEdge> {
 
     private final Move move;
-    private final GraphNode firstNode;
-    private final List<GraphNode> betweenNodes;
-    private final GraphNode lastNode;
+    private final Vertex firstNode;
+    private final List<Vertex> betweenNodes;
+    private final Vertex lastNode;
     private final int value;
     private final int hashCode;
 
-    public GraphEdge(final Move move, final GraphNode firstNode, final GraphNode lastNode, final List<GraphNode> betweenNodes) {
+    public GraphEdge(final Move move, final Vertex firstNode, final Vertex lastNode, final List<Vertex> betweenNodes) {
         this.move = move;
         this.firstNode = firstNode;
         this.betweenNodes = ImmutableList.copyOf(betweenNodes);
@@ -30,15 +30,15 @@ public class GraphEdge implements Comparable<GraphEdge> {
         return this.move;
     }
 
-    public GraphNode getFirstNode() {
+    public Vertex getFirstNode() {
         return this.firstNode;
     }
 
-    public List<GraphNode> getBetweenNodes() {
+    public List<Vertex> getBetweenNodes() {
         return this.betweenNodes;
     }
 
-    public GraphNode getLastNode() {
+    public Vertex getLastNode() {
         return this.lastNode;
     }
 

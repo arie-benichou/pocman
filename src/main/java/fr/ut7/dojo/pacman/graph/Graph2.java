@@ -10,7 +10,6 @@ import java.util.Set;
 
 import algorithm.RoyWarshallFloyd;
 
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -21,6 +20,10 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
+import cpp.Arc;
+import cpp.CPPSolution;
+import cpp.Graph;
+import cpp.OpenCPPSolver;
 import fr.ut7.dojo.pacman.graph.Vertex.Type;
 import fr.ut7.dojo.pacman.model.Board;
 import fr.ut7.dojo.pacman.model.Constants;
@@ -41,7 +44,7 @@ import fr.ut7.dojo.pacman.view.GameView;
 // TODO ? visitor pattern
 // TODO ? prendre en compte la distance
 // TODO ? chaque node pourrait contenir ses edges
-public final class Graph {
+public final class Graph2 {
 
     private static Map<Integer, Vertex> createNodes(final Board board) {
         final Builder<Integer, Vertex> builder = new ImmutableSortedMap.Builder<Integer, Vertex>(Ordering.natural());
@@ -158,7 +161,7 @@ public final class Graph {
         return this.numberOfInterestingNodes;
     }
 
-    public Graph(final Board board) {
+    public Graph2(final Board board) {
         this.board = board;
         this.nodeById = createNodes(board);
         this.numberOfNodes = this.nodeById.size();
@@ -350,7 +353,7 @@ public final class Graph {
         final Board board = game.getBoard();
         System.out.println(new GameView().render(game));
 
-        final Graph graph = new Graph(board);
+        final Graph2 graph = new Graph2(board);
         System.out.println(graph);
 
         final int[][] matrix = graph.computeRoyWarshallFloydMatrix();
@@ -359,6 +362,8 @@ public final class Graph {
         final int[][] paths = RoyWarshallFloyd.from(matrix);
         RoyWarshallFloyd.debug(paths);
 
+        //System.exit(0);
+
         /*
         for (final int[] row : paths) {
             final List<List<Integer>> partition = Lists.partition(Ints.asList(row), 2);
@@ -366,8 +371,9 @@ public final class Graph {
         }
         */
 
+        /*
         System.out.println();
-        final Map<Integer, Vertex> oddNodes = Maps.filterValues(graph.nodeById, HAS_ODD_DEGREE);
+        final Map<Integer, GraphNode> oddNodes = Maps.filterValues(graph.nodeById, HAS_ODD_DEGREE);
         final List<Integer> list = Lists.newArrayList(oddNodes.keySet());
         System.out.println(oddNodes.size());
         System.out.println(list);
@@ -378,19 +384,21 @@ public final class Graph {
             }
         });
         System.out.println(indexes);
+        */
 
+        /*
         final int[][] oddMatrix = new int[oddNodes.size()][oddNodes.size()];
         int r = 0;
-        for (final Entry<Integer, Vertex> entry : oddNodes.entrySet()) {
+        for (final Entry<Integer, GraphNode> entry : oddNodes.entrySet()) {
             System.out.println(entry);
             final Integer i = graph.ordinalByNode.get(entry.getKey());
             final int[] row = paths[i];
-            /*
-            System.out.println(Ints.asList(row));
-            for (final int j : indexes) {
-                System.out.println(row[j]);
-            } 
-            */
+
+            //            System.out.println(Ints.asList(row));
+            //            for (final int j : indexes) {
+            //                System.out.println(row[j]);
+            //            }
+
             for (int c = 0; c < indexes.size(); c++) {
                 //System.out.println(row[indexes.get(c)]);
                 oddMatrix[r][c] = row[indexes.get(c)];
@@ -399,6 +407,7 @@ public final class Graph {
             ++r;
             //break;
         }
+        */
 
         /*
         System.out.println();
@@ -439,6 +448,7 @@ public final class Graph {
         System.out.println();
         */
 
+        /*
         final List<Integer> keys = Lists.newArrayList(oddNodes.keySet());
         System.out.println(keys);
         final int n = oddNodes.size();
@@ -456,6 +466,117 @@ public final class Graph {
         RoyWarshallFloyd.debug(matrix2);
         final int[][] paths2 = RoyWarshallFloyd.from(matrix2);
         RoyWarshallFloyd.debug(paths2);
+        */
 
+        System.out.println();
+        graph.test();
+
+    }
+
+    private void test() {
+
+        System.out.println("#######################################");
+        System.out.println(this.getNumberOfInterestingNodes());
+        final List<Arc> arcs = Lists.newArrayList();
+
+        final Set<GraphEdge> addedEdges = Sets.newHashSet();
+        for (final Entry<Integer, Integer> entry : this.nodeByOrdinal.entrySet()) {
+            final Integer key = entry.getKey();
+            final Integer node = entry.getValue();
+            System.out.println(key + " : " + node);
+            final List<GraphEdge> edges = this.edgesById.get(node);
+            for (final GraphEdge graphEdge : edges) {
+                final GraphEdge edge = this.edgesByHashCode.get(graphEdge.getFirstNode().getId() * graphEdge.getLastNode().getId());
+                if (!addedEdges.contains(edge)) {
+                    addedEdges.add(edge);
+                    final Integer u = this.ordinalByNode.get(edge.getFirstNode().getId());
+                    final Integer v = this.ordinalByNode.get(edge.getLastNode().getId());
+                    /*
+                    Integer v;
+                    Integer u;
+                    if (this.ordinalByNode.get(edge.getFirstNode().getId()).equals(key)) {
+                        u = key;
+                        v = this.ordinalByNode.get(edge.getLastNode().getId());
+                    }
+                    else {
+                        u = this.ordinalByNode.get(edge.getFirstNode().getId());
+                        v = key;
+                    }
+                    */
+                    final Arc arc =
+                                    Arc.from(
+                                            "(" + this.ordinalByNode.get(edge.getFirstNode().getId()) + ", "
+                                                    + this.ordinalByNode.get(edge.getLastNode().getId()) + ")", u, v, edge.getValue());
+                    arcs.add(arc);
+                    System.out.println();
+                    System.out.println(arc);
+                    System.out.println(edge);
+                    System.out.println();
+
+                }
+            }
+            System.out.println();
+        }
+
+        /*
+        for (final Entry<Integer, Integer> entry : this.nodeByOrdinal.entrySet()) {
+            final Integer key = entry.getKey();
+            final Integer node = entry.getValue();
+            System.out.println(key + " : " + node);
+            final List<GraphEdge> edges = this.edgesById.get(node);
+            for (final GraphEdge edge : edges) {
+                System.out.println(edge);
+                
+                final Integer u = this.ordinalByNode.get(edge.getFirstNode().getId());
+                final Integer v = this.ordinalByNode.get(edge.getLastNode().getId());
+                arcs.add(Arc.from(null, u, v, edge.getValue()));
+
+                Integer v;
+                Integer u;
+                if (this.ordinalByNode.get(edge.getFirstNode().getId()).equals(key)) {
+                    u = key;
+                    v = this.ordinalByNode.get(edge.getLastNode().getId());
+                }
+                else {
+                    u = this.ordinalByNode.get(edge.getFirstNode().getId());
+                    v = key;
+                }
+                final Arc arc = Arc.from(edge.toString(), u, v, edge.getValue());
+                arcs.add(arc);
+
+            }
+            System.out.println();
+        }
+        */
+
+        for (final Arc arc : arcs) {
+            System.out.println(arc);
+        }
+
+        final cpp.Graph.Builder builder = new cpp.Graph.Builder(this.getNumberOfInterestingNodes());
+        builder.add(arcs);
+        final cpp.Graph graph = builder.build();
+        System.out.println(graph.geTotalCostLowerBound());
+        final OpenCPPSolver openCPPSolver = new OpenCPPSolver(graph);
+
+        final CPPSolution cppSolution = openCPPSolver.solveFrom(this.ordinalByNode.get(417));
+        System.out.println(cppSolution);
+    }
+
+    private void test2(final int[][] matrix) {
+        final List<Arc> arcs = Lists.newArrayList();
+        final int n = matrix.length;
+        for (int i = 0, k = 1; i < n; ++i, ++k)
+            for (int j = k; j < n; ++j)
+                arcs.add(Arc.from("[" + i + "][" + j + "]", i, j, matrix[i][j]));
+        System.out.println(arcs.size());
+        for (final Arc arc : arcs)
+            System.out.println(arc);
+
+        final Graph graph = new cpp.Graph.Builder(n).add(arcs).build();
+        System.out.println(graph.geTotalCostLowerBound());
+        final OpenCPPSolver openCPPSolver = new OpenCPPSolver(graph);
+        final CPPSolution cppSolution = openCPPSolver.solveFrom(this.ordinalByNode.get(417));
+        System.out.println(cppSolution);
     }
 }

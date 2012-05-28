@@ -131,8 +131,8 @@ public class TreeOfEdges {
         if (edge != null) {
             if (this.board.getCell(edge.getLastNode().getId()) != Constants.PILL) {
                 --c;
-                final List<GraphNode> betweenNodes = edge.getBetweenNodes();
-                for (final GraphNode graphNode : betweenNodes) {
+                final List<Vertex> betweenNodes = edge.getBetweenNodes();
+                for (final Vertex graphNode : betweenNodes) {
                     if (this.board.getCell(graphNode.getId()) == Constants.PILL) {
                         ++c;
                     }

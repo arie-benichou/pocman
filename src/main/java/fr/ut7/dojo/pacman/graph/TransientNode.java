@@ -8,7 +8,7 @@ import com.google.common.collect.Lists;
 
 public class TransientNode implements Comparable<TransientNode> {
 
-    private final GraphNode data;
+    private final Vertex data;
     private TransientNode parent;
     private final List<TransientNode> children = Lists.newArrayList();
     private int numberOfDescendants = 0;
@@ -17,7 +17,7 @@ public class TransientNode implements Comparable<TransientNode> {
         this.data = treeNode.getData();
     }
 
-    public TransientNode(final GraphNode data) {
+    public TransientNode(final Vertex data) {
         this.data = data;
     }
 
@@ -47,7 +47,7 @@ public class TransientNode implements Comparable<TransientNode> {
         this.numberOfDescendants = n;
     }
 
-    public GraphNode getData() {
+    public Vertex getData() {
         return this.data;
     }
 

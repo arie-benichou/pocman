@@ -50,21 +50,23 @@ public final class GraphAPIDemo {
         final Game game = Game.from(
                 new PacmanReferee(), new Pacman(new NullMoveEmitter()),
                 new GhostReferee(), new Ghost(new NullMoveEmitter()),
-                //GameState.from(Levels.DEBUG114)
-                GameState.from(Levels.LEVEL1555)
+                //GameState.from(Levels.DEBUG113)
+                GameState.from(Levels.DEBUG1150)
+                //GameState.from(Levels.LEVEL1555)
                 //GameState.from(Levels.LEVEL01C)
                 //GameState.from(Levels.DEBUG19)
                 );
 
         final Board board = game.getBoard();
         System.out.println(new GameView().render(game));
-        final Path path = solve(game.getPacmanPosition(), board);
+        //final Path path = solve1(game.getPacmanPosition(), board);
+        final Path path = solve2(game.getPacmanPosition(), board);
 
         ShowPath(board, path);
 
     }
 
-    private static Path solve(final int initialPosition, final Board board) {
+    private static Path solve1(final int initialPosition, final Board board) {
 
         System.out.println(depth);
         System.out.println(new BoardView().render(board));
@@ -99,8 +101,32 @@ public final class GraphAPIDemo {
             array[initialPosition] = Constants.PACMAN;
             final GameState state = GameState.from(new String(array));
             ++depth;
-            return solve(initialPosition, state.getBoard());
+            return solve1(initialPosition, state.getBoard());
         }
+
+    }
+
+    private static Path solve2(final int initialPosition, final Board board) {
+
+        System.out.println(depth);
+        System.out.println(new BoardView().render(board));
+        try {
+            Thread.sleep(1000);
+        }
+        catch (final InterruptedException e) {}
+
+        final Graph graph = new Graph(board);
+        System.out.println(graph);
+        final TreeOfWalk treeOfWalk = graph.getTreeOfWalk(initialPosition);
+        final List<PathNode> nodeSequence = treeOfWalk.computeNodeSequence();
+
+        //treeOfWalk.computeArcSequence();
+        //System.exit(0);
+
+        final PathManager pathManager = PathManager.from(graph.getEdgesById());
+        final List<GraphEdge> edgeSequence = pathManager.computeEdgeSequence(nodeSequence);
+        final Path path = Path.from(edgeSequence);
+        return path;
 
     }
 
