@@ -22,6 +22,7 @@ import fr.ut7.dojo.pacman.model.Constants;
 import fr.ut7.dojo.pacman.model.Direction;
 import fr.ut7.dojo.pacman.model.Levels;
 import fr.ut7.dojo.pacman.model.Move;
+import fr.ut7.dojo.pacman.view.BoardView;
 
 public class GameGraphBuilder {
 
@@ -84,40 +85,22 @@ public class GameGraphBuilder {
         if (pacManPosition > 0) array[pacManPosition] = Constants.SPACE;
         final Board board = Board.from(array);
 
-        /*
-        stopwatch.stop();
-        System.out.println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS.toString());
-        System.out.println();
-        stopwatch.reset();
-        stopwatch.start();
-        */
-
         final GameGraphBuilder builder = new GameGraphBuilder(board);
         final GameGraph gameGraph = builder.build();
 
-        /*
-        stopwatch.stop();
-        System.out.println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS.toString());
-        System.out.println();
-        stopwatch.reset();
-        stopwatch.start();
-        */
-
         final ClosedCPPSolver closedCPPSolver = new ClosedCPPSolver(gameGraph);
 
-        stopwatch.stop();
-        System.out.println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS.toString());
-        System.out.println();
-        stopwatch.reset();
-        stopwatch.start();
+        System.out.println(closedCPPSolver.getLowerBoundCost());
+        System.out.println(closedCPPSolver.getExtraCost());
+        System.out.println(closedCPPSolver.getTotalCost());
 
         final List<Integer> trail = closedCPPSolver.solveFrom(8);
 
         stopwatch.stop();
         System.out.println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS.toString());
 
+        System.out.println(new BoardView().render(board));
         closedCPPSolver.debugTrail(trail);
 
     }
-
 }

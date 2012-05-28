@@ -23,14 +23,14 @@ public class Edge implements Comparable<Edge> {
     }
 
     private Edge(final Edge edge) {
-        this.firstNode = edge.getLastNode();
+        this.firstNode = edge.getLastVertex();
         this.betweenNodes = ImmutableList.copyOf(Lists.reverse(edge.getBetweenNodes()));
-        this.lastNode = edge.getFirstNode();
+        this.lastNode = edge.getFirstVertex();
         this.value = edge.value;
         this.hashCode = edge.hashCode();
     }
 
-    public int getFirstNode() {
+    public int getFirstVertex() {
         return this.firstNode;
     }
 
@@ -38,7 +38,7 @@ public class Edge implements Comparable<Edge> {
         return this.betweenNodes;
     }
 
-    public int getLastNode() {
+    public int getLastVertex() {
         return this.lastNode;
     }
 
@@ -73,11 +73,11 @@ public class Edge implements Comparable<Edge> {
         final StringBuilder sb = new StringBuilder();
         sb.append(this.getCost() + "$");
         sb.append(" [");
-        sb.append(this.getFirstNode());
+        sb.append(this.getFirstVertex());
         sb.append(" - ");
         sb.append(this.getBetweenNodes().toString());
         sb.append(" - ");
-        sb.append(this.getLastNode());
+        sb.append(this.getLastVertex());
         sb.append("]");
         return sb.toString();
     }

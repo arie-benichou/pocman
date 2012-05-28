@@ -63,7 +63,7 @@ public class GameGraph {
                     // TODO ! retrouver l'edge à partir du hashcode
                     for (final Edge edge : this.getEdgesByVertexId(this.getVertexIdByVertexIndex(i))) {
                         final Integer lastNode = this.getVertexIdByVertexIndex(j);
-                        if (edge.getLastNode() == lastNode) {
+                        if (edge.getLastVertex() == lastNode) {
                             path = Path.from(edge);
                             break;
                         }

@@ -51,7 +51,7 @@ public final class Path implements Comparable<Path> {
         this.numberOfEdges = edges.size();
         this.cost = cost;
         this.lastEdge = lastEdge;
-        this.hashCode = edges.get(0).getFirstNode() * lastEdge.getLastNode();
+        this.hashCode = edges.get(0).getFirstVertex() * lastEdge.getLastVertex();
     }
 
     @Override
@@ -68,12 +68,12 @@ public final class Path implements Comparable<Path> {
         return that.hashCode == this.hashCode;
     }
 
-    public int getFirstNode() {
-        return this.getEdges().get(0).getFirstNode(); // TODO check for null
+    public int getFirstVertex() {
+        return this.getEdges().get(0).getFirstVertex(); // TODO check for null
     }
 
-    public int getLastNode() {
-        return this.getLastEdge().getLastNode(); // TODO check for null
+    public int getLastVertex() {
+        return this.getLastEdge().getLastVertex(); // TODO check for null
     }
 
     // TODO retourner une liste immutable uniquement à ce moment ?
@@ -106,13 +106,13 @@ public final class Path implements Comparable<Path> {
             case 1: {
                 Edge lastEdge = this.getLastEdge();
                 Edge newEdge = null;
-                if (lastEdge.getLastNode() == edge.getFirstNode()) newEdge = edge;
-                else if (lastEdge.getLastNode() == edge.getLastNode()) newEdge = edge.getSymetric();
-                else if (lastEdge.getFirstNode() == edge.getFirstNode()) {
+                if (lastEdge.getLastVertex() == edge.getFirstVertex()) newEdge = edge;
+                else if (lastEdge.getLastVertex() == edge.getLastVertex()) newEdge = edge.getSymetric();
+                else if (lastEdge.getFirstVertex() == edge.getFirstVertex()) {
                     lastEdge = lastEdge.getSymetric();
                     newEdge = edge;
                 }
-                else if (lastEdge.getFirstNode() == edge.getLastNode()) {
+                else if (lastEdge.getFirstVertex() == edge.getLastVertex()) {
                     lastEdge = lastEdge.getSymetric();
                     newEdge = edge.getSymetric();
                 }
@@ -126,8 +126,8 @@ public final class Path implements Comparable<Path> {
                 final Edge lastEdge = this.getLastEdge();
                 //System.out.println("lastEdge:" + lastEdge);
                 Edge newEdge = null;
-                if (lastEdge.getLastNode() == edge.getFirstNode()) newEdge = edge;
-                else if (lastEdge.getLastNode() == edge.getLastNode()) newEdge = edge.getSymetric();
+                if (lastEdge.getLastVertex() == edge.getFirstVertex()) newEdge = edge;
+                else if (lastEdge.getLastVertex() == edge.getLastVertex()) newEdge = edge.getSymetric();
                 Preconditions.checkState(newEdge != null, "invalid path");
                 builder.add(lastEdge, newEdge);
                 return new Path(builder.build(), this.getCost() + newEdge.getCost(), newEdge);
@@ -149,20 +149,20 @@ public final class Path implements Comparable<Path> {
     public List<Integer> toSequence() { // TODO ? immutable
         final List<Integer> sequence = Lists.newArrayList();
         for (final Edge edge : this.getEdges()) {
-            sequence.add(edge.getFirstNode());
+            sequence.add(edge.getFirstVertex());
             sequence.addAll(edge.getBetweenNodes());
         }
-        sequence.add(this.getLastEdge().getLastNode());
+        sequence.add(this.getLastEdge().getLastVertex());
         return sequence;
     }
 
     public List<Integer> toSequence(final boolean trim) { // TODO ? immutable
         final List<Integer> sequence = Lists.newArrayList();
         for (final Edge edge : this.getEdges()) {
-            sequence.add(edge.getFirstNode());
+            sequence.add(edge.getFirstVertex());
             sequence.addAll(edge.getBetweenNodes());
         }
-        if (!trim) sequence.add(this.getLastEdge().getLastNode());
+        if (!trim) sequence.add(this.getLastEdge().getLastVertex());
         else sequence.remove(0);
         return sequence;
     }
@@ -177,8 +177,8 @@ public final class Path implements Comparable<Path> {
         if (path.getNumberOfEdges() == 1) return this.add(path.getEdges().get(0));
 
         {
-            final int lastNode = this.getLastEdge().getLastNode();
-            final int firstNode = path.getEdges().get(0).getFirstNode();
+            final int lastNode = this.getLastEdge().getLastVertex();
+            final int firstNode = path.getEdges().get(0).getFirstVertex();
 
             //System.out.println(lastNode);
             //System.out.println(firstNode);
