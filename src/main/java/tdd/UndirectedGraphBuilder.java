@@ -36,7 +36,7 @@ public class UndirectedGraphBuilder {
 
     public UndirectedGraphBuilder addEdge(final int edgeExternalId, final int uExternalId, final int vExternalId, final double cost) {
 
-        Preconditions.checkArgument(edgeExternalId > 0);
+        Preconditions.checkArgument(edgeExternalId > 0, edgeExternalId);
         Preconditions.checkArgument(uExternalId > 0);
         Preconditions.checkArgument(vExternalId > 0);
         Preconditions.checkArgument(uExternalId != vExternalId);

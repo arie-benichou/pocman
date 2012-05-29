@@ -75,6 +75,7 @@ public class TreeOfWalk {
             System.out.println(candidates);
         }
 
+        if (candidates.isEmpty()) return this.map.get(node.getParent());
         return this.map.get(candidates.get(0));
     }
 

@@ -150,7 +150,7 @@ public final class Path implements Comparable<Path> {
         final List<Integer> sequence = Lists.newArrayList();
         for (final Edge edge : this.getEdges()) {
             sequence.add(edge.getFirstVertex());
-            sequence.addAll(edge.getBetweenNodes());
+            sequence.addAll(edge.getBetweenVertices());
         }
         sequence.add(this.getLastEdge().getLastVertex());
         return sequence;
@@ -160,7 +160,7 @@ public final class Path implements Comparable<Path> {
         final List<Integer> sequence = Lists.newArrayList();
         for (final Edge edge : this.getEdges()) {
             sequence.add(edge.getFirstVertex());
-            sequence.addAll(edge.getBetweenNodes());
+            sequence.addAll(edge.getBetweenVertices());
         }
         if (!trim) sequence.add(this.getLastEdge().getLastVertex());
         else sequence.remove(0);

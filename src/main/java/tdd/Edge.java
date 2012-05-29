@@ -8,42 +8,50 @@ import com.google.common.collect.Lists;
 
 public class Edge implements Comparable<Edge> {
 
-    private final int firstNode;
-    private final List<Integer> betweenNodes;
-    private final int lastNode;
-    private final int value;
+    private final int vertex1;
+    private final List<Integer> betweenVertices;
+    private final int vertex2;
+    private final double cost;
     private final int hashCode;
 
-    public Edge(final int firstNode, final List<Integer> betweenNodes, final int lastNode) {
-        this.firstNode = firstNode;
-        this.betweenNodes = ImmutableList.copyOf(betweenNodes);
-        this.lastNode = lastNode;
-        this.value = this.betweenNodes.size();
-        this.hashCode = firstNode * lastNode;
+    public Edge(final int vertex1, final List<Integer> betweenNodes, final int vertex2) {
+        this.vertex1 = vertex1;
+        this.betweenVertices = ImmutableList.copyOf(betweenNodes);
+        this.vertex2 = vertex2;
+        this.cost = this.betweenVertices.size() + 1;
+        this.hashCode = vertex1 * vertex2;
     }
 
     private Edge(final Edge edge) {
-        this.firstNode = edge.getLastVertex();
-        this.betweenNodes = ImmutableList.copyOf(Lists.reverse(edge.getBetweenNodes()));
-        this.lastNode = edge.getFirstVertex();
-        this.value = edge.value;
+        this.vertex1 = edge.getLastVertex();
+        this.betweenVertices = ImmutableList.copyOf(Lists.reverse(edge.getBetweenVertices()));
+        this.vertex2 = edge.getFirstVertex();
+        this.cost = edge.cost;
         this.hashCode = edge.hashCode();
     }
 
-    public int getFirstVertex() {
-        return this.firstNode;
+    public Edge(final int vertex1, final int vertex2, final double cost) {
+        this.vertex1 = vertex1;
+        this.betweenVertices = ImmutableList.of();
+        this.vertex2 = vertex2;
+        this.cost = cost;
+        this.hashCode = vertex1 * vertex2;
     }
 
-    public List<Integer> getBetweenNodes() {
-        return this.betweenNodes;
+    public int getFirstVertex() {
+        return this.vertex1;
+    }
+
+    public List<Integer> getBetweenVertices() {
+        return this.betweenVertices;
     }
 
     public int getLastVertex() {
-        return this.lastNode;
+        return this.vertex2;
     }
 
-    public int getCost() {
-        return this.value;
+    public double getCost() {
+        return this.cost;
     }
 
     @Override
@@ -64,8 +72,9 @@ public class Edge implements Comparable<Edge> {
         return this.hashCode() == that.hashCode();
     }
 
+    @Override
     public int compareTo(final Edge that) {
-        return this.getCost() - that.getCost();
+        return Double.compare(this.getCost(), that.getCost());
     }
 
     @Override
@@ -75,7 +84,7 @@ public class Edge implements Comparable<Edge> {
         sb.append(" [");
         sb.append(this.getFirstVertex());
         sb.append(" - ");
-        sb.append(this.getBetweenNodes().toString());
+        sb.append(this.getBetweenVertices().toString());
         sb.append(" - ");
         sb.append(this.getLastVertex());
         sb.append("]");

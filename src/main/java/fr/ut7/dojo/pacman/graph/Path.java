@@ -18,8 +18,10 @@ public final class Path {
     private Path(final List<GraphEdge> edgesSequence) {
         this.edgesSequence = ImmutableList.copyOf(edgesSequence);
         int sum = 0;
-        for (final GraphEdge edge : edgesSequence)
-            sum += edge.getBetweenNodes().size();// + 1;
+        for (final GraphEdge edge : edgesSequence) {
+            //sum += edge.getBetweenNodes().size();// + 1;
+            sum += edge.getValue();// + 1;
+        }
         this.sum = sum;
     }
 

@@ -19,9 +19,23 @@ public class GameGraph {
         return this.board;
     }
 
-    private final Map<Integer, Vertex> vertices;
+    private final Map<Integer, Vertex> walkableGameTiles;
+
+    public Map<Integer, Vertex> getWalkableGameTiles() {
+        return this.walkableGameTiles;
+    }
+
+    /*
+    public int getNumberOfWalkableGameTiles() {
+        return this.walkableGameTiles.size();
+    }
+    */
 
     private final Map<Integer, List<Edge>> edgesByVertexId;
+
+    public Map<Integer, List<Edge>> getEdgesByVertexId() {
+        return this.edgesByVertexId;
+    }
 
     public List<Edge> getEdgesByVertexId(final Integer vertexId) {
         return this.edgesByVertexId.get(vertexId);
@@ -30,7 +44,8 @@ public class GameGraph {
     private final Map<Integer, Integer> vertexIdByVertexIndex;
 
     public Integer getVertexIdByVertexIndex(final Integer vertexIndex) {
-        return this.vertexIdByVertexIndex.get(vertexIndex);
+        final Integer vertexId = this.vertexIdByVertexIndex.get(vertexIndex);
+        return vertexId == null ? 513 : vertexId; // TODO MAX ID
     }
 
     private final Map<Integer, Integer> vertexIndexByVertexId;
@@ -75,9 +90,9 @@ public class GameGraph {
         return paths;
     }
 
-    public GameGraph(final Board board, final Map<Integer, Vertex> vertices, final Map<Integer, List<Edge>> edgesByVertexId) {
+    public GameGraph(final Board board, final Map<Integer, Vertex> walkableGameTiles, final Map<Integer, List<Edge>> edgesByVertexId) {
         this.board = board;
-        this.vertices = vertices;
+        this.walkableGameTiles = walkableGameTiles;
         this.edgesByVertexId = edgesByVertexId;
         final Builder<Integer, Integer> vertexIdByVertexIndexBuilder = new ImmutableSortedMap.Builder<Integer, Integer>(Ordering.natural());
         final Builder<Integer, Integer> vertexIndexByVertexIdBuilder = new ImmutableSortedMap.Builder<Integer, Integer>(Ordering.natural());

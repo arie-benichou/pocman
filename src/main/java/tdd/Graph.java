@@ -68,7 +68,7 @@ public final class Graph {
             }
         }
 
-        this.debug(paths, max, Double.POSITIVE_INFINITY);
+        //this.debug(paths, max, Double.POSITIVE_INFINITY);
 
         this.paths = paths;
 

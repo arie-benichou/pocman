@@ -22,7 +22,7 @@ public class GraphEdge implements Comparable<GraphEdge> {
         this.firstNode = firstNode;
         this.betweenNodes = ImmutableList.copyOf(betweenNodes);
         this.lastNode = lastNode;
-        this.value = this.betweenNodes.size();
+        this.value = this.betweenNodes.size() + 1;
         this.hashCode = 27 * firstNode.getId() * move.getDelta() * this.value;
     }
 
@@ -60,6 +60,7 @@ public class GraphEdge implements Comparable<GraphEdge> {
         return this.hashCode() == that.hashCode();
     }
 
+    @Override
     public int compareTo(final GraphEdge that) {
         return this.getValue() - that.getValue();
     }

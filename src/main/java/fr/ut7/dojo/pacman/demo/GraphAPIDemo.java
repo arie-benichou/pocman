@@ -50,8 +50,14 @@ public final class GraphAPIDemo {
         final Game game = Game.from(
                 new PacmanReferee(), new Pacman(new NullMoveEmitter()),
                 new GhostReferee(), new Ghost(new NullMoveEmitter()),
-                //GameState.from(Levels.DEBUG113)
-                GameState.from(Levels.DEBUG1150)
+                //GameState.from(Levels.LEVEL13)
+                //GameState.from(Levels.LEVEL155)
+                //GameState.from(Levels.DEBUG11455)
+                //GameState.from(Levels.DEBUG122)
+                //GameState.from(Levels.DEBUG1132)
+                GameState.from(Levels.DEBUG122)
+
+                //GameState.from(Levels.DEBUG1150)
                 //GameState.from(Levels.LEVEL1555)
                 //GameState.from(Levels.LEVEL01C)
                 //GameState.from(Levels.DEBUG19)
