@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Function;
@@ -30,6 +31,7 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * Minimal or maximal cost from independant set with maximal cardinality.
@@ -89,13 +91,32 @@ public final class MatchingSolver {
     /**
      * Couple of a row index and a column index in the given matrix.
      */
-    public final static class Position {
+    public final class Position {
 
         private final int rowIndex, columnIndex;
+        private final int hashCode;
 
         private Position(final int rowIndex, final int columnIndex) {
             this.rowIndex = rowIndex;
             this.columnIndex = columnIndex;
+            //this.hashCode = MatchingSolver.this.dimension + (rowIndex + 1) * (columnIndex + 1) * (rowIndex + columnIndex);
+            final int hashCode1 = rowIndex * MatchingSolver.this.dimension + columnIndex;
+            final int hashCode2 = columnIndex * MatchingSolver.this.dimension + rowIndex;
+            this.hashCode = hashCode1 * hashCode2;
+        }
+
+        @Override
+        public int hashCode() {
+            return this.hashCode;
+        }
+
+        @Override
+        public boolean equals(final Object object) {
+            if (object == null) return false;
+            if (object == this) return true;
+            if (!(object instanceof Position)) return false;
+            final Position that = (Position) object;
+            return that.hashCode() == this.hashCode();
         }
 
         public int getRowIndex() {
@@ -112,7 +133,7 @@ public final class MatchingSolver {
         }
     }
 
-    public final static class Match {
+    public final class Match {
 
         private final List<Position> positions;
         private final double cost;
@@ -124,6 +145,22 @@ public final class MatchingSolver {
             for (final int i : pairs)
                 positionsBuilder.add(new Position(i / n, i % n));
             this.positions = positionsBuilder.build();
+        }
+
+        public Match(final Set<Position> positions, final int[][] matrix) {
+            this.positions = ImmutableList.copyOf(positions);
+            double cost = 0;
+            for (final Position position : this.positions)
+                cost += matrix[position.getRowIndex()][position.getColumnIndex()];
+            this.cost = cost;
+        }
+
+        public Match(final Set<Position> positions, final double[][] matrix) {
+            this.positions = ImmutableList.copyOf(positions);
+            double cost = 0;
+            for (final Position position : this.positions)
+                cost += matrix[position.getRowIndex()][position.getColumnIndex()];
+            this.cost = cost;
         }
 
         private Match(final LowerBound lowerBound) {
@@ -190,7 +227,7 @@ public final class MatchingSolver {
 
     }
 
-    private final static class Matches implements Iterator<Match>, Iterable<Match> {
+    private final class Matches implements Iterator<Match>, Iterable<Match> {
 
         private final MatchesCollector matchesCollector;
         private final double cost;
@@ -351,6 +388,34 @@ public final class MatchingSolver {
         return this.match(Extremum.MIN);
     }
 
+    public Match edmondMatch() {
+        /*
+        final int[][] matrix = new int[this.dimension][this.dimension];
+        for (int i = 0; i < this.dimension; ++i)
+            for (int j = 0; j < this.dimension; ++j) {
+                matrix[i][j] = (int) this.matrix[i][j];
+            }
+        */
+        final SmallerWeightedMatchDouble weightedMatch = new SmallerWeightedMatchDouble(this.matrix);
+        //final SmallerWeightedMatch weightedMatch = new SmallerWeightedMatch(matrix);
+        //final WeightedMatch weightedMatch = new WeightedMatch(matrix);
+        final int[] mate = weightedMatch.weightedMatch(SmallerWeightedMatch.MINIMIZE);
+        final Set<Position> positions = Sets.newHashSet();
+        //System.out.println();
+        for (int i = 0; i < this.dimension; ++i) {
+            final Position position = new Position(i, mate[i + 1] - 1);
+            positions.add(position);
+            /*
+            System.out.println(position + ": " + position.hashCode());
+            System.out.println(position.getRowIndex() + " " + position.getColumnIndex());
+            System.out.println();
+            */
+        }
+        //System.out.println();
+        //System.out.println(positions);
+        return new Match(positions, this.matrix);
+    }
+
     /**
      * Tiny tests / benchmarks.
      */
@@ -366,7 +431,16 @@ public final class MatchingSolver {
         };
         */
 
+        final double[][] matrix =
+        {
+                //     A  B  C  D
+                /*A*/{ 0, 1, 5, 10 },
+                /*B*/{ 1, 0, 1, 1 },
+                /*C*/{ 5, 1, 0, 1 },
+                /*D*/{ 10, 1, 1, 0 }
+        };
         // TODO ? normaliser la matrice entre 0 et 1 ?
+        /*
         final double[][] matrix =
         {
                 { 0, 1, 1, 1, 1, 1 },
@@ -376,6 +450,7 @@ public final class MatchingSolver {
                 { 1, 1, 1, 1, 0, 1 },
                 { 1, 1, 1, 1, 1, 0 },
         };
+        */
 
         /*
         final double[][] matrix =
@@ -409,7 +484,7 @@ public final class MatchingSolver {
         //final Match firstMatch = matching.match(Extremum.MIN);
         //System.out.println(firstMatch);
         //System.out.println(firstMatch.apply(mapping));
-        final Iterable<Match> matches = matching.matchAll(Extremum.MAX);
+        final Iterable<Match> matches = matching.matchAll();
         stopwatch.stop();
         for (final Match match : matches)
             System.out.println(match.apply(mapping));

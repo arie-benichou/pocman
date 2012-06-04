@@ -23,6 +23,7 @@ import fr.ut7.dojo.pacman.model.Constants;
 import fr.ut7.dojo.pacman.model.Direction;
 import fr.ut7.dojo.pacman.model.Levels;
 import fr.ut7.dojo.pacman.model.Move;
+import fr.ut7.dojo.pacman.view.BoardView;
 
 public class GameGraphBuilder {
 
@@ -79,14 +80,15 @@ public class GameGraphBuilder {
 
         final Stopwatch stopwatch = new Stopwatch().start();
 
-        final String data = Levels.DEBUG122;
         //final String data = Levels.DEBUG122;
         //final String data = Levels.DEBUG11333;
         //final String data = Levels.LEVEL15;
         //final String data = Levels.LEVEL01C;
-        //final String data = Levels.LEVEL13;
+        //final String data = Levels.DEBUG13;
         //final String data = Levels.LEVEL155;
-        //final String data = Levels.DEBUG1145;
+        final String data = Levels.DEBUG1555;
+        //final String data = Levels.LEVEL155;
+        //final String data = Levels.DEBUG1150;
 
         final int pacManPosition = data.indexOf(Constants.PACMAN);
         final char[] array = Board.from(data).toCharArray();
@@ -121,21 +123,21 @@ public class GameGraphBuilder {
         stopwatch.stop();
         System.out.println(stopwatch.elapsedTime(TimeUnit.SECONDS) + " " + TimeUnit.SECONDS.toString());
 
-        /*
         Thread.sleep(1000);
         System.out.println(new BoardView().render(board));
         closedCPPSolver.debugTrail(closedTrail);
-        */
 
         //final Path path = closedCPPSolver.solveFrom2(startingVertexIndex);
         //System.out.println(path);
 
         //System.exit(0);
 
+        /*
         final OpenCPPSolver openCPPSolver = new OpenCPPSolver(closedCPPSolver);
 
         //final ClosedCPPSolver bestClosedCPPSolver = openCPPSolver.solveFrom(startingVertexIndex);
         openCPPSolver.solveFrom(startingVertexIndex);
+        */
 
         /*
         final List<Integer> openTrail = bestClosedCPPSolver.solveFrom(startingVertexIndex);

@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
-import tdd.MatchingSolver.Extremum;
 import tdd.MatchingSolver.Match;
 import tdd.MatchingSolver.Position;
 
@@ -18,7 +17,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.ImmutableSortedMap;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
@@ -143,9 +141,8 @@ public class ClosedCPPSolver {
             final Integer integer = map.get(edge);
             if (integer < 1) continue;
             map.put(edge, integer - 1);
-            //final int v = edge.getFirstVertex() == vertexId ? edge.getLastVertex() : edge.getFirstVertex();
-            //final int v = edge.getFirstVertex() == vertexId ? edge.getLastVertex() : edge.getFirstVertex();
-            final int v = edge.getLastVertex();
+            final int v = edge.getFirstVertex() == vertexId ? edge.getLastVertex() : edge.getFirstVertex();
+            //final int v = edge.getLastVertex();
             this.fleuryEulerianTrailAlgorithm(v, map, trail);
         }
         trail.add(vertexId);
@@ -158,7 +155,7 @@ public class ClosedCPPSolver {
             array1[integer] = Constants.PACMAN;
             System.out.println(integer);
             System.out.println(new BoardView().render(Board.from(array1)));
-            Thread.sleep(200);
+            Thread.sleep(400);
         }
     }
 
@@ -256,7 +253,8 @@ public class ClosedCPPSolver {
 
         //System.out.println(map.values());
 
-        final List<Integer> sortedPrunedOddVertices = Lists.reverse(Lists.newArrayList(Iterables.concat(map.values())));
+        //final List<Integer> sortedPrunedOddVertices = Lists.reverse(Lists.newArrayList(Iterables.concat(map.values())));
+        final List<Integer> sortedPrunedOddVertices = prunedOddVertices;
         //final List<Integer> sortedPrunedOddVertices = Lists.newArrayList(Iterables.concat(map.values()));
         //System.out.println(sortedPrunedOddVertices);
 
@@ -265,8 +263,10 @@ public class ClosedCPPSolver {
         System.out.println(sortedPrunedOddVertices);
 
         final Graph residualGraph = this.buildResidualGraph(sortedPrunedOddVertices);
-        final Match match = new MatchingSolver(residualGraph).match(Extremum.MIN);
-        //System.out.println(match);
+        //final Match match = new MatchingSolver(residualGraph).match(Extremum.MIN);
+        final Match match = new MatchingSolver(residualGraph).edmondMatch();
+        System.out.println(match);
+        //System.out.println(match2);
         //System.exit(0);
 
         for (final Path path : match.apply(this.mapPositionToPath(sortedPrunedOddVertices)))
