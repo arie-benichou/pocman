@@ -9,8 +9,8 @@ import org.junit.Test;
 
 import com.google.common.collect.Maps;
 
-import fr.ut7.dojo.pacman.model.Board;
-import fr.ut7.dojo.pacman.model.Direction;
+import fr.designpattern.pocman.model.MazeAsBoard;
+import fr.designpattern.pocman.model.Direction;
 
 /**
  * Unit test for simple App.
@@ -18,7 +18,7 @@ import fr.ut7.dojo.pacman.model.Direction;
 public class BoardTest
 {
 
-    private Board board;
+    private MazeAsBoard board;
     private String data;
 
     @Before
@@ -45,7 +45,7 @@ public class BoardTest
                 "┃∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙⬤┃" +
                 "┃⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃";
 
-        this.board = Board.from(this.data);
+        this.board = MazeAsBoard.from(this.data);
 
     }
 
@@ -68,17 +68,17 @@ public class BoardTest
     @Test
     public void testGetCellFromYAndX()
     {
-        final int y = Board.HEIGHT - 1 - 1;
-        final int x = Board.WIDTH - 1 - 1;
+        final int y = MazeAsBoard.HEIGHT - 1 - 1;
+        final int x = MazeAsBoard.WIDTH - 1 - 1;
         Assert.assertTrue(this.board.getCell(y, x) == '⬤');
     }
 
     @Test
     public void testGetCellFromIndex()
     {
-        final int y = Board.HEIGHT - 1 - 1;
-        final int x = Board.WIDTH - 1 - 1;
-        Assert.assertTrue(this.board.getCell(y * Board.WIDTH + x) == '⬤');
+        final int y = MazeAsBoard.HEIGHT - 1 - 1;
+        final int x = MazeAsBoard.WIDTH - 1 - 1;
+        Assert.assertTrue(this.board.getCell(y * MazeAsBoard.WIDTH + x) == '⬤');
     }
 
     @Test
@@ -89,17 +89,17 @@ public class BoardTest
         expected.put(Direction.RIGHT, '┃');
         expected.put(Direction.DOWN, '⬛');
         expected.put(Direction.LEFT, '∙');
-        final int y = Board.HEIGHT - 1 - 1;
-        final int x = Board.WIDTH - 1 - 1;
+        final int y = MazeAsBoard.HEIGHT - 1 - 1;
+        final int x = MazeAsBoard.WIDTH - 1 - 1;
         Assert.assertTrue(this.board.getNeighbours(y, x).equals(expected));
     }
 
     @Test
     public void testGetNeighboursFromIndex()
     {
-        final int y = Board.HEIGHT - 1 - 1;
-        final int x = Board.WIDTH - 1 - 1;
-        Assert.assertTrue(this.board.getNeighbours((Board.HEIGHT - 1) * Board.WIDTH - 1 - 1).equals(this.board.getNeighbours(y, x)));
+        final int y = MazeAsBoard.HEIGHT - 1 - 1;
+        final int x = MazeAsBoard.WIDTH - 1 - 1;
+        Assert.assertTrue(this.board.getNeighbours((MazeAsBoard.HEIGHT - 1) * MazeAsBoard.WIDTH - 1 - 1).equals(this.board.getNeighbours(y, x)));
     }
 
 }

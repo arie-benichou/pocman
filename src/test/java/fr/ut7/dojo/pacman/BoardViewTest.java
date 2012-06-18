@@ -5,13 +5,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import fr.ut7.dojo.pacman.model.Board;
-import fr.ut7.dojo.pacman.view.BoardView;
+import fr.designpattern.pocman.model.MazeAsBoard;
+import fr.designpattern.pocman.view.MazeAsBoardView;
 
 public class BoardViewTest {
 
     private String data;
-    private Board board;
+    private MazeAsBoard board;
 
     @Before
     public void setup() {
@@ -37,13 +37,13 @@ public class BoardViewTest {
                 "┃∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙⬤┃" +
                 "┃⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃";
 
-        this.board = Board.from(this.data);
+        this.board = MazeAsBoard.from(this.data);
 
     }
 
     @Test
     public void testRender() {
-        final BoardView boardView = new BoardView();
+        final MazeAsBoardView boardView = new MazeAsBoardView();
         final String rendering = boardView.render(this.board);
         Assert.assertTrue(this.data.equals(rendering.replaceAll("\n", "")));
     }
