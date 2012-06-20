@@ -1,18 +1,14 @@
 
 package fr.designpattern.pocman.cpp.graph;
 
-import java.util.List;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
 
 import fr.designpattern.pocman.model.Move;
 
 public final class Vertex {
-
-    private final static Set<Move> NO_OPTION = ImmutableSet.of();
 
     public enum Type {
 
@@ -58,21 +54,29 @@ public final class Vertex {
     }
 
     private final int id;
-    private final List<Move> options;
+    private final Set<Move> options;
     private final Type type;
+    private final int hashCode;
 
     public static Vertex from(final int id, final Set<Move> options) {
         return new Vertex(id, options);
     }
 
-    public static Vertex from(final int id) {
-        return new Vertex(id, NO_OPTION);
-    }
-
     private Vertex(final int id, final Set<Move> options) {
+
         this.id = id;
-        this.options = ImmutableList.copyOf(options);
+        this.options = ImmutableSortedSet.copyOf(options);
         this.type = Type.from(options);
+
+        int hashcode = 17;
+        hashcode += this.type.name().hashCode();
+        hashcode *= 31;
+        hashcode += this.options.hashCode();
+        hashcode *= 31;
+        hashcode += id;
+        hashcode *= 31;
+        this.hashCode = hashcode;
+
     }
 
     public int getId() {
@@ -87,7 +91,7 @@ public final class Vertex {
         return this.getType().equals(type);
     }
 
-    public List<Move> getOptions() {
+    public Set<Move> getOptions() {
         return this.options;
     }
 
@@ -97,7 +101,8 @@ public final class Vertex {
 
     @Override
     public int hashCode() {
-        return this.id;
+        //return this.id;
+        return this.hashCode;
     }
 
     @Override
@@ -106,7 +111,7 @@ public final class Vertex {
         if (object == this) return true;
         if (!(object instanceof Vertex)) return false;
         final Vertex that = (Vertex) object;
-        return this.getId() == that.getId();
+        return this.id == that.id && this.type.equals(that.type) && this.options.equals(that.options);
     }
 
     @Override
