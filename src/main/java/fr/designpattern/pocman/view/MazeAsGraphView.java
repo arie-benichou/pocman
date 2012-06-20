@@ -26,7 +26,7 @@ public class MazeAsGraphView {
             array[nodeId] = c;
         }
         final StringBuilder sb = new StringBuilder("\n");
-        sb.append(new MazeAsBoardView().render(MazeAsBoard.from(array)).replaceAll(" {27}\\n", "")).append("\n");
+        sb.append(new MazeAsBoardView().render(MazeAsBoard.from(array)).replaceAll(" {27}\\n", ""));//.append("\n");
         return sb.toString();
     }
 

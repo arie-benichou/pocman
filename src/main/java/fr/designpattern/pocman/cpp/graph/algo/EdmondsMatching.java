@@ -18,7 +18,7 @@ import fr.designpattern.pocman.cpp.graph.MutableUndirectedGraph;
  */
 public final class EdmondsMatching {
 
-    public static <T> MutableUndirectedGraph<T> maximumMatching(final MutableUndirectedGraph<T> g) throws Exception {
+    public static <T> MutableUndirectedGraph<T> maximumMatching(final MutableUndirectedGraph<T> g) {
         if (g.isEmpty())
             return new MutableUndirectedGraph<T>();
         final MutableUndirectedGraph<T> result = new MutableUndirectedGraph<T>();
@@ -76,7 +76,7 @@ public final class EdmondsMatching {
     }
 
     private static <T> List<T> findAlternatingPath(final MutableUndirectedGraph<T> g,
-            final MutableUndirectedGraph<T> m) throws Exception {
+            final MutableUndirectedGraph<T> m) {
         final Map<T, NodeInformation<T>> forest = new HashMap<T, NodeInformation<T>>();
         final Queue<Edge<T>> worklist = new LinkedList<Edge<T>>();
         for (final T node : g) {
@@ -168,7 +168,7 @@ public final class EdmondsMatching {
     private static <T> List<T> expandPath(List<T> path,
             final MutableUndirectedGraph<T> g,
             final Map<T, NodeInformation<T>> forest,
-            final Blossom<T> blossom) throws Exception {
+            final Blossom<T> blossom) {
         final int index = path.indexOf(blossom.root);
 
         if (index == -1) return path;
@@ -182,22 +182,14 @@ public final class EdmondsMatching {
             }
             else {
                 result.add(blossom.root);
-                //if (i + 1 < path.size()) {
-                try {
-                    final T outNode = findNodeLeavingCycle(g, blossom, path.get(i + 1));
+                final T outNode = findNodeLeavingCycle(g, blossom, path.get(i + 1));
 
-                    final int outIndex = blossom.cycle.indexOf(outNode);
-                    final int start = outIndex % 2 == 0 ? 1 : blossom.cycle.size() - 2;
-                    final int step = outIndex % 2 == 0 ? +1 : -1;
-                    //for (int k = start; k != step; k += step)
-                    for (int k = start; k != outIndex + step; k += step)
-                        result.add(blossom.cycle.get(k));
-                }
-                catch (final Exception e) {
-                    System.out.println(path);
-                    throw e;
-                }
-                //}
+                final int outIndex = blossom.cycle.indexOf(outNode);
+                final int start = outIndex % 2 == 0 ? 1 : blossom.cycle.size() - 2;
+                final int step = outIndex % 2 == 0 ? +1 : -1;
+                //for (int k = start; k != step; k += step)
+                for (int k = start; k != outIndex + step; k += step)
+                    result.add(blossom.cycle.get(k));
             }
         }
         return result;
@@ -221,7 +213,7 @@ public final class EdmondsMatching {
         throw new AssertionError("Could not find an edge out of the blossom.");
     }
 
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
         /*
         main1();
         System.out.println();
@@ -232,7 +224,7 @@ public final class EdmondsMatching {
         main3();
     }
 
-    public static void main1() throws Exception {
+    public static void main1() {
         final MutableUndirectedGraph<String> graph = new MutableUndirectedGraph<String>();
 
         graph.addVertex("A");
@@ -278,7 +270,7 @@ public final class EdmondsMatching {
         }
     }
 
-    public static void main2() throws Exception {
+    public static void main2() {
 
         final MutableUndirectedGraph<String> graph = new MutableUndirectedGraph<String>();
 
@@ -307,7 +299,7 @@ public final class EdmondsMatching {
 
     }
 
-    public static void main3() throws Exception {
+    public static void main3() {
         final MutableUndirectedGraph<String> graph = new MutableUndirectedGraph<String>();
 
         graph.addVertex("B");

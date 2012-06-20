@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.ImmutableSortedMap;
@@ -20,7 +21,7 @@ import fr.designpattern.pocman.cpp.graph.Vertex.Type;
 import fr.designpattern.pocman.cpp.graph.WeightedEdge;
 import fr.designpattern.pocman.view.MazeAsGraphView;
 
-public class MazeAsGraph {
+public class MazeAsGraph implements Supplier<UndirectedGraph<Vertex>> {
 
     private final MazeAsBoard board;
 
@@ -42,15 +43,7 @@ public class MazeAsGraph {
 
     private final WeightedEdge.Factory<Vertex> edgeFactory = new WeightedEdge.Factory<Vertex>();
 
-    public WeightedEdge.Factory<Vertex> getEdgeFactory() {
-        return this.edgeFactory;
-    }
-
     private final UndirectedGraph<Vertex> graph;
-
-    public UndirectedGraph<Vertex> getGraph() {
-        return this.graph;
-    }
 
     private final int numberOfVertices;
 
@@ -106,16 +99,16 @@ public class MazeAsGraph {
         this.board = board;
         this.walkableGameTiles = this.buildVertices(this.getBoard());
         this.edgeByVertexId = this.buildEdges(this.getWalkableGameTiles());
-        this.numberOfVertices = this.getEdgeByVertexId().size();
+        this.numberOfVertices = this.edgeByVertexId.size();
         final UndirectedGraph.Builder<Vertex> graphBuilder = new UndirectedGraph.Builder<Vertex>(this.getNumberOfVertices());
-        for (final Entry<Integer, List<WeightedEdge<Vertex>>> entry : this.getEdgeByVertexId().entrySet())
+        for (final Entry<Integer, List<WeightedEdge<Vertex>>> entry : this.edgeByVertexId.entrySet())
             for (final WeightedEdge<Vertex> edge : entry.getValue())
                 if (!graphBuilder.contains(edge)) graphBuilder.addEdge(edge);
         this.graph = graphBuilder.build();
     }
 
     public boolean isConnected() {
-        return this.getGraph().isConnected();
+        return this.graph.isConnected();
     }
 
     @Override
@@ -125,6 +118,11 @@ public class MazeAsGraph {
 
     public Vertex getNodeById(final int nodeId) {
         return this.getWalkableGameTiles().get(nodeId); // TODO
+    }
+
+    @Override
+    public UndirectedGraph<Vertex> get() {
+        return this.graph;
     }
 
 }

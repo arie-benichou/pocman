@@ -20,7 +20,7 @@ public class ClosedChinesePostmanProblem {
     private static MazeAsGraph.Factory mazeAsGraphFactory = new MazeAsGraph.Factory();
     private static ClosedCPPSolver.Factory closedCPPSolverFactory = new ClosedCPPSolver.Factory();
 
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
 
         final Stopwatch stopwatch = new Stopwatch().start();
 
@@ -34,23 +34,24 @@ public class ClosedChinesePostmanProblem {
         final MazeAsBoard board = MazeAsBoard.from(array);
         System.out.println(board);
 
-        // TODO ? revoir l'objet MazeAsBoard
+        // TODO ? avoir un seul objet Maze
 
         final MazeAsGraph mazeAsGraph = mazeAsGraphFactory.newMazeAsGraph(board);
         System.out.println(mazeAsGraph);
-        //System.out.println(mazeAsGraph.isConnected());
+        System.out.println(mazeAsGraph.isConnected());
 
-        final ClosedCPPSolver closedCPPSolver = closedCPPSolverFactory.newClosedCPPSolver(mazeAsGraph.getGraph());
+        final ClosedCPPSolver closedCPPSolver = closedCPPSolverFactory.newClosedCPPSolver(mazeAsGraph);
         final List<Vertex> closedTrail = closedCPPSolver.solveFrom(mazeAsGraph.getNodeById(pacManPosition)); // TODO objet Solution
 
         stopwatch.stop();
 
-        //System.exit(0);
-
         final NodeInMazeView nodeInMazeView = new NodeInMazeView(board);
         for (final Vertex vertex : closedTrail) {
             System.out.println(nodeInMazeView.render(vertex));
-            Thread.sleep(125);
+            try {
+                Thread.sleep(175);
+            }
+            catch (final InterruptedException e) {}
         }
 
         System.out.println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS.toString());

@@ -95,7 +95,7 @@ public class MinimumWeightPerfectMatching {
 
     private static <T> Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final UndirectedGraph<T> originalGraph, final List<T> oddVertices,
             HashMap<T, T> matching)
-            throws Exception {
+           {
         if (oddVertices.size() % 2 != 0) throw new RuntimeException("Number of odd vertices should be even.");
         final MutableUndirectedGraph<T> residualGraph = buildResidualGraph(originalGraph, oddVertices);
         MutableUndirectedGraph<T> maximumMatching = EdmondsMatching.maximumMatching(residualGraph);
@@ -119,7 +119,7 @@ public class MinimumWeightPerfectMatching {
         return eulerize(originalGraph, bestPerfectMatching);
     }
 
-    public static Map<WeightedEdge<Vertex>, Integer> computeOptimalEulerization(final UndirectedGraph<Vertex> originalGraph) throws Exception {
+    public static Map<WeightedEdge<Vertex>, Integer> computeOptimalEulerization(final UndirectedGraph<Vertex> originalGraph){
         final List<Vertex> oddVertices = oddVertices(originalGraph);
         final HashMap<Vertex, Vertex> matching = Maps.newHashMap();
         return computeOptimalEulerization(originalGraph, oddVertices, matching);

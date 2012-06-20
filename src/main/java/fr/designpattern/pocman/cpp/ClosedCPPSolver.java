@@ -4,6 +4,7 @@ package fr.designpattern.pocman.cpp;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -26,22 +27,26 @@ public class ClosedCPPSolver {
 
     public static class Factory {
 
-        public ClosedCPPSolver newClosedCPPSolver(final UndirectedGraph<Vertex> graph) throws Exception {
+        public ClosedCPPSolver newClosedCPPSolver(final UndirectedGraph<Vertex> graph){
             return new ClosedCPPSolver(graph);
+        }
+
+        public ClosedCPPSolver newClosedCPPSolver(final Supplier<UndirectedGraph<Vertex>> graphSupplier){
+            return this.newClosedCPPSolver(graphSupplier.get());
         }
 
     }
 
-    public ClosedCPPSolver(final UndirectedGraph<Vertex> graph) throws Exception {
+    public ClosedCPPSolver(final UndirectedGraph<Vertex> graph){
         this.graph = graph;
-        this.lowerBoundCost = 0;
+        this.lowerBoundCost = 0; // TODO
     }
 
-    private void computeOptimalEulerization() throws Exception {
+    private void computeOptimalEulerization(){
         this.edgeInstances = MinimumWeightPerfectMatching.computeOptimalEulerization(this.graph);
     }
 
-    public List<Vertex> solveFrom(final Vertex vertex) throws Exception {
+    public List<Vertex> solveFrom(final Vertex vertex){
 
         if (this.edgeInstances == null) this.computeOptimalEulerization();
 

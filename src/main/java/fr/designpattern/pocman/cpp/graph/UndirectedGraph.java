@@ -38,7 +38,7 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
         private final WeightedEdge.Factory<T> edgeFactory;
 
         public Builder(final int numberOfVertices) {
-            Preconditions.checkArgument(numberOfVertices >= 2);
+            Preconditions.checkArgument(numberOfVertices >= 2, numberOfVertices);
             this.numberOfVertices = numberOfVertices;
             this.values = new double[numberOfVertices][numberOfVertices];
             this.edgeFactory = new WeightedEdge.Factory<T>();

@@ -88,4 +88,22 @@ public final class MazeAsBoard
         return this.getDirections(index / WIDTH, index % WIDTH);
     }
 
+    @Override
+    public int hashCode() {
+        return this.board.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (object == null) return false;
+        if (object == this) return true;
+        if (!(object instanceof MazeAsBoard)) return false;
+        final MazeAsBoard that = (MazeAsBoard) object;
+        if (that.hashCode() != this.hashCode()) return false;
+        for (int i = 0; i < HEIGHT; ++i)
+            for (int j = 0; j < WIDTH; ++j)
+                if (this.board[i][j] != that.board[i][j]) return false;
+        return true;
+    }
+
 }
