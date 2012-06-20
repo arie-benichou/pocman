@@ -3,6 +3,7 @@ package fr.designpattern.pocman.model;
 
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,6 +45,12 @@ public class MazeAsBoardTest
 
         this.board = MazeAsBoard.from(this.data);
 
+    }
+
+    @After
+    public void tearDown() {
+        this.data = null;
+        this.board = null;
     }
 
     @Test
