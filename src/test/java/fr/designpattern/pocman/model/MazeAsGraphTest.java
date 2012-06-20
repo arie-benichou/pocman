@@ -74,11 +74,11 @@ public class MazeAsGraphTest {
     }
 
     @Test
-    public void testGetWalkableGameTiles() {
+    public void testGetWalkableNodes() {
         final HashMap<Integer, Vertex> expected = Maps.newHashMap();
         expected.put(1, this.mazeAsGraph.getNodeById(1));
         expected.put(2, this.mazeAsGraph.getNodeById(2));
-        assertTrue(expected.equals(this.mazeAsGraph.getWalkableGameTiles()));
+        assertTrue(expected.equals(this.mazeAsGraph.getWalkableNodes()));
     }
 
     @Test
@@ -94,7 +94,7 @@ public class MazeAsGraphTest {
     @Test
     public void testToString() { // TODO tester plutôt la vue
         final String expected = "\n 11                        \n";
-        System.out.println(expected.equals(this.mazeAsGraph.toString()));
+        assertTrue(expected.equals(this.mazeAsGraph.toString()));
     }
 
 }

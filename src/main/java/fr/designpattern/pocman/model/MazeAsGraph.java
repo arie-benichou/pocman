@@ -31,7 +31,7 @@ public class MazeAsGraph implements Supplier<UndirectedGraph<Vertex>> {
 
     private final Map<Integer, Vertex> walkableGameTiles;
 
-    public Map<Integer, Vertex> getWalkableGameTiles() {
+    public Map<Integer, Vertex> getWalkableNodes() {
         return this.walkableGameTiles;
     }
 
@@ -98,7 +98,7 @@ public class MazeAsGraph implements Supplier<UndirectedGraph<Vertex>> {
     private MazeAsGraph(final MazeAsBoard board) {
         this.board = board;
         this.walkableGameTiles = this.buildVertices(this.getBoard());
-        this.edgeByVertexId = this.buildEdges(this.getWalkableGameTiles());
+        this.edgeByVertexId = this.buildEdges(this.getWalkableNodes());
         this.numberOfVertices = this.edgeByVertexId.size();
         final UndirectedGraph.Builder<Vertex> graphBuilder = new UndirectedGraph.Builder<Vertex>(this.getNumberOfVertices());
         for (final Entry<Integer, List<WeightedEdge<Vertex>>> entry : this.edgeByVertexId.entrySet())
@@ -117,7 +117,7 @@ public class MazeAsGraph implements Supplier<UndirectedGraph<Vertex>> {
     }
 
     public Vertex getNodeById(final int nodeId) {
-        return this.getWalkableGameTiles().get(nodeId); // TODO
+        return this.getWalkableNodes().get(nodeId); // TODO
     }
 
     @Override
