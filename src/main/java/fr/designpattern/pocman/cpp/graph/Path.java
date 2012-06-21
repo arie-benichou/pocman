@@ -7,7 +7,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
-import com.google.common.collect.Lists;
 
 public final class Path<T> implements Comparable<Path<T>> {
 
@@ -19,6 +18,8 @@ public final class Path<T> implements Comparable<Path<T>> {
 
     public final static class Factory<T> {
 
+        private final WeightedEdge.Factory<T> edgeFactory = new WeightedEdge.Factory<T>();
+
         public Path<T> newPath(final double cost) {
             return new Path<T>(cost);
         }
@@ -29,6 +30,10 @@ public final class Path<T> implements Comparable<Path<T>> {
 
         public Path<T> newPath(final WeightedEdge<T> edge) {
             return new Path<T>(edge);
+        }
+
+        public Path<T> newPath(final T endPoint1, final T endPoint2, final double weight) {
+            return this.newPath(this.edgeFactory.newEdge(endPoint1, endPoint2, weight));
         }
 
         private static int hashCode(final int hashCode1, final int hashCode2) {
@@ -64,6 +69,54 @@ public final class Path<T> implements Comparable<Path<T>> {
         this.hashCode = Factory.hashCode(endPoint1.hashCode(), endPoint2.hashCode());
     }
 
+    public boolean isNull() {
+        return this.getNumberOfEdges() == 0;
+    }
+
+    public T getEndPoint1() {
+        if (this.isNull()) return null;
+        return this.getEdges().get(0).getEndPoint1();
+    }
+
+    public T getEndPoint2() {
+        if (this.isNull()) return null;
+        return this.getLastEdge().getEndPoint2();
+    }
+
+    public double getWeight() {// TODO retourner un Double
+        return this.cost;
+    }
+
+    @Override
+    public int compareTo(final Path<T> that) {
+        if (this.getWeight() < that.getWeight()) return -1;
+        if (that.getWeight() < this.getWeight()) return 1;
+        return 0;
+    }
+
+    public int getNumberOfEdges() {
+        return this.numberOfEdges;
+    }
+
+    // TODO retourner une liste immutable uniquement à ce moment ?
+    public List<WeightedEdge<T>> getEdges() {
+        return this.edges;
+    }
+
+    public WeightedEdge<T> getLastEdge() {
+        return this.lastEdge;
+    }
+
+    public Path<T> reverse() {
+        if (this.isNull()) return this;
+        final Builder<WeightedEdge<T>> builder = new ImmutableList.Builder<WeightedEdge<T>>();
+        for (int i = this.getNumberOfEdges() - 1; i > -1; --i) {
+            final WeightedEdge<T> edge = this.getEdges().get(i);
+            builder.add(edge.getSymetric());
+        }
+        return new Path<T>(builder.build(), this.getWeight(), this.getEdges().get(0).getSymetric());
+    }
+
     @Override
     public int hashCode() {
         return this.hashCode;
@@ -77,35 +130,6 @@ public final class Path<T> implements Comparable<Path<T>> {
         if (!(object instanceof Path)) return false;
         final Path<T> that = (Path<T>) object;
         return that.hashCode == this.hashCode;
-    }
-
-    public T getEndPoint1() {
-        return this.getEdges().get(0).getEndPoint1(); // TODO check for null
-    }
-
-    public T getEndPoint2() {
-        return this.getLastEdge().getEndPoint2(); // TODO check for null
-    }
-
-    // TODO retourner une liste immutable uniquement à ce moment ?
-    public List<WeightedEdge<T>> getEdges() {
-        return this.edges;
-    }
-
-    public boolean isNull() {
-        return this.getNumberOfEdges() == 0;
-    }
-
-    public int getNumberOfEdges() {
-        return this.numberOfEdges;
-    }
-
-    public double getWeight() {
-        return this.cost;
-    }
-
-    public WeightedEdge<T> getLastEdge() {
-        return this.lastEdge;
     }
 
     public Path<T> add(final WeightedEdge<T> edge) {
@@ -131,16 +155,12 @@ public final class Path<T> implements Comparable<Path<T>> {
                 return new Path<T>(ImmutableList.of(lastEdge, newEdge), this.getWeight() + newEdge.getWeight(), newEdge);
             }
             default: {
-                //System.out.println(this);
-                //System.out.println(edge);
                 final WeightedEdge<T> lastEdge = this.getLastEdge();
-                //System.out.println("lastEdge:" + lastEdge);
                 WeightedEdge<T> newEdge = null;
                 if (lastEdge.getEndPoint2().equals(edge.getEndPoint1())) newEdge = edge;
                 else if (lastEdge.getEndPoint2().equals(edge.getEndPoint2())) newEdge = edge.getSymetric();
                 else if (this.getEndPoint1().equals(edge.getEndPoint1())) return this.reverse().add(edge); // TODO simplifier le cas général
                 else if (this.getEndPoint1().equals(edge.getEndPoint2())) return this.reverse().add(edge); // TODO simplifier le cas général
-
                 Preconditions.checkState(newEdge != null, "invalid path");
                 final Builder<WeightedEdge<T>> builder = new ImmutableList.Builder<WeightedEdge<T>>();
                 for (int i = 0; i < n - 1; ++i)
@@ -150,38 +170,6 @@ public final class Path<T> implements Comparable<Path<T>> {
                 return new Path<T>(builder.build(), this.getWeight() + newEdge.getWeight(), newEdge);
             }
         }
-    }
-
-    public Path<T> reverse() {
-        final Builder<WeightedEdge<T>> builder = new ImmutableList.Builder<WeightedEdge<T>>();
-
-        for (int i = this.getNumberOfEdges() - 1; i > -1; --i) {
-            final WeightedEdge<T> edge = this.getEdges().get(i);
-            builder.add(edge.getSymetric());
-        }
-
-        return new Path<T>(builder.build(), this.getWeight(), this.getEdges().get(0).getSymetric());
-    }
-
-    public List<T> toSequence() { // TODO ? immutable
-        final List<T> sequence = Lists.newArrayList();
-        for (final WeightedEdge<T> edge : this.getEdges()) {
-            sequence.add(edge.getEndPoint1());
-            //sequence.addAll(edge.getBetweenVertices());
-        }
-        sequence.add(this.getLastEdge().getEndPoint2());
-        return sequence;
-    }
-
-    public List<T> toSequence(final boolean trim) { // TODO ? immutable
-        final List<T> sequence = Lists.newArrayList();
-        for (final WeightedEdge<T> edge : this.getEdges()) {
-            sequence.add(edge.getEndPoint1());
-            //sequence.addAll(edge.getBetweenVertices());
-        }
-        if (!trim) sequence.add(this.getLastEdge().getEndPoint2());
-        else sequence.remove(0);
-        return sequence;
     }
 
     public Path<T> add(final Path<T> path) {
@@ -231,56 +219,6 @@ public final class Path<T> implements Comparable<Path<T>> {
     public String toString() {
         if (this.isNull()) return "NULL PATH";
         return "\n * " + Joiner.on("\n * ").join(this.getEdges()) + "\n Cost = " + this.getWeight() + "$";
-    }
-
-    @Override
-    public int compareTo(final Path<T> that) {
-        if (this.getWeight() < that.getWeight()) return -1;
-        if (that.getWeight() < this.getWeight()) return 1;
-        return 0;
-    }
-
-    public static void main(final String[] args) {
-
-        final WeightedEdge.Factory<Integer> edgeFactory = new WeightedEdge.Factory<Integer>();
-
-        final WeightedEdge<Integer> edge1 = edgeFactory.newEdge(1, 4, 1);
-        final WeightedEdge<Integer> edge2 = edgeFactory.newEdge(4, 8, 1);
-        final WeightedEdge<Integer> edge3 = edgeFactory.newEdge(8, 13, 1);
-
-        final WeightedEdge<Integer> edge4 = edgeFactory.newEdge(13, 15, 1);
-        final WeightedEdge<Integer> edge5 = edgeFactory.newEdge(15, 19, 1);
-        final WeightedEdge<Integer> edge6 = edgeFactory.newEdge(19, 22, 1);
-
-        final Path.Factory<Integer> pathFactory = new Path.Factory<Integer>();
-
-        Path<Integer> path1;
-        Path<Integer> path2;
-        Path<Integer> path3;
-
-        path1 = pathFactory.newPath();
-        System.out.println(path1);
-
-        path1 = path1.add(edge1.getSymetric());
-        System.out.println(path1);
-
-        path1 = path1.add(edge2.getSymetric());
-        System.out.println(path1);
-
-        path1 = path1.add(edge3.getSymetric());
-        System.out.println(path1);
-
-        path2 = pathFactory.newPath();
-        path2 = path2.add(edge4.getSymetric());
-        path2 = path2.add(edge5.getSymetric());
-        path2 = path2.add(edge6.getSymetric());
-        System.out.println(path2);
-
-        path3 = path1.add(path2);
-        System.out.println(path3);
-
-        System.out.println(path3.reverse());
-
     }
 
 }
