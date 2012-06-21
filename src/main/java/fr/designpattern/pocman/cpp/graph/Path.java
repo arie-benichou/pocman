@@ -124,8 +124,7 @@ public final class Path<T> implements Comparable<Path<T>> {
         final int n = this.getNumberOfEdges();
         switch (n) {
             case 0:
-                return new Path<T>(edge);
-                // TODO ? return new Path<T>(ImmutableList.of(), this.getWeight() + edge.getWeight(), edge);
+                return new Path<T>(ImmutableList.of(edge), this.getWeight() + edge.getWeight(), edge);
             case 1: {
                 WeightedEdge<T> lastEdge = this.getLastEdge();
                 WeightedEdge<T> newEdge = null;
@@ -163,10 +162,16 @@ public final class Path<T> implements Comparable<Path<T>> {
     public Path<T> add(final Path<T> path) {
 
         //System.out.println("\nAdding: " + path + "\nTo: " + this + "\n");
-        Preconditions.checkNotNull(path);
+        Preconditions.checkArgument(path != null);
 
-        if (path.isNull()) return this;
-        if (this.isNull()) return path;
+        if (path.isNull() && this.isNull())
+            return new Path<T>(this.getWeight() + path.getWeight());
+
+        if (path.isNull())
+            return new Path<T>(this.getEdges(), this.getWeight() + path.getWeight(), this.getLastEdge());
+
+        if (this.isNull())
+            return new Path<T>(path.getEdges(), path.getWeight() + this.getWeight(), path.getLastEdge());
 
         if (path.getNumberOfEdges() == 1) return this.add(path.getEdges().get(0));
         if (this.getNumberOfEdges() == 1) return path.add(this.getEdges().get(0));
@@ -199,7 +204,7 @@ public final class Path<T> implements Comparable<Path<T>> {
             return this.reverse().add(path);
         }
 
-        throw new RuntimeException("invalid path" + "\nAdding: " + path + "\nTo: " + this + "\n"); // TODO
+        throw new IllegalStateException("invalid path" + "\nAdding: " + path + "\nTo: " + this + "\n"); // TODO
 
     }
 
