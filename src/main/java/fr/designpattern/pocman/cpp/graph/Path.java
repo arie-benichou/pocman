@@ -8,6 +8,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 
+// TODO WeightedEdgeInterface
+// TODO implémenter WeightedEdgeInterface
 public final class Path<T> implements Comparable<Path<T>> {
 
     private final List<WeightedEdge<T>> edges;
@@ -112,44 +114,30 @@ public final class Path<T> implements Comparable<Path<T>> {
         final Builder<WeightedEdge<T>> builder = new ImmutableList.Builder<WeightedEdge<T>>();
         for (int i = this.getNumberOfEdges() - 1; i > -1; --i) {
             final WeightedEdge<T> edge = this.getEdges().get(i);
-            builder.add(edge.getSymetric());
+            builder.add(edge.reverse());
         }
-        return new Path<T>(builder.build(), this.getWeight(), this.getEdges().get(0).getSymetric());
-    }
-
-    @Override
-    public int hashCode() {
-        return this.hashCode;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public boolean equals(final Object object) {
-        if (object == null) return false;
-        if (object == this) return true;
-        if (!(object instanceof Path)) return false;
-        final Path<T> that = (Path<T>) object;
-        return that.hashCode == this.hashCode;
+        return new Path<T>(builder.build(), this.getWeight(), this.getEdges().get(0).reverse());
     }
 
     public Path<T> add(final WeightedEdge<T> edge) {
-        Preconditions.checkNotNull(edge);
+        Preconditions.checkArgument(edge != null);
         final int n = this.getNumberOfEdges();
         switch (n) {
             case 0:
                 return new Path<T>(edge);
+                // TODO ? return new Path<T>(ImmutableList.of(), this.getWeight() + edge.getWeight(), edge);
             case 1: {
                 WeightedEdge<T> lastEdge = this.getLastEdge();
                 WeightedEdge<T> newEdge = null;
                 if (lastEdge.getEndPoint2().equals(edge.getEndPoint1())) newEdge = edge;
-                else if (lastEdge.getEndPoint2().equals(edge.getEndPoint2())) newEdge = edge.getSymetric();
+                else if (lastEdge.getEndPoint2().equals(edge.getEndPoint2())) newEdge = edge.reverse();
                 else if (lastEdge.getEndPoint1().equals(edge.getEndPoint1())) {
-                    lastEdge = lastEdge.getSymetric();
+                    lastEdge = lastEdge.reverse();
                     newEdge = edge;
                 }
                 else if (lastEdge.getEndPoint1().equals(edge.getEndPoint2())) {
-                    lastEdge = lastEdge.getSymetric();
-                    newEdge = edge.getSymetric();
+                    lastEdge = lastEdge.reverse();
+                    newEdge = edge.reverse();
                 }
                 Preconditions.checkState(newEdge != null, "invalid path" + edge);
                 return new Path<T>(ImmutableList.of(lastEdge, newEdge), this.getWeight() + newEdge.getWeight(), newEdge);
@@ -158,7 +146,7 @@ public final class Path<T> implements Comparable<Path<T>> {
                 final WeightedEdge<T> lastEdge = this.getLastEdge();
                 WeightedEdge<T> newEdge = null;
                 if (lastEdge.getEndPoint2().equals(edge.getEndPoint1())) newEdge = edge;
-                else if (lastEdge.getEndPoint2().equals(edge.getEndPoint2())) newEdge = edge.getSymetric();
+                else if (lastEdge.getEndPoint2().equals(edge.getEndPoint2())) newEdge = edge.reverse();
                 else if (this.getEndPoint1().equals(edge.getEndPoint1())) return this.reverse().add(edge); // TODO simplifier le cas général
                 else if (this.getEndPoint1().equals(edge.getEndPoint2())) return this.reverse().add(edge); // TODO simplifier le cas général
                 Preconditions.checkState(newEdge != null, "invalid path");
@@ -196,23 +184,39 @@ public final class Path<T> implements Comparable<Path<T>> {
         final T potentialEndpoint2 = path.getLastEdge().getEndPoint2();
 
         if (endpoint2.equals(potentialEndpoint2)) {
-            // TODO ? effectuer le reverse sur sur le path ayant le moins d'edge
+            // TODO ? effectuer le reverse sur sur le path ayant le moins d'edges
             return this.add(path.reverse());
         }
 
         if (endpoint1.equals(potentialEndpoint2)) {
-            // TODO ? effectuer le reverse sur sur le path ayant le moins d'edge
+            // TODO ? effectuer le reverse sur sur le path ayant le moins d'edges
             //return this.add(path.reverse());
             return this.reverse().add(path);
         }
 
         if (endpoint1.equals(potentialEndpoint1)) {
-            // TODO ? effectuer le reverse sur sur le path ayant le moins d'edge
+            // TODO ? effectuer le reverse sur sur le path ayant le moins d'edges
             return this.reverse().add(path);
         }
 
         throw new RuntimeException("invalid path" + "\nAdding: " + path + "\nTo: " + this + "\n"); // TODO
 
+    }
+
+    @Override
+    public int hashCode() {
+        return this.hashCode;
+    }
+
+    @SuppressWarnings("unchecked")
+    // TODO
+    @Override
+    public boolean equals(final Object object) {
+        if (object == null) return false;
+        if (object == this) return true;
+        if (!(object instanceof Path)) return false;
+        final Path<T> that = (Path<T>) object;
+        return that.hashCode == this.hashCode;
     }
 
     @Override

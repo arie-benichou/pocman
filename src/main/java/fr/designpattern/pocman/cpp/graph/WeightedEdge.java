@@ -3,6 +3,9 @@ package fr.designpattern.pocman.cpp.graph;
 
 import com.google.common.base.Preconditions;
 
+// TODO EdgeInterface
+// TODO WeightedEdgeInterface
+// TODO implémenter WeightedEdgeInterface
 public final class WeightedEdge<T> implements Comparable<WeightedEdge<T>> {
 
     private final T endPoint1;
@@ -54,7 +57,7 @@ public final class WeightedEdge<T> implements Comparable<WeightedEdge<T>> {
         return Double.compare(this.weight, that.getWeight());
     }
 
-    public WeightedEdge<T> getSymetric() {
+    public WeightedEdge<T> reverse() {
         return new WeightedEdge<T>(this);
     }
 

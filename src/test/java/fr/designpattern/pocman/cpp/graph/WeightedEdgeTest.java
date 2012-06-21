@@ -64,7 +64,7 @@ public class WeightedEdgeTest {
     @Test
     public void testGetSymetric() {
         final WeightedEdge<String> edge = this.factory.newEdge("A", "B", 1.0);
-        final WeightedEdge<String> symetricEdge = edge.getSymetric();
+        final WeightedEdge<String> symetricEdge = edge.reverse();
         assertTrue(symetricEdge.getEndPoint1().equals("B"));
         assertTrue(symetricEdge.getEndPoint2().equals("A"));
         assertTrue(symetricEdge.getWeight() == 1.0);
@@ -84,7 +84,7 @@ public class WeightedEdgeTest {
     public void testEqualsObject() {
         final WeightedEdge<String> edge1 = this.factory.newEdge("A", "C", 2.0);
         final WeightedEdge<String> edge2 = this.factory.newEdge("A", "D", 2.0);
-        final WeightedEdge<String> edge3 = edge1.getSymetric();
+        final WeightedEdge<String> edge3 = edge1.reverse();
 
         assertTrue(edge1.equals(null) == false);
         assertTrue(edge1.equals(edge1) == true);
@@ -112,7 +112,7 @@ public class WeightedEdgeTest {
     public void testHashCode() {
         final WeightedEdge<String> edge1 = this.factory.newEdge("A", "C", 2.0);
         final WeightedEdge<String> edge2 = this.factory.newEdge("A", "D", 2.0);
-        final WeightedEdge<String> edge3 = edge1.getSymetric();
+        final WeightedEdge<String> edge3 = edge1.reverse();
         assertTrue(edge1.hashCode() != edge2.hashCode());
         assertTrue(edge1.hashCode() == this.factory.newEdge("A", "C", 2.0).hashCode());
         assertTrue(edge1.hashCode() == this.factory.newEdge("C", "A", 2.0).hashCode());
