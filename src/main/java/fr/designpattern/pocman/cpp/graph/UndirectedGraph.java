@@ -52,49 +52,41 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
             return this.edgeSet.contains(edge);
         }
 
+        private Integer getEndPointIndex(final T endPoint) {
+            Integer endPointIndex = this.vertices.get(endPoint);
+            if (endPointIndex == null) {
+                Preconditions.checkState(this.vertexCounter != this.numberOfVertices, "Maximal number of vertices (" + this.numberOfVertices + ") reached.");
+                endPointIndex = ++this.vertexCounter;
+                this.vertices.put(endPoint, endPointIndex);
+                this.mGraph.put(endPoint, new HashSet<T>());
+                this.edgesByVertex.put(endPoint, new ArrayList<WeightedEdge<T>>());
+            }
+            return endPointIndex;
+        }
+
         public Builder<T> addEdge(final WeightedEdge<T> edge) {
 
-            Preconditions.checkNotNull(edge);
-            Preconditions.checkArgument(edge.getWeight() >= 0); // TODO normaliser si < 0
+            Preconditions.checkArgument(edge != null);
+            Preconditions.checkState(!this.contains(edge), "Edge " + edge + " is already defined.");
 
             final T endPoint1 = edge.getEndPoint1();
-            Integer endPoint1Index = this.vertices.get(endPoint1);
-            if (endPoint1Index == null) {
-                Preconditions.checkState(this.vertexCounter != this.numberOfVertices, "Maximal number of vertices reached.");
-                endPoint1Index = ++this.vertexCounter;
-                this.vertices.put(endPoint1, endPoint1Index);
-                this.mGraph.put(endPoint1, new HashSet<T>());
-                this.edgesByVertex.put(endPoint1, new ArrayList<WeightedEdge<T>>());
-            }
+            final Integer endPoint1Index = this.getEndPointIndex(endPoint1);
 
             final T endPoint2 = edge.getEndPoint2();
-            Integer endPoint2Index = this.vertices.get(endPoint2);
-            if (endPoint2Index == null) {
-                Preconditions.checkState(this.vertexCounter != this.numberOfVertices);
-                endPoint2Index = ++this.vertexCounter;
-                this.vertices.put(endPoint2, endPoint2Index);
-                this.mGraph.put(endPoint2, new HashSet<T>());
-                this.edgesByVertex.put(endPoint2, new ArrayList<WeightedEdge<T>>());
-            }
+            final Integer endPoint2Index = this.getEndPointIndex(endPoint2);
 
-            Preconditions.checkState(!this.contains(edge));
-            Preconditions.checkState(this.values[endPoint1Index - 1][endPoint2Index - 1] == 0);
+            Preconditions.checkState(this.values[endPoint1Index - 1][endPoint2Index - 1] == 0, "Incoherence."); // TODO ? inutile
 
             this.edgeSet.add(edge);
+
             this.values[endPoint1Index - 1][endPoint2Index - 1] = edge.getWeight();
-            this.values[endPoint2Index - 1][endPoint1Index - 1] = edge.getWeight();
-
-            final List<WeightedEdge<T>> endPoint1Edges = this.edgesByVertex.get(edge.getEndPoint1());
-            //if (endPoint1Edges == null) endPoint1Edges = Lists.newArrayList();
+            final List<WeightedEdge<T>> endPoint1Edges = this.edgesByVertex.get(endPoint1);
             endPoint1Edges.add(edge);
-            this.edgesByVertex.put(edge.getEndPoint1(), endPoint1Edges);
-
-            final List<WeightedEdge<T>> endPoint2Edges = this.edgesByVertex.get(edge.getEndPoint2());
-            //if (endPoint2Edges == null) endPoint2Edges = Lists.newArrayList();
-            endPoint2Edges.add(edge);
-            this.edgesByVertex.put(edge.getEndPoint2(), endPoint2Edges);
-
             this.mGraph.get(endPoint1).add(endPoint2);
+
+            this.values[endPoint2Index - 1][endPoint1Index - 1] = edge.getWeight();
+            final List<WeightedEdge<T>> endPoint2Edges = this.edgesByVertex.get(endPoint2);
+            endPoint2Edges.add(edge);
             this.mGraph.get(endPoint2).add(endPoint1);
 
             return this;
@@ -105,7 +97,10 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
         }
 
         public UndirectedGraph<T> build() {
-            Preconditions.checkState(this.numberOfVertices == this.vertexCounter);
+            Preconditions.checkState(
+                    this.numberOfVertices == this.vertexCounter,
+                    "Declared number of vertices (" + this.numberOfVertices + ") does not match number of defined vertices (" + this.vertexCounter + ")"
+                    );
             return new UndirectedGraph<T>(this);
         }
     }
@@ -151,7 +146,7 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
         return paths;
     }
 
-    public UndirectedGraph(final Builder<T> builder) {
+    private UndirectedGraph(final Builder<T> builder) {
 
         this.n = builder.numberOfVertices;
 
