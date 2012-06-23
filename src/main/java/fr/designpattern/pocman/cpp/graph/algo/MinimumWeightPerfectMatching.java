@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012 Arie Benichou
+ * 
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package fr.designpattern.pocman.cpp.graph.algo;
 
@@ -95,7 +111,7 @@ public class MinimumWeightPerfectMatching {
 
     private static <T> Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final UndirectedGraph<T> originalGraph, final List<T> oddVertices,
             HashMap<T, T> matching)
-           {
+    {
         if (oddVertices.size() % 2 != 0) throw new RuntimeException("Number of odd vertices should be even.");
         final MutableUndirectedGraph<T> residualGraph = buildResidualGraph(originalGraph, oddVertices);
         MutableUndirectedGraph<T> maximumMatching = EdmondsMatching.maximumMatching(residualGraph);
@@ -119,7 +135,7 @@ public class MinimumWeightPerfectMatching {
         return eulerize(originalGraph, bestPerfectMatching);
     }
 
-    public static Map<WeightedEdge<Vertex>, Integer> computeOptimalEulerization(final UndirectedGraph<Vertex> originalGraph){
+    public static Map<WeightedEdge<Vertex>, Integer> computeOptimalEulerization(final UndirectedGraph<Vertex> originalGraph) {
         final List<Vertex> oddVertices = oddVertices(originalGraph);
         final HashMap<Vertex, Vertex> matching = Maps.newHashMap();
         return computeOptimalEulerization(originalGraph, oddVertices, matching);

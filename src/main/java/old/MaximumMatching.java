@@ -1,5 +1,5 @@
 
-package fr.designpattern.pocman.cpp.graph.algo;
+package old;
 
 import java.util.LinkedList;
 import java.util.List;

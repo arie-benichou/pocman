@@ -18,7 +18,6 @@ public final class MutableUndirectedGraph<T> implements UndirectedGraphInterface
 
     private final Map<T, Set<T>> mGraph = new HashMap<T, Set<T>>();
 
-    @Override
     public boolean addVertex(final T node) {
         if (this.mGraph.containsKey(node))
             return false;
@@ -26,7 +25,6 @@ public final class MutableUndirectedGraph<T> implements UndirectedGraphInterface
         return true;
     }
 
-    @Override
     public void addEdge(final T one, final T two) {
         if (!this.mGraph.containsKey(one) || !this.mGraph.containsKey(two))
             throw new NoSuchElementException("Both nodes must be in the graph.");
@@ -34,7 +32,6 @@ public final class MutableUndirectedGraph<T> implements UndirectedGraphInterface
         this.mGraph.get(two).add(one);
     }
 
-    @Override
     public void removeEdge(final T one, final T two) {
         if (!this.mGraph.containsKey(one) || !this.mGraph.containsKey(two))
             throw new NoSuchElementException("Both nodes must be in the graph.");
