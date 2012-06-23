@@ -96,7 +96,7 @@ public final class MaximumMatching {
         contractedGraph.addVertex(blossom.root);
         for (final T vertex : graph)
             if (!blossom.vertices.contains(vertex))
-                for (final T endpoint : graph.edgesFrom(vertex))
+                for (final T endpoint : graph.getConnectedVerticeSet(vertex))
                     contractedGraph.addEdge(vertex, blossom.vertices.contains(endpoint) ? blossom.root : endpoint);
         return contractedGraph;
     }
@@ -138,9 +138,9 @@ public final class MaximumMatching {
             final Vertex<T> startInfo
             ) {
         forest.put(current.end, new Vertex<T>(current.start, startInfo.root, false));
-        final T endpoint = resultingGraph.edgesFrom(current.end).iterator().next();
+        final T endpoint = resultingGraph.getConnectedVerticeSet(current.end).iterator().next();
         forest.put(endpoint, new Vertex<T>(current.end, startInfo.root, true));
-        for (final T fringeNode : originalGraph.edgesFrom(endpoint))
+        for (final T fringeNode : originalGraph.getConnectedVerticeSet(endpoint))
             worklist.add(new Edge<T>(endpoint, fringeNode));
     }
 
@@ -167,9 +167,9 @@ public final class MaximumMatching {
         final Map<T, Vertex<T>> forest = Maps.newHashMap();
         final Queue<Edge<T>> worklist = Lists.newLinkedList();
         for (final T node : originalGraph) {
-            if (resultingGraph.edgesFrom(node).isEmpty()) {
+            if (resultingGraph.getConnectedVerticeSet(node).isEmpty()) {
                 forest.put(node, new Vertex<T>(node, true));
-                for (final T endpoint : originalGraph.edgesFrom(node))
+                for (final T endpoint : originalGraph.getConnectedVerticeSet(node))
                     worklist.add(new Edge<T>(node, endpoint));
             }
         }

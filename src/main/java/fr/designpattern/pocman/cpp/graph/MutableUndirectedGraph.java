@@ -50,7 +50,7 @@ public final class MutableUndirectedGraph<T> implements UndirectedGraphInterface
     }
 
     @Override
-    public Set<T> edgesFrom(final T node) {
+    public Set<T> getConnectedVerticeSet(final T node) {
         final Set<T> arcs = this.mGraph.get(node);
         if (arcs == null)
             throw new NoSuchElementException("Source node does not exist.");

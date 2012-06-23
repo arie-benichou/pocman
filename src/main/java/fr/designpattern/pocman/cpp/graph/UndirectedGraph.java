@@ -22,7 +22,7 @@ import fr.designpattern.pocman.cpp.graph.Path.Factory;
 
 public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
 
-    private static final double INFINITY = Double.POSITIVE_INFINITY / 10;
+    private static final double INFINITY = Double.POSITIVE_INFINITY / 2;
 
     public final static class Builder<T> {
 
@@ -245,7 +245,7 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
 
     }
 
-    public Path<T> shortestPathBetween(final T endPoint1, final T endPoint2) {
+    public Path<T> getShortestPathBetween(final T endPoint1, final T endPoint2) {
 
         Preconditions.checkNotNull(endPoint1);
         Preconditions.checkNotNull(endPoint2);
@@ -332,7 +332,7 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
     }
 
     @Override
-    public Set<T> edgesFrom(final T vertex) {
+    public Set<T> getConnectedVerticeSet(final T vertex) {
         final Set<T> edges = this.mGraph.get(vertex);
         if (edges == null) throw new NoSuchElementException("Source node does not exist.");
         return Collections.unmodifiableSet(edges); // TODO
@@ -348,7 +348,7 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
     }
 
     @Override
-    public List<WeightedEdge<T>> getEdges(final T vertex) {
+    public List<WeightedEdge<T>> getEdges(final T vertex) { // TODO retourner un Set ?
         final List<WeightedEdge<T>> edges = this.edgesByVertex.get(vertex);
         if (edges == null) throw new NoSuchElementException("Source node does not exist.");
         return edges;

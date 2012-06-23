@@ -24,7 +24,7 @@ public class MinimumWeightPerfectMatching {
     private static <T> List<T> oddVertices(final UndirectedGraph<T> graph) {
         final List<T> oddVertices = Lists.newArrayList();
         for (final T vertex : graph)
-            if (graph.edgesFrom(vertex).size() % 2 == 1) oddVertices.add(vertex);
+            if (graph.getConnectedVerticeSet(vertex).size() % 2 == 1) oddVertices.add(vertex);
         return oddVertices;
     }
 
@@ -35,7 +35,7 @@ public class MinimumWeightPerfectMatching {
         for (final T endPoint1 : oddVertices) {
             for (final T endPoint2 : oddVertices) {
                 if (!endPoint1.equals(endPoint2)) {
-                    final Path<T> shortestPath = graph.shortestPathBetween(endPoint1, endPoint2);
+                    final Path<T> shortestPath = graph.getShortestPathBetween(endPoint1, endPoint2);
                     residualGraph.addEdge(shortestPath.getEndPoint1(), shortestPath.getEndPoint2());
                 }
             }
@@ -45,7 +45,7 @@ public class MinimumWeightPerfectMatching {
 
     private static <T> boolean isPerfect(final MutableUndirectedGraph<T> maximumMatching) {
         for (final T vertex : maximumMatching)
-            if (maximumMatching.edgesFrom(vertex).size() != 1) return false;
+            if (maximumMatching.getConnectedVerticeSet(vertex).size() != 1) return false;
         return true;
     }
 
@@ -53,7 +53,7 @@ public class MinimumWeightPerfectMatching {
         final HashMap<T, T> matching = Maps.newHashMap();
         final Set<T> set = Sets.newHashSet(); // TODO ? ou bien ajouter 0.5 deux fois
         for (final T endPoint1 : maximumMatching) {
-            final Set<T> endPoints = maximumMatching.edgesFrom(endPoint1);
+            final Set<T> endPoints = maximumMatching.getConnectedVerticeSet(endPoint1);
             if (endPoints.size() == 1) {
                 final T endPoint2 = endPoints.iterator().next();
                 if (!set.contains(endPoint2)) {
@@ -76,7 +76,7 @@ public class MinimumWeightPerfectMatching {
         for (final Entry<T, T> entry : matching.entrySet()) {
             final T endPoint1 = entry.getKey();
             final T endPoint2 = entry.getValue();
-            final Path<T> path = originalGraph.shortestPathBetween(endPoint1, endPoint2);
+            final Path<T> path = originalGraph.getShortestPathBetween(endPoint1, endPoint2);
             for (final WeightedEdge<T> edge : path.getEdges())
                 map.put(edge, (map.get(edge) + 1) % 2 == 0 ? 2 : 1);
         }

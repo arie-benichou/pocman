@@ -80,10 +80,10 @@ public final class EdmondsMatching {
         final Map<T, NodeInformation<T>> forest = new HashMap<T, NodeInformation<T>>();
         final Queue<Edge<T>> worklist = new LinkedList<Edge<T>>();
         for (final T node : g) {
-            if (!m.edgesFrom(node).isEmpty())
+            if (!m.getConnectedVerticeSet(node).isEmpty())
                 continue;
             forest.put(node, new NodeInformation<T>(null, node, true));
-            for (final T endpoint : g.edgesFrom(node))
+            for (final T endpoint : g.getConnectedVerticeSet(node))
                 worklist.add(new Edge<T>(node, endpoint));
         }
         while (!worklist.isEmpty()) {
@@ -114,11 +114,11 @@ public final class EdmondsMatching {
                 forest.put(curr.end, new NodeInformation<T>(curr.start,
                         startInfo.treeRoot,
                         false));
-                final T endpoint = m.edgesFrom(curr.end).iterator().next();
+                final T endpoint = m.getConnectedVerticeSet(curr.end).iterator().next();
                 forest.put(endpoint, new NodeInformation<T>(curr.end,
                         startInfo.treeRoot,
                         true));
-                for (final T fringeNode : g.edgesFrom(endpoint))
+                for (final T fringeNode : g.getConnectedVerticeSet(endpoint))
                     worklist.add(new Edge<T>(endpoint, fringeNode));
             }
         }
@@ -155,7 +155,7 @@ public final class EdmondsMatching {
         result.addVertex(blossom.root);
         for (final T node : g) {
             if (blossom.nodes.contains(node)) continue;
-            for (T endpoint : g.edgesFrom(node)) {
+            for (T endpoint : g.getConnectedVerticeSet(node)) {
                 if (blossom.nodes.contains(endpoint))
                     endpoint = blossom.root;
                 result.addEdge(node, endpoint);
@@ -257,7 +257,7 @@ public final class EdmondsMatching {
 
         for (final String string : graph) {
             System.out.print(string + ": ");
-            System.out.println(graph.edgesFrom(string));
+            System.out.println(graph.getConnectedVerticeSet(string));
         }
 
         System.out.println();
@@ -266,7 +266,7 @@ public final class EdmondsMatching {
 
         for (final String string : maximumMatching) {
             System.out.print(string + ": ");
-            System.out.println(maximumMatching.edgesFrom(string));
+            System.out.println(maximumMatching.getConnectedVerticeSet(string));
         }
     }
 
@@ -285,7 +285,7 @@ public final class EdmondsMatching {
 
         for (final String string : graph) {
             System.out.print(string + ": ");
-            System.out.println(graph.edgesFrom(string));
+            System.out.println(graph.getConnectedVerticeSet(string));
         }
 
         System.out.println();
@@ -294,7 +294,7 @@ public final class EdmondsMatching {
 
         for (final String string : maximumMatching) {
             System.out.print(string + ": ");
-            System.out.println(maximumMatching.edgesFrom(string));
+            System.out.println(maximumMatching.getConnectedVerticeSet(string));
         }
 
     }
@@ -325,7 +325,7 @@ public final class EdmondsMatching {
 
         for (final String string : graph) {
             System.out.print(string + ": ");
-            System.out.println(graph.edgesFrom(string));
+            System.out.println(graph.getConnectedVerticeSet(string));
         }
 
         System.out.println();
@@ -334,7 +334,7 @@ public final class EdmondsMatching {
 
         for (final String string : maximumMatching) {
             System.out.print(string + ": ");
-            System.out.println(maximumMatching.edgesFrom(string));
+            System.out.println(maximumMatching.getConnectedVerticeSet(string));
         }
     }
 
