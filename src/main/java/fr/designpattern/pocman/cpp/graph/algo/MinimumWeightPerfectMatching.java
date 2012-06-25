@@ -17,7 +17,6 @@
 
 package fr.designpattern.pocman.cpp.graph.algo;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -64,8 +63,8 @@ public class MinimumWeightPerfectMatching {
         return true;
     }
 
-    private static <T> HashMap<T, T> buildMatchingMap(final MutableUndirectedGraph<T> maximumMatching) {
-        final HashMap<T, T> matching = Maps.newHashMap();
+    private static <T> Map<T, T> buildMatchingMap(final MutableUndirectedGraph<T> maximumMatching) {
+        final Map<T, T> matching = Maps.newHashMap();
         final Set<T> set = Sets.newHashSet(); // TODO ? ou bien ajouter 0.5 deux fois
         for (final T endPoint1 : maximumMatching) {
             final Set<T> endPoints = maximumMatching.getConnectedVerticeSet(endPoint1);
@@ -109,12 +108,12 @@ public class MinimumWeightPerfectMatching {
     }
 
     private static <T> Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final UndirectedGraph<T> originalGraph, final List<T> oddVertices,
-            HashMap<T, T> matching)
+            Map<T, T> matching)
     {
         if (oddVertices.size() % 2 != 0) throw new RuntimeException("Number of odd vertices should be even.");
         final MutableUndirectedGraph<T> residualGraph = buildResidualGraph(originalGraph, oddVertices);
         MutableUndirectedGraph<T> maximumMatching = EdmondsMatching.maximumMatching(residualGraph);
-        HashMap<T, T> bestPerfectMatching = null;
+        Map<T, T> bestPerfectMatching = null;
         if (isPerfect(maximumMatching)) {
             double bestPerfectMatchingWeight = Double.POSITIVE_INFINITY;
             do {
@@ -136,7 +135,7 @@ public class MinimumWeightPerfectMatching {
 
     public static <T> Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final UndirectedGraph<T> originalGraph) {
         final List<T> oddVertices = oddVertices(originalGraph);
-        final HashMap<T, T> matching = Maps.newHashMap();
+        final Map<T, T> matching = Maps.newHashMap();
         return computeOptimalEulerization(originalGraph, oddVertices, matching);
     }
 

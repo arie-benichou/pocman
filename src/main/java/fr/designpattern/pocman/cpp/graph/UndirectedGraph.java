@@ -131,7 +131,7 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
     //private final double[][] values;
     private final boolean isConnected;
     //private final Map<Integer, Path<T>> shortestPathsByHashcode;
-    private final HashMap<Integer, T> verticeByIndex;
+    private final Map<Integer, T> verticeByIndex;
     private final Path<T>[][] shortestPaths;
 
     private Path<T>[][] buildPathMatrix() {

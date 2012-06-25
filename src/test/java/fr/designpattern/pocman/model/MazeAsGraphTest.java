@@ -19,7 +19,7 @@ package fr.designpattern.pocman.model;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -91,7 +91,7 @@ public class MazeAsGraphTest {
 
     @Test
     public void testGetWalkableNodes() {
-        final HashMap<Integer, Vertex> expected = Maps.newHashMap();
+        final Map<Integer, Vertex> expected = Maps.newHashMap();
         expected.put(1, this.mazeAsGraph.getNodeById(1));
         expected.put(2, this.mazeAsGraph.getNodeById(2));
         assertTrue(expected.equals(this.mazeAsGraph.getWalkableNodes()));

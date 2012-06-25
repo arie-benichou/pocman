@@ -19,7 +19,7 @@ package fr.designpattern.pocman.cpp;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -103,7 +103,7 @@ public class ClosedCPPTest {
     @Test
     public void testSolveFromWithNonEulerianGraph() {
         final UndirectedGraph<String> input = new UndirectedGraph.Builder<String>(2).addEdge("A", "B", 1.0).build();
-        final HashMap<WeightedEdge<String>, Integer> expectedTraversalByEdge = Maps.newHashMap();
+        final Map<WeightedEdge<String>, Integer> expectedTraversalByEdge = Maps.newHashMap();
         expectedTraversalByEdge.put(input.getEdge("A", "B"), 2);
         final Solution<String> expectedSolution = new Solution<String>(input, "A", expectedTraversalByEdge, 1.0, 2.0);
         final Solution<String> solution = ClosedCPP.newSolver(input).solveFrom("A");
@@ -118,7 +118,7 @@ public class ClosedCPPTest {
                 .addEdge("C", "A", 1.0)
                 .build();
 
-        final HashMap<WeightedEdge<String>, Integer> expectedTraversalByEdge = Maps.newHashMap();
+        final Map<WeightedEdge<String>, Integer> expectedTraversalByEdge = Maps.newHashMap();
         expectedTraversalByEdge.put(input.getEdge("A", "B"), 1);
         expectedTraversalByEdge.put(input.getEdge("B", "C"), 1);
         expectedTraversalByEdge.put(input.getEdge("C", "A"), 1);
