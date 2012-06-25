@@ -372,4 +372,11 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
         return edges;
     }
 
+    public boolean isEulerian() {
+        // TODO utiliser une matrice de connectivité à la construction
+        for (final T vertex : this)
+            if (this.getConnectedVerticeSet(vertex).size() % 2 == 1) return false;
+        return true;
+    }
+
 }

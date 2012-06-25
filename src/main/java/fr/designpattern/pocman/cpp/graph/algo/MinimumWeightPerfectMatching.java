@@ -30,7 +30,6 @@ import com.google.common.collect.Sets;
 import fr.designpattern.pocman.cpp.graph.MutableUndirectedGraph;
 import fr.designpattern.pocman.cpp.graph.Path;
 import fr.designpattern.pocman.cpp.graph.UndirectedGraph;
-import fr.designpattern.pocman.cpp.graph.Vertex;
 import fr.designpattern.pocman.cpp.graph.WeightedEdge;
 
 public class MinimumWeightPerfectMatching {
@@ -135,9 +134,9 @@ public class MinimumWeightPerfectMatching {
         return eulerize(originalGraph, bestPerfectMatching);
     }
 
-    public static Map<WeightedEdge<Vertex>, Integer> computeOptimalEulerization(final UndirectedGraph<Vertex> originalGraph) {
-        final List<Vertex> oddVertices = oddVertices(originalGraph);
-        final HashMap<Vertex, Vertex> matching = Maps.newHashMap();
+    public static <T> Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final UndirectedGraph<T> originalGraph) {
+        final List<T> oddVertices = oddVertices(originalGraph);
+        final HashMap<T, T> matching = Maps.newHashMap();
         return computeOptimalEulerization(originalGraph, oddVertices, matching);
     }
 

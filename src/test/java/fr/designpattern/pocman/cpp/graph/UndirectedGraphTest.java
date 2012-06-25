@@ -180,6 +180,17 @@ public class UndirectedGraphTest {
         assertTrue(this.graph.isConnected());
     }
 
+    @Test
+    public void testIsEulerian() {
+        assertTrue(this.graph.isEulerian() == false);
+        final Builder<String> builder = new UndirectedGraph.Builder<String>(3);
+        builder.addEdge("A", "B", 1.0);
+        builder.addEdge("B", "C", 1.0);
+        builder.addEdge("C", "A", 1.0);
+        final UndirectedGraph<String> graph = builder.build();
+        assertTrue(graph.isEulerian());
+    }
+
     @Test(expected = NoSuchElementException.class)
     public void testIllegalGetShortestPathBetween1() {
         this.graph.getShortestPathBetween("A", "C");

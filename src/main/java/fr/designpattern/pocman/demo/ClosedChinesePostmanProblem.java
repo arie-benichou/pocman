@@ -17,13 +17,13 @@
 
 package fr.designpattern.pocman.demo;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 
-import fr.designpattern.pocman.cpp.ClosedCPPSolver;
+import fr.designpattern.pocman.cpp.ClosedCPP;
+import fr.designpattern.pocman.cpp.ClosedCPP.Solution;
 import fr.designpattern.pocman.cpp.graph.Vertex;
 import fr.designpattern.pocman.data.Mazes;
 import fr.designpattern.pocman.model.Constants;
@@ -34,7 +34,6 @@ import fr.designpattern.pocman.view.NodeInMazeView;
 public class ClosedChinesePostmanProblem {
 
     private static MazeAsGraph.Factory mazeAsGraphFactory = new MazeAsGraph.Factory();
-    private static ClosedCPPSolver.Factory closedCPPSolverFactory = new ClosedCPPSolver.Factory();
 
     public static void main(final String[] args) {
 
@@ -56,22 +55,23 @@ public class ClosedChinesePostmanProblem {
         System.out.println(mazeAsGraph);
         System.out.println(mazeAsGraph.isConnected());
 
-        final ClosedCPPSolver closedCPPSolver = closedCPPSolverFactory.newClosedCPPSolver(mazeAsGraph);
-        final List<Vertex> closedTrail = closedCPPSolver.solveFrom(mazeAsGraph.getNodeById(pacManPosition)); // TODO objet Solution
+        final ClosedCPP<Vertex> closedCPPSolver = ClosedCPP.newSolver(mazeAsGraph);
+        final Solution<Vertex> solution = closedCPPSolver.solveFrom(mazeAsGraph.getNodeById(pacManPosition));
 
         stopwatch.stop();
 
         final NodeInMazeView nodeInMazeView = new NodeInMazeView(board);
-        for (final Vertex vertex : closedTrail) {
+        for (final Vertex vertex : solution.getTrail()) {
             System.out.println(nodeInMazeView.render(vertex));
             try {
-                Thread.sleep(175);
+                Thread.sleep(160);
             }
             catch (final InterruptedException e) {}
         }
 
         System.out.println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS.toString());
 
-    }
+        System.out.println(solution);
 
+    }
 }
