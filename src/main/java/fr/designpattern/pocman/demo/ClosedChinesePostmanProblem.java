@@ -23,8 +23,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 
 import fr.designpattern.pocman.cpp.ClosedCPP;
-import fr.designpattern.pocman.cpp.ClosedCPP.Solution;
+import fr.designpattern.pocman.cpp.graph.Solution;
 import fr.designpattern.pocman.cpp.graph.Vertex;
+import fr.designpattern.pocman.cpp.graph.algo.EulerianTrail;
 import fr.designpattern.pocman.data.Mazes;
 import fr.designpattern.pocman.model.Constants;
 import fr.designpattern.pocman.model.MazeAsBoard;
@@ -61,7 +62,7 @@ public class ClosedChinesePostmanProblem {
         stopwatch.stop();
 
         final NodeInMazeView nodeInMazeView = new NodeInMazeView(board);
-        for (final Vertex vertex : solution.getTrail()) {
+        for (final Vertex vertex : EulerianTrail.from(solution)) {
             System.out.println(nodeInMazeView.render(vertex));
             try {
                 Thread.sleep(160);
@@ -69,9 +70,9 @@ public class ClosedChinesePostmanProblem {
             catch (final InterruptedException e) {}
         }
 
-        System.out.println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS.toString());
-
         System.out.println(solution);
+
+        System.out.println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS.toString());
 
     }
 }

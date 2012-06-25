@@ -19,14 +19,17 @@ package fr.designpattern.pocman.cpp;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
+
 import org.junit.Test;
 
 import com.google.common.base.Supplier;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
-import fr.designpattern.pocman.cpp.ClosedCPP.Solution;
+import fr.designpattern.pocman.cpp.graph.Solution;
 import fr.designpattern.pocman.cpp.graph.UndirectedGraph;
 import fr.designpattern.pocman.cpp.graph.UndirectedGraph.Builder;
+import fr.designpattern.pocman.cpp.graph.WeightedEdge;
 
 public class ClosedCPPTest {
 
@@ -70,37 +73,6 @@ public class ClosedCPPTest {
         assertTrue(solver instanceof ClosedCPP);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testSolveFromWithNullReference() {
-        final Builder<String> builder = new UndirectedGraph.Builder<String>(2);
-        builder.addEdge("A", "B", 1.0);
-        final UndirectedGraph<String> input = builder.build();
-        final ClosedCPP<String> solver = ClosedCPP.newSolver(input);
-        solver.solveFrom(null);
-    }
-
-    @Test
-    public void testSolveFromWithNonEulerianGraph() {
-        final UndirectedGraph<String> input = new UndirectedGraph.Builder<String>(2).addEdge("A", "B", 1.0).build();
-        final Solution<String> expectedSolution = new Solution<String>(1.0, 2.0, Lists.newArrayList("A", "B", "A"));
-        final Solution<String> solution = ClosedCPP.newSolver(input).solveFrom("A");
-        assertTrue(solution.equals(expectedSolution));
-    }
-
-    @Test
-    public void testSolveFromWithEulerianGraph() {
-        final UndirectedGraph<String> input = new UndirectedGraph.Builder<String>(3)
-                .addEdge("A", "B", 1.0)
-                .addEdge("B", "C", 1.0)
-                .addEdge("C", "A", 1.0)
-                .build();
-        final Solution<String> expectedSolution1 = new Solution<String>(3.0, 3.0, Lists.newArrayList("A", "B", "C", "A"));
-        final Solution<String> expectedSolution2 = new Solution<String>(3.0, 3.0, Lists.newArrayList("A", "C", "B", "A"));
-        final Solution<String> solution = ClosedCPP.newSolver(input).solveFrom("A");
-        assertTrue(solution.equals(expectedSolution1));
-        assertTrue(solution.equals(expectedSolution2));
-    }
-
     @Test
     public void testGetLowerBoundCost1() {
         final UndirectedGraph<String> input = new UndirectedGraph.Builder<String>(2).addEdge("A", "B", 1.0).build();
@@ -117,6 +89,43 @@ public class ClosedCPPTest {
                 .build();
         final ClosedCPP<String> solver = ClosedCPP.newSolver(input);
         assertTrue(solver.getLowerBoundCost() == 4.0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSolveFromWithNullReference() {
+        final Builder<String> builder = new UndirectedGraph.Builder<String>(2);
+        builder.addEdge("A", "B", 1.0);
+        final UndirectedGraph<String> input = builder.build();
+        final ClosedCPP<String> solver = ClosedCPP.newSolver(input);
+        solver.solveFrom(null);
+    }
+
+    @Test
+    public void testSolveFromWithNonEulerianGraph() {
+        final UndirectedGraph<String> input = new UndirectedGraph.Builder<String>(2).addEdge("A", "B", 1.0).build();
+        final HashMap<WeightedEdge<String>, Integer> expectedTraversalByEdge = Maps.newHashMap();
+        expectedTraversalByEdge.put(input.getEdge("A", "B"), 2);
+        final Solution<String> expectedSolution = new Solution<String>(input, "A", expectedTraversalByEdge, 1.0, 2.0);
+        final Solution<String> solution = ClosedCPP.newSolver(input).solveFrom("A");
+        assertTrue(solution.equals(expectedSolution));
+    }
+
+    @Test
+    public void testSolveFromWithEulerianGraph() {
+        final UndirectedGraph<String> input = new UndirectedGraph.Builder<String>(3)
+                .addEdge("A", "B", 1.0)
+                .addEdge("B", "C", 1.0)
+                .addEdge("C", "A", 1.0)
+                .build();
+
+        final HashMap<WeightedEdge<String>, Integer> expectedTraversalByEdge = Maps.newHashMap();
+        expectedTraversalByEdge.put(input.getEdge("A", "B"), 1);
+        expectedTraversalByEdge.put(input.getEdge("B", "C"), 1);
+        expectedTraversalByEdge.put(input.getEdge("C", "A"), 1);
+        final Solution<String> expectedSolution = new Solution<String>(input, "A", expectedTraversalByEdge, 3.0, 3.0);
+
+        final Solution<String> solution = ClosedCPP.newSolver(input).solveFrom("A");
+        assertTrue(solution.equals(expectedSolution));
     }
 
 }
