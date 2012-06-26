@@ -65,6 +65,11 @@ public class ClosedChinesePostmanProblem {
         final Maze maze = new Maze(MAZE);
         final ClosedCPP<Vertex> closedCPPSolver = ClosedCPP.newSolver(maze);
         final Solution<Vertex> solution = closedCPPSolver.solveFrom(maze.getNode(pocManPosition));
+
+        Preconditions.checkState(solution.getStartingVertex().getId() == 417);
+        Preconditions.checkState(solution.getLowerBoundCost().equals(190.0));
+        Preconditions.checkState(solution.getUpperBoundCost().equals(357.0));
+
         final List<Vertex> trail = EulerianTrail.from(solution);
 
         stopwatch.stop();
