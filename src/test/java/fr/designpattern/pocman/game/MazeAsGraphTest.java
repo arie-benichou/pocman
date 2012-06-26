@@ -33,7 +33,7 @@ import fr.designpattern.pocman.graph.Vertex;
 
 public class MazeAsGraphTest {
 
-    private MazeAsBoard board;
+    private MazeAsBoard mazeAsBoard;
     private MazeAsGraph mazeAsGraph;
 
     @Before
@@ -60,19 +60,19 @@ public class MazeAsGraphTest {
                 "┃⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃" +
                 "┃⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃";
 
-        this.board = MazeAsBoard.from(data);
-        this.mazeAsGraph = new MazeAsGraph.Factory().newMazeAsGraph(this.board);
+        this.mazeAsBoard = MazeAsBoard.from(data);
+        this.mazeAsGraph = MazeAsGraph.from(this.mazeAsBoard);
     }
 
     @After
     public void tearDown() {
-        this.board = null;
+        this.mazeAsBoard = null;
         this.mazeAsGraph = null;
     }
 
     @Test
     public void testGetBoard() {
-        assertTrue(this.mazeAsGraph.getBoard().equals(this.board));
+        assertTrue(this.mazeAsGraph.getBoard().equals(this.mazeAsBoard));
     }
 
     @Test
@@ -103,15 +103,8 @@ public class MazeAsGraphTest {
     }
 
     @Test
-    public void testIsConnected() {
-        assertTrue(this.mazeAsGraph.isConnected());
-    }
-
-    //@Test
-    public void testToString() { // TODO tester plutôt la vue
-        final String expected = "\n 11                        \n";
-        System.out.println(this.mazeAsGraph);
-        assertTrue(expected.equals(this.mazeAsGraph.toString()));
+    public void testHasIsland() {
+        assertTrue(this.mazeAsGraph.hasIsland());
     }
 
 }

@@ -102,7 +102,7 @@ public class MazeAsBoardTest
         expected.put(Direction.UP, Tile.HORIZONTAL_WALL);
         expected.put(Direction.RIGHT, Tile.VERTICAL_WALL);
         expected.put(Direction.DOWN, Tile.HORIZONTAL_WALL);
-        expected.put(Direction.LEFT, Tile.PILL);
+        expected.put(Direction.LEFT, Tile.COIN);
         final int y = MazeAsBoard.HEIGHT - 1 - 1;
         final int x = MazeAsBoard.WIDTH - 1 - 1;
         Assert.assertTrue(this.board.getNeighbours(y, x).equals(expected));

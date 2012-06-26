@@ -17,19 +17,36 @@
 
 package fr.designpattern.pocman.view;
 
+import com.google.common.base.Preconditions;
+
+import fr.designpattern.pocman.game.Maze;
 import fr.designpattern.pocman.game.MazeAsBoard;
 
 public class MazeAsBoardView {
 
-    public String render(final MazeAsBoard board) {
+    public static final char YOUR_ARE_HERE = '⬤';
+
+    String render(final char[] charArray) {
         final StringBuilder sb = new StringBuilder();
-        final char[] data = board.toCharArray();
         for (int i = 0; i < MazeAsBoard.HEIGHT; ++i) {
             for (int j = 0; j < MazeAsBoard.WIDTH; ++j)
-                sb.append(data[MazeAsBoard.WIDTH * i + j]);
+                sb.append(charArray[MazeAsBoard.WIDTH * i + j]);
             sb.append("\n");
         }
         return sb.toString();
+    }
+
+    public String render(final Maze maze) {
+        Preconditions.checkArgument(maze != null);
+        return this.render(maze.toCharArray());
+    }
+
+    public String render(final Maze maze, final int nodeId) {
+        Preconditions.checkArgument(maze != null);
+        Preconditions.checkArgument(nodeId >= 0 && nodeId < maze.size());
+        final char[] charArray = maze.toCharArray();
+        charArray[nodeId] = YOUR_ARE_HERE;
+        return nodeId + "\n" + this.render(charArray);
     }
 
 }

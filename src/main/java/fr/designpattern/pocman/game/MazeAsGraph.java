@@ -35,9 +35,8 @@ import fr.designpattern.pocman.graph.UndirectedGraph;
 import fr.designpattern.pocman.graph.Vertex;
 import fr.designpattern.pocman.graph.Vertex.Type;
 import fr.designpattern.pocman.graph.WeightedEdge;
-import fr.designpattern.pocman.view.MazeAsGraphView;
 
-public class MazeAsGraph implements Supplier<UndirectedGraph<Vertex>> {
+public final class MazeAsGraph implements Supplier<UndirectedGraph<Vertex>> {
 
     private final MazeAsBoard board;
 
@@ -67,12 +66,8 @@ public class MazeAsGraph implements Supplier<UndirectedGraph<Vertex>> {
         return this.numberOfVertices;
     }
 
-    public static class Factory {
-
-        public MazeAsGraph newMazeAsGraph(final MazeAsBoard board) {
-            return new MazeAsGraph(board);
-        }
-
+    public static MazeAsGraph from(final MazeAsBoard board) {
+        return new MazeAsGraph(board);
     }
 
     private Map<Integer, Vertex> buildVertices(final MazeAsBoard board) {
@@ -123,13 +118,8 @@ public class MazeAsGraph implements Supplier<UndirectedGraph<Vertex>> {
         this.graph = graphBuilder.build();
     }
 
-    public boolean isConnected() {
+    public boolean hasIsland() {
         return this.graph.isConnected();
-    }
-
-    @Override
-    public String toString() {
-        return new MazeAsGraphView().render(this); // TODO
     }
 
     public Vertex getNodeById(final int nodeId) {

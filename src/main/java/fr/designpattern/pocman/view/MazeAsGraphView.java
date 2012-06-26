@@ -17,17 +17,22 @@
 
 package fr.designpattern.pocman.view;
 
-import fr.designpattern.pocman.game.MazeAsBoard;
-import fr.designpattern.pocman.game.MazeAsGraph;
+import com.google.common.base.Preconditions;
+
+import fr.designpattern.pocman.game.Maze;
 import fr.designpattern.pocman.graph.Vertex;
+import fr.designpattern.pocman.graph.Vertex.Type;
 
 public class MazeAsGraphView {
 
-    public String render(final MazeAsGraph mazeAsGraph) {
-        final StringBuilder sb = new StringBuilder();
-        final char[] data = new char[MazeAsBoard.SIZE];
-        for (int nodeId = 0; nodeId < MazeAsBoard.SIZE; ++nodeId) {
-            final Vertex node = mazeAsGraph.getNodeById(nodeId);
+    public static final char YOUR_ARE_HERE = '⬤';
+
+    private static final MazeAsBoardView MAZE_AS_BOARD_VIEW = new MazeAsBoardView();
+
+    private char[] map(final Maze maze) {
+        final char[] data = new char[maze.size()];
+        for (int nodeId = 0; nodeId < maze.size(); ++nodeId) {
+            final Vertex node = maze.getNode(nodeId);
             final int n = node == null ? 0 : node.getNumberOfOptions();
             char c;
             switch (n) {
@@ -35,19 +40,25 @@ public class MazeAsGraphView {
                     c = ' ';
                     break;
                 case 2:
-                    c = node.is(Vertex.Type.STREET) ? '⬤' : '2';
+                    c = node.is(Type.STREET) ? '∙' : '2';
                     break;
                 default:
                     c = String.valueOf(n).charAt(0);
             }
             data[nodeId] = c;
         }
-        for (int i = 0; i < MazeAsBoard.HEIGHT; ++i) {
-            for (int j = 0; j < MazeAsBoard.WIDTH; ++j)
-                sb.append(data[MazeAsBoard.WIDTH * i + j]);
-            sb.append("\n");
-        }
-        return sb.toString();
+        return data;
     }
 
+    public String render(final Maze maze) {
+        Preconditions.checkArgument(maze != null);
+        return MAZE_AS_BOARD_VIEW.render(this.map(maze));
+    }
+
+    public Object render(final Maze maze, final Vertex vertex) {
+        final int nodeId = vertex.getId();
+        final char[] charArray = this.map(maze);
+        charArray[nodeId] = MazeAsGraphView.YOUR_ARE_HERE;
+        return MAZE_AS_BOARD_VIEW.render(charArray);
+    }
 }

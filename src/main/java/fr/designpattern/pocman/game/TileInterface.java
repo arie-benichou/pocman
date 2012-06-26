@@ -11,4 +11,6 @@ public interface TileInterface {
 
     boolean isWalkable();
 
+    boolean isCollectable();
+
 }

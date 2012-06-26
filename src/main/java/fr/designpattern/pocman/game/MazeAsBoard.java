@@ -23,8 +23,6 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import fr.designpattern.pocman.view.MazeAsBoardView;
-
 public final class MazeAsBoard
 {
 
@@ -64,18 +62,6 @@ public final class MazeAsBoard
             for (int j = 0; j < WIDTH; ++j)
                 array[WIDTH * i + j] = this.getCell(i, j).toCharacter();
         return array;
-    }
-
-    @Override
-    public String toString() {
-        /*
-        final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < HEIGHT; ++i)
-            for (int j = 0; j < WIDTH; ++j)
-                sb.append(this.board[i][j]);
-        return sb.toString();
-        */
-        return new MazeAsBoardView().render(this); // TODO
     }
 
     public Map<Direction, Tile> getNeighbours(final int y, final int x) {

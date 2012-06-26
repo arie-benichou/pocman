@@ -4,7 +4,7 @@ package fr.designpattern.pocman.game;
 public enum Tile implements TileInterface {
 
     SPACE(' '),
-    PILL('∙'),
+    COIN('∙'),
     POCMAN('⬤'),
     HORIZONTAL_WALL('⬛'),
     VERTICAL_WALL('┃');
@@ -32,7 +32,12 @@ public enum Tile implements TileInterface {
 
     @Override
     public boolean isWalkable() {
-        return this.is(SPACE) || this.is(PILL) || this.is(Tile.POCMAN);
+        return this.is(SPACE) || this.is(COIN) || this.is(Tile.POCMAN);
+    }
+
+    @Override
+    public boolean isCollectable() {
+        return this.is(COIN);
     }
 
 }
