@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -133,6 +134,7 @@ public class MinimumWeightPerfectMatching {
     }
 
     public static <T> Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final UndirectedGraph<T> originalGraph) {
+        Preconditions.checkState(!originalGraph.isEulerian());
         final List<T> oddVertices = oddVertices(originalGraph);
         final Map<T, T> matching = Maps.newHashMap();
         return computeOptimalEulerization(originalGraph, oddVertices, matching);

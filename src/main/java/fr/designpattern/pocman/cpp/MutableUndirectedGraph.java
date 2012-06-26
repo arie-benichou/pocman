@@ -72,4 +72,18 @@ public final class MutableUndirectedGraph<T> implements UndirectedGraphInterface
         return null; // TODO
     }
 
+    @Override
+    public int hashCode() {
+        return this.mGraph.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (object == null) return false;
+        if (object == this) return true;
+        if (!(object instanceof MutableUndirectedGraph)) return false;
+        final MutableUndirectedGraph<?> that = (MutableUndirectedGraph<?>) object;
+        return that.mGraph.equals(this.mGraph);
+    }
+
 }
