@@ -15,14 +15,14 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.designpattern.pocman.cpp.graph;
+package fr.designpattern.pocman.graph;
 
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSortedSet;
 
-import fr.designpattern.pocman.model.Move;
+import fr.designpattern.pocman.game.Move;
 
 public final class Vertex {
 

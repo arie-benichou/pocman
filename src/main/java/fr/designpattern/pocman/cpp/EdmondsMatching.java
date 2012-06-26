@@ -1,5 +1,5 @@
 
-package fr.designpattern.pocman.cpp.graph.algo;
+package fr.designpattern.pocman.cpp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import fr.designpattern.pocman.cpp.graph.MutableUndirectedGraph;
 
 /**
  * Ripped from Keith Schwarz (htiek@cs.stanford.edu)

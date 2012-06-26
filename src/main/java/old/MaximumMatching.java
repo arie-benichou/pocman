@@ -11,7 +11,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import fr.designpattern.pocman.cpp.graph.MutableUndirectedGraph;
+import fr.designpattern.pocman.cpp.MutableUndirectedGraph;
 
 /**
  * Ripped from Keith Schwarz (htiek@cs.stanford.edu)

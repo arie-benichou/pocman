@@ -19,8 +19,8 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
-import fr.designpattern.pocman.model.MazeAsBoard;
-import fr.designpattern.pocman.model.Constants;
+import fr.designpattern.pocman.game.Constants;
+import fr.designpattern.pocman.game.MazeAsBoard;
 import fr.designpattern.pocman.view.MazeAsBoardView;
 
 public class ClosedCPPSolver {

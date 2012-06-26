@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.ImmutableSortedMap.Builder;
 import com.google.common.collect.Ordering;
 
-import fr.designpattern.pocman.model.MazeAsBoard;
+import fr.designpattern.pocman.game.MazeAsBoard;
 
 public class GameGraph {
 

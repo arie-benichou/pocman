@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.designpattern.pocman.cpp.graph;
+package fr.designpattern.pocman.graph;
 
 import static org.junit.Assert.assertTrue;
 
@@ -23,7 +23,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import fr.designpattern.pocman.cpp.graph.WeightedEdge.Factory;
+import fr.designpattern.pocman.graph.WeightedEdge;
+import fr.designpattern.pocman.graph.WeightedEdge.Factory;
 
 public class WeightedEdgeTest {
 

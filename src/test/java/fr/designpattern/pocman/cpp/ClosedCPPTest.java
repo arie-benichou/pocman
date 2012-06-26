@@ -26,10 +26,9 @@ import org.junit.Test;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 
-import fr.designpattern.pocman.cpp.graph.Solution;
-import fr.designpattern.pocman.cpp.graph.UndirectedGraph;
-import fr.designpattern.pocman.cpp.graph.UndirectedGraph.Builder;
-import fr.designpattern.pocman.cpp.graph.WeightedEdge;
+import fr.designpattern.pocman.graph.UndirectedGraph;
+import fr.designpattern.pocman.graph.WeightedEdge;
+import fr.designpattern.pocman.graph.UndirectedGraph.Builder;
 
 public class ClosedCPPTest {
 

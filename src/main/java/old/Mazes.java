@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.designpattern.pocman.data;
+package old;
 
 public final class Mazes {
 

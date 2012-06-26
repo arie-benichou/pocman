@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.designpattern.pocman.cpp.graph.algo;
+package fr.designpattern.pocman.cpp;
 
 import java.util.List;
 import java.util.Map;
@@ -25,9 +25,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Maps;
 
-import fr.designpattern.pocman.cpp.graph.Solution;
-import fr.designpattern.pocman.cpp.graph.UndirectedGraph;
-import fr.designpattern.pocman.cpp.graph.WeightedEdge;
+import fr.designpattern.pocman.graph.UndirectedGraph;
+import fr.designpattern.pocman.graph.WeightedEdge;
 
 public final class EulerianTrail {
 

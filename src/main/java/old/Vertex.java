@@ -8,7 +8,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
-import fr.designpattern.pocman.model.Move;
+import fr.designpattern.pocman.game.Move;
 
 public final class Vertex implements Comparable<Vertex> {
 

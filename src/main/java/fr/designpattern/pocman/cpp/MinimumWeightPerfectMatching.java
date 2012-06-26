@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.designpattern.pocman.cpp.graph.algo;
+package fr.designpattern.pocman.cpp;
 
 import java.util.List;
 import java.util.Map;
@@ -26,10 +26,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import fr.designpattern.pocman.cpp.graph.MutableUndirectedGraph;
-import fr.designpattern.pocman.cpp.graph.Path;
-import fr.designpattern.pocman.cpp.graph.UndirectedGraph;
-import fr.designpattern.pocman.cpp.graph.WeightedEdge;
+import fr.designpattern.pocman.graph.Path;
+import fr.designpattern.pocman.graph.UndirectedGraph;
+import fr.designpattern.pocman.graph.WeightedEdge;
 
 public class MinimumWeightPerfectMatching {
 

@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.designpattern.pocman.model;
+package fr.designpattern.pocman.game;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -31,10 +31,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
-import fr.designpattern.pocman.cpp.graph.UndirectedGraph;
-import fr.designpattern.pocman.cpp.graph.Vertex;
-import fr.designpattern.pocman.cpp.graph.Vertex.Type;
-import fr.designpattern.pocman.cpp.graph.WeightedEdge;
+import fr.designpattern.pocman.graph.UndirectedGraph;
+import fr.designpattern.pocman.graph.Vertex;
+import fr.designpattern.pocman.graph.WeightedEdge;
+import fr.designpattern.pocman.graph.Vertex.Type;
 import fr.designpattern.pocman.view.MazeAsGraphView;
 
 public class MazeAsGraph implements Supplier<UndirectedGraph<Vertex>> {

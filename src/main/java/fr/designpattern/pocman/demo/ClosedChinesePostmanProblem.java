@@ -23,16 +23,37 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 
 import fr.designpattern.pocman.cpp.ClosedCPP;
-import fr.designpattern.pocman.cpp.graph.Solution;
-import fr.designpattern.pocman.cpp.graph.Vertex;
-import fr.designpattern.pocman.cpp.graph.algo.EulerianTrail;
-import fr.designpattern.pocman.data.Mazes;
-import fr.designpattern.pocman.model.Constants;
-import fr.designpattern.pocman.model.MazeAsBoard;
-import fr.designpattern.pocman.model.MazeAsGraph;
+import fr.designpattern.pocman.cpp.EulerianTrail;
+import fr.designpattern.pocman.cpp.Solution;
+import fr.designpattern.pocman.game.Constants;
+import fr.designpattern.pocman.game.MazeAsBoard;
+import fr.designpattern.pocman.game.MazeAsGraph;
+import fr.designpattern.pocman.graph.Vertex;
 import fr.designpattern.pocman.view.NodeInMazeView;
 
 public class ClosedChinesePostmanProblem {
+
+    public final static String MAZE = "" +
+
+            "┃⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃" +
+            "┃∙              ∙        ∙┃" +
+            "┃ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛⬛⬛ ┃" +
+            "┃∙        ∙┃∙   ∙   ∙┃∙  ∙┃" +
+            "┃ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃" +
+            "┃∙   ∙    ∙┃ ┃∙          ∙┃" +
+            "┃⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛ ┃ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ ┃" +
+            "┃∙   ∙  ∙┃∙ ∙┃∙ ∙        ∙┃" +
+            "┃⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛⬛⬛ ┃" +
+            "┃∙   ∙    ∙┃∙   ∙        ∙┃" +
+            "┃ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛⬛⬛⬛┃" +
+            "┃∙        ∙     ∙        ∙┃" +
+            "┃⬛⬛⬛⬛⬛⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃" +
+            "┃∙        ∙              ∙┃" +
+            "┃ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃" +
+            "┃∙  ∙┃∙   ∙┃⬤            ∙┃" +
+            "┃ ⬛⬛⬛⬛⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ ┃" +
+            "┃∙        ∙              ∙┃" +
+            "┃⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃";
 
     private static MazeAsGraph.Factory mazeAsGraphFactory = new MazeAsGraph.Factory();
 
@@ -40,12 +61,11 @@ public class ClosedChinesePostmanProblem {
 
         final Stopwatch stopwatch = new Stopwatch().start();
 
-        final String data = Mazes.DEBUG112;
-        final int pacManPosition = data.indexOf(Constants.POCMAN);
+        final int pacManPosition = MAZE.indexOf(Constants.POCMAN);
 
         Preconditions.checkState(pacManPosition > -1, "POCMAN POSITION NOT FOUND !");
 
-        final char[] array = MazeAsBoard.from(data).toCharArray();
+        final char[] array = MazeAsBoard.from(MAZE).toCharArray();
         array[pacManPosition] = Constants.SPACE;
         final MazeAsBoard board = MazeAsBoard.from(array);
         System.out.println(board);

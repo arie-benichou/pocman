@@ -1,5 +1,5 @@
 
-package fr.designpattern.pocman.cpp.graph;
+package fr.designpattern.pocman.cpp;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+
+import fr.designpattern.pocman.graph.UndirectedGraphInterface;
+import fr.designpattern.pocman.graph.WeightedEdge;
 
 /**
  * Ripped from Keith Schwarz (htiek@cs.stanford.edu)

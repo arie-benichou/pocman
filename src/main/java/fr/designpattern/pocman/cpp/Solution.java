@@ -1,11 +1,14 @@
 
-package fr.designpattern.pocman.cpp.graph;
+package fr.designpattern.pocman.cpp;
 
 import java.util.Map;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
+
+import fr.designpattern.pocman.graph.UndirectedGraph;
+import fr.designpattern.pocman.graph.WeightedEdge;
 
 // TODO unit tests
 public class Solution<T> {

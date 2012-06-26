@@ -15,27 +15,16 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.designpattern.pocman.cpp.graph;
+package fr.designpattern.pocman.game;
 
-import java.util.List;
-import java.util.Set;
+public final class Constants {
 
-public interface UndirectedGraphInterface<T> extends Iterable<T> { // TODO à revoir
+    public final static char SPACE = ' ';
+    public final static char PILL = '∙';
+    public static final char POCMAN = '⬤';
+    public static final char HORIZONTAL_WALL = '⬛';
+    public static final char VERTICAL_WALL = '┃';
 
-    /*
-    boolean addVertex(final T vertex);
-
-    void addEdge(final T one, final T two);
-
-    void removeEdge(final T one, final T two);
-    */
-
-    boolean edgeExists(final T one, final T two);
-
-    Set<T> getConnectedVerticeSet(final T vertex);
-
-    List<WeightedEdge<T>> getEdges(final T vertex);
-
-    boolean isEmpty();
+    private Constants() {}
 
 }

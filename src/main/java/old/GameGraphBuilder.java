@@ -16,11 +16,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
-import fr.designpattern.pocman.data.Mazes;
-import fr.designpattern.pocman.model.MazeAsBoard;
-import fr.designpattern.pocman.model.Constants;
-import fr.designpattern.pocman.model.Direction;
-import fr.designpattern.pocman.model.Move;
+import fr.designpattern.pocman.game.Constants;
+import fr.designpattern.pocman.game.Direction;
+import fr.designpattern.pocman.game.MazeAsBoard;
+import fr.designpattern.pocman.game.Move;
 import fr.designpattern.pocman.view.MazeAsBoardView;
 
 public class GameGraphBuilder {

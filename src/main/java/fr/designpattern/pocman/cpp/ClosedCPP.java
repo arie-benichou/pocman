@@ -24,10 +24,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 
-import fr.designpattern.pocman.cpp.graph.Solution;
-import fr.designpattern.pocman.cpp.graph.UndirectedGraph;
-import fr.designpattern.pocman.cpp.graph.WeightedEdge;
-import fr.designpattern.pocman.cpp.graph.algo.MinimumWeightPerfectMatching;
+import fr.designpattern.pocman.graph.UndirectedGraph;
+import fr.designpattern.pocman.graph.WeightedEdge;
 
 public final class ClosedCPP<T> {
 

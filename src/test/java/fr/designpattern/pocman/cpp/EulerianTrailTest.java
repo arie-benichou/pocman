@@ -1,5 +1,5 @@
 
-package fr.designpattern.pocman.cpp.graph.algo;
+package fr.designpattern.pocman.cpp;
 
 import static org.junit.Assert.assertTrue;
 
@@ -10,7 +10,8 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 
 import fr.designpattern.pocman.cpp.ClosedCPP;
-import fr.designpattern.pocman.cpp.graph.UndirectedGraph;
+import fr.designpattern.pocman.cpp.EulerianTrail;
+import fr.designpattern.pocman.graph.UndirectedGraph;
 
 public class EulerianTrailTest {
 

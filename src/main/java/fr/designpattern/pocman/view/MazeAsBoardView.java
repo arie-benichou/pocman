@@ -17,7 +17,7 @@
 
 package fr.designpattern.pocman.view;
 
-import fr.designpattern.pocman.model.MazeAsBoard;
+import fr.designpattern.pocman.game.MazeAsBoard;
 
 public class MazeAsBoardView {
 

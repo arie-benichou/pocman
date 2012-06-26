@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.designpattern.pocman.cpp.graph;
+package fr.designpattern.pocman.graph;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -31,8 +31,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import fr.designpattern.pocman.cpp.graph.Vertex.Type;
-import fr.designpattern.pocman.model.Move;
+import fr.designpattern.pocman.game.Move;
+import fr.designpattern.pocman.graph.Vertex;
+import fr.designpattern.pocman.graph.Vertex.Type;
 
 public class VertexTest {
 

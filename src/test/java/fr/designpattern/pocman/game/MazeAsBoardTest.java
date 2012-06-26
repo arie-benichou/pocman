@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.designpattern.pocman.model;
+package fr.designpattern.pocman.game;
 
 import java.util.Map;
 
@@ -25,6 +25,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
+
+import fr.designpattern.pocman.game.Constants;
+import fr.designpattern.pocman.game.Direction;
+import fr.designpattern.pocman.game.MazeAsBoard;
 
 /**
  * Unit test for simple App.

@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.designpattern.pocman.cpp.graph;
+package fr.designpattern.pocman.graph;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,7 +34,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import fr.designpattern.pocman.cpp.graph.Path.Factory;
+import fr.designpattern.pocman.graph.Path.Factory;
 
 public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
 

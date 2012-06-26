@@ -15,11 +15,14 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.designpattern.pocman.model;
+package fr.designpattern.pocman.game;
 
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+
+import fr.designpattern.pocman.game.Direction;
+import fr.designpattern.pocman.game.Move;
 
 public class MoveTest {
 

@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.designpattern.pocman.cpp.graph;
+package fr.designpattern.pocman.graph;
 
 import static org.junit.Assert.assertTrue;
 
@@ -32,8 +32,11 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import fr.designpattern.pocman.cpp.graph.Path.Factory;
-import fr.designpattern.pocman.cpp.graph.UndirectedGraph.Builder;
+import fr.designpattern.pocman.graph.Path;
+import fr.designpattern.pocman.graph.UndirectedGraph;
+import fr.designpattern.pocman.graph.WeightedEdge;
+import fr.designpattern.pocman.graph.Path.Factory;
+import fr.designpattern.pocman.graph.UndirectedGraph.Builder;
 
 public class UndirectedGraphTest {
 

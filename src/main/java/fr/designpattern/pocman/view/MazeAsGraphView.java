@@ -17,9 +17,9 @@
 
 package fr.designpattern.pocman.view;
 
-import fr.designpattern.pocman.cpp.graph.Vertex;
-import fr.designpattern.pocman.model.MazeAsBoard;
-import fr.designpattern.pocman.model.MazeAsGraph;
+import fr.designpattern.pocman.game.MazeAsBoard;
+import fr.designpattern.pocman.game.MazeAsGraph;
+import fr.designpattern.pocman.graph.Vertex;
 
 public class MazeAsGraphView {
 

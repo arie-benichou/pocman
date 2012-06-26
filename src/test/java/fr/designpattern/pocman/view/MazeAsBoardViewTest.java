@@ -21,7 +21,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import fr.designpattern.pocman.model.MazeAsBoard;
+import fr.designpattern.pocman.game.MazeAsBoard;
 
 public class MazeAsBoardViewTest {
 

@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.designpattern.pocman.model;
+package fr.designpattern.pocman.game;
 
 import static org.junit.Assert.assertTrue;
 
@@ -28,8 +28,12 @@ import org.junit.Test;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import fr.designpattern.pocman.cpp.graph.UndirectedGraph;
-import fr.designpattern.pocman.cpp.graph.Vertex;
+import fr.designpattern.pocman.game.Direction;
+import fr.designpattern.pocman.game.MazeAsBoard;
+import fr.designpattern.pocman.game.MazeAsGraph;
+import fr.designpattern.pocman.game.Move;
+import fr.designpattern.pocman.graph.UndirectedGraph;
+import fr.designpattern.pocman.graph.Vertex;
 
 public class MazeAsGraphTest {
 
