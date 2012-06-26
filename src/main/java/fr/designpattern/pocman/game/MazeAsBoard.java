@@ -32,7 +32,7 @@ public final class MazeAsBoard
     public final static int HEIGHT = 19;
     public final static int SIZE = WIDTH * HEIGHT;
 
-    private final char[][] board = new char[HEIGHT][];
+    private final Tile[][] board = new Tile[HEIGHT][];
 
     public static MazeAsBoard from(final String data) {
         return new MazeAsBoard(data);
@@ -44,17 +44,25 @@ public final class MazeAsBoard
 
     private MazeAsBoard(final String data) {
         for (int i = 0; i < HEIGHT; ++i) {
-            this.board[i] = new char[WIDTH];
+            this.board[i] = new Tile[WIDTH];
             for (int j = 0; j < WIDTH; ++j)
-                this.board[i][j] = data.charAt(WIDTH * i + j);
+                this.board[i][j] = Tiles.fromCharacter(data.charAt(WIDTH * i + j));
         }
+    }
+
+    public Tile getCell(final int y, final int x) {
+        return this.board[y][x];
+    }
+
+    public Tile getCell(final int index) {
+        return this.getCell(index / WIDTH, index % WIDTH);
     }
 
     public char[] toCharArray() {
         final char[] array = new char[HEIGHT * WIDTH];
         for (int i = 0; i < HEIGHT; ++i)
             for (int j = 0; j < WIDTH; ++j)
-                array[WIDTH * i + j] = this.board[i][j];
+                array[WIDTH * i + j] = this.getCell(i, j).toCharacter();
         return array;
     }
 
@@ -70,24 +78,16 @@ public final class MazeAsBoard
         return new MazeAsBoardView().render(this); // TODO
     }
 
-    public char getCell(final int y, final int x) {
-        return this.board[y][x];
-    }
-
-    public char getCell(final int index) {
-        return this.getCell(index / WIDTH, index % WIDTH);
-    }
-
-    public Map<Direction, Character> getNeighbours(final int y, final int x) {
-        final Map<Direction, Character> neighbours = Maps.newHashMap();
-        if (y > 0) neighbours.put(Direction.UP, this.board[y - 1][x]);
-        if (x + 1 < WIDTH) neighbours.put(Direction.RIGHT, this.board[y][x + 1]);
-        if (y + 1 < HEIGHT) neighbours.put(Direction.DOWN, this.board[y + 1][x]);
-        if (x > 0) neighbours.put(Direction.LEFT, this.board[y][x - 1]);
+    public Map<Direction, Tile> getNeighbours(final int y, final int x) {
+        final Map<Direction, Tile> neighbours = Maps.newHashMap();
+        if (y > 0) neighbours.put(Direction.UP, this.getCell(y - 1, x));
+        if (x + 1 < WIDTH) neighbours.put(Direction.RIGHT, this.getCell(y, x + 1));
+        if (y + 1 < HEIGHT) neighbours.put(Direction.DOWN, this.getCell(y + 1, x));
+        if (x > 0) neighbours.put(Direction.LEFT, this.getCell(y, x - 1));
         return neighbours;
     }
 
-    public Map<Direction, Character> getNeighbours(final int index) {
+    public Map<Direction, Tile> getNeighbours(final int index) {
         return this.getNeighbours(index / WIDTH, index % WIDTH);
     }
 

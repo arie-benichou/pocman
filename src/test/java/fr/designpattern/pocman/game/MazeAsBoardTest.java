@@ -26,10 +26,6 @@ import org.junit.Test;
 
 import com.google.common.collect.Maps;
 
-import fr.designpattern.pocman.game.Constants;
-import fr.designpattern.pocman.game.Direction;
-import fr.designpattern.pocman.game.MazeAsBoard;
-
 /**
  * Unit test for simple App.
  */
@@ -88,7 +84,7 @@ public class MazeAsBoardTest
     {
         final int y = MazeAsBoard.HEIGHT - 1 - 1;
         final int x = MazeAsBoard.WIDTH - 1 - 1;
-        Assert.assertTrue(this.board.getCell(y, x) == Constants.POCMAN);
+        Assert.assertTrue(this.board.getCell(y, x).is(Tile.POCMAN));
     }
 
     @Test
@@ -96,17 +92,17 @@ public class MazeAsBoardTest
     {
         final int y = MazeAsBoard.HEIGHT - 1 - 1;
         final int x = MazeAsBoard.WIDTH - 1 - 1;
-        Assert.assertTrue(this.board.getCell(y * MazeAsBoard.WIDTH + x) == Constants.POCMAN);
+        Assert.assertTrue(this.board.getCell(y * MazeAsBoard.WIDTH + x).is(Tile.POCMAN));
     }
 
     @Test
     public void testGetNeighboursFromYAndX()
     {
-        final Map<Direction, Character> expected = Maps.newHashMap();
-        expected.put(Direction.UP, Constants.HORIZONTAL_WALL);
-        expected.put(Direction.RIGHT, Constants.VERTICAL_WALL);
-        expected.put(Direction.DOWN, Constants.HORIZONTAL_WALL);
-        expected.put(Direction.LEFT, Constants.PILL);
+        final Map<Direction, Tile> expected = Maps.newHashMap();
+        expected.put(Direction.UP, Tile.HORIZONTAL_WALL);
+        expected.put(Direction.RIGHT, Tile.VERTICAL_WALL);
+        expected.put(Direction.DOWN, Tile.HORIZONTAL_WALL);
+        expected.put(Direction.LEFT, Tile.PILL);
         final int y = MazeAsBoard.HEIGHT - 1 - 1;
         final int x = MazeAsBoard.WIDTH - 1 - 1;
         Assert.assertTrue(this.board.getNeighbours(y, x).equals(expected));

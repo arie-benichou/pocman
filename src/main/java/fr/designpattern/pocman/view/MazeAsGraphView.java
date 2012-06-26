@@ -24,7 +24,8 @@ import fr.designpattern.pocman.graph.Vertex;
 public class MazeAsGraphView {
 
     public String render(final MazeAsGraph mazeAsGraph) {
-        final char[] array = new char[MazeAsBoard.SIZE];
+        final StringBuilder sb = new StringBuilder();
+        final char[] data = new char[MazeAsBoard.SIZE];
         for (int nodeId = 0; nodeId < MazeAsBoard.SIZE; ++nodeId) {
             final Vertex node = mazeAsGraph.getNodeById(nodeId);
             final int n = node == null ? 0 : node.getNumberOfOptions();
@@ -39,10 +40,13 @@ public class MazeAsGraphView {
                 default:
                     c = String.valueOf(n).charAt(0);
             }
-            array[nodeId] = c;
+            data[nodeId] = c;
         }
-        final StringBuilder sb = new StringBuilder("\n");
-        sb.append(new MazeAsBoardView().render(MazeAsBoard.from(array)).replaceAll(" {27}\\n", ""));//.append("\n");
+        for (int i = 0; i < MazeAsBoard.HEIGHT; ++i) {
+            for (int j = 0; j < MazeAsBoard.WIDTH; ++j)
+                sb.append(data[MazeAsBoard.WIDTH * i + j]);
+            sb.append("\n");
+        }
         return sb.toString();
     }
 

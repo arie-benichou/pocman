@@ -33,8 +33,8 @@ import com.google.common.collect.Sets;
 
 import fr.designpattern.pocman.graph.UndirectedGraph;
 import fr.designpattern.pocman.graph.Vertex;
-import fr.designpattern.pocman.graph.WeightedEdge;
 import fr.designpattern.pocman.graph.Vertex.Type;
+import fr.designpattern.pocman.graph.WeightedEdge;
 import fr.designpattern.pocman.view.MazeAsGraphView;
 
 public class MazeAsGraph implements Supplier<UndirectedGraph<Vertex>> {
@@ -79,12 +79,12 @@ public class MazeAsGraph implements Supplier<UndirectedGraph<Vertex>> {
         final Builder<Integer, Vertex> builder = new ImmutableSortedMap.Builder<Integer, Vertex>(Ordering.natural());
         for (int i = 0; i < MazeAsBoard.SIZE; ++i) {
             final HashSet<Move> options = Sets.newHashSet();
-            if (board.getCell(i) == Constants.PILL || board.getCell(i) == Constants.SPACE) {
+            if (board.getCell(i).isWalkable()) {
                 final List<Direction> directions = board.getDirections(i);
                 for (final Direction direction : directions) {
                     final Move move = Move.from(direction);
                     final int neighbour = i + move.getDelta();
-                    if (board.getCell(neighbour) == Constants.PILL || board.getCell(neighbour) == Constants.SPACE) options.add(move);
+                    if (board.getCell(neighbour).isWalkable()) options.add(move);
                 }
             }
             if (!options.isEmpty()) builder.put(i, Vertex.from(i, options));
