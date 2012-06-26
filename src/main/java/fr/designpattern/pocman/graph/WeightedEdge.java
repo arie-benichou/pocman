@@ -29,16 +29,12 @@ public final class WeightedEdge<T> implements Comparable<WeightedEdge<T>> {
     private final double weight;
     private final int hashCode;
 
-    public final static class Factory<T> {
+    public static <T> WeightedEdge<T> from(final T endPoint1, final T endPoint2, final double weight) {
+        return new WeightedEdge<T>(endPoint1, endPoint2, weight);
+    }
 
-        public WeightedEdge<T> newEdge(final T endPoint1, final T endPoint2, final double weight) {
-            return new WeightedEdge<T>(endPoint1, endPoint2, weight);
-        }
-
-        public static int hashCode(final int hashCode1, final int hashCode2) {
-            return (17 + hashCode1 * hashCode2) * (hashCode1 + hashCode2);
-        }
-
+    public static int hashCode(final int hashCode1, final int hashCode2) {
+        return (17 + hashCode1 * hashCode2) * (hashCode1 + hashCode2);
     }
 
     private WeightedEdge(final T endPoint1, final T endPoint2, final double weight) {
@@ -49,7 +45,7 @@ public final class WeightedEdge<T> implements Comparable<WeightedEdge<T>> {
         this.endPoint1 = endPoint1;
         this.endPoint2 = endPoint2;
         this.weight = weight;
-        this.hashCode = Factory.hashCode(endPoint1.hashCode(), endPoint2.hashCode());
+        this.hashCode = hashCode(endPoint1.hashCode(), endPoint2.hashCode());
     }
 
     private WeightedEdge(final WeightedEdge<T> edge) {

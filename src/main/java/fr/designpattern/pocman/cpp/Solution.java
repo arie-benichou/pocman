@@ -10,8 +10,7 @@ import com.google.common.collect.ImmutableMap;
 import fr.designpattern.pocman.graph.UndirectedGraph;
 import fr.designpattern.pocman.graph.WeightedEdge;
 
-// TODO unit tests
-public class Solution<T> {
+public final class Solution<T> {
 
     private final UndirectedGraph<T> graph;
 
@@ -63,7 +62,7 @@ public class Solution<T> {
         if (object == this) return true;
         if (!(object instanceof Solution)) return false;
         final Solution<?> that = (Solution<?>) object;
-        if (!that.getGraph().equals(this.getGraph())) return false; // TODO equals & hascode
+        //if (!that.getGraph().equals(this.getGraph())) return false; // TODO equals & hascode
         if (!that.getLowerBoundCost().equals(this.getLowerBoundCost())) return false;
         if (!that.getUpperBoundCost().equals(this.getUpperBoundCost())) return false;
         if (!that.getStartingVertex().equals(this.getStartingVertex())) return false;
@@ -77,7 +76,7 @@ public class Solution<T> {
         this.traversalByEdge = ImmutableMap.copyOf(edgeInstances);
         this.lowerBoundCost = lowerBoundCost;
         this.upperBoundCost = upperBoundCost;
-        Preconditions.checkState(this.upperBoundCost >= this.lowerBoundCost);
+        Preconditions.checkState(this.upperBoundCost >= this.lowerBoundCost, "Cost upper-bound must be greater than lower-bound.");
     }
 
     @Override

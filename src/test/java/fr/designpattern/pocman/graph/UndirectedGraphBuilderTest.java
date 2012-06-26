@@ -21,8 +21,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import fr.designpattern.pocman.graph.UndirectedGraph;
-import fr.designpattern.pocman.graph.WeightedEdge;
 import fr.designpattern.pocman.graph.UndirectedGraph.Builder;
 
 public class UndirectedGraphBuilderTest {
@@ -98,13 +96,13 @@ public class UndirectedGraphBuilderTest {
     @Test
     public void testContains() {
         final Builder<String> builder = new UndirectedGraph.Builder<String>(2);
-        final WeightedEdge<String> edge = new WeightedEdge.Factory<String>().newEdge("A", "B", 1.0);
+        final WeightedEdge<String> edge = WeightedEdge.from("A", "B", 1.0);
         assertTrue(!builder.contains(edge));
         assertTrue(builder.addEdge("A", "B", 1.0) == builder);
         assertTrue(builder.contains(edge));
         assertTrue(builder.contains(edge.reverse()));
-        assertTrue(builder.contains(new WeightedEdge.Factory<String>().newEdge("B", "A", 1.0)));
-        assertTrue(!builder.contains(new WeightedEdge.Factory<String>().newEdge("A", "C", 1.0)));
+        assertTrue(builder.contains(WeightedEdge.from("B", "A", 1.0)));
+        assertTrue(!builder.contains(WeightedEdge.from("A", "C", 1.0)));
     }
 
     @Test(expected = IllegalStateException.class)

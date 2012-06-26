@@ -36,8 +36,6 @@ public final class Path<T> implements Comparable<Path<T>> {
 
     public final static class Factory<T> {
 
-        private final WeightedEdge.Factory<T> edgeFactory = new WeightedEdge.Factory<T>();
-
         public Path<T> newPath(final double cost) {
             return new Path<T>(cost);
         }
@@ -51,7 +49,7 @@ public final class Path<T> implements Comparable<Path<T>> {
         }
 
         public Path<T> newPath(final T endPoint1, final T endPoint2, final double weight) {
-            return this.newPath(this.edgeFactory.newEdge(endPoint1, endPoint2, weight));
+            return this.newPath(WeightedEdge.from(endPoint1, endPoint2, weight));
         }
 
         private static int hashCode(final int hashCode1, final int hashCode2) {

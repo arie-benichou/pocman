@@ -56,8 +56,6 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<Vertex>> {
         return this.edgeByVertexId;
     }
 
-    private final WeightedEdge.Factory<Vertex> edgeFactory = new WeightedEdge.Factory<Vertex>();
-
     private final UndirectedGraph<Vertex> graph;
 
     private final int numberOfVertices;
@@ -97,7 +95,7 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<Vertex>> {
                     Vertex currentTile = gameTile;
                     while ((currentTile = gameTiles.get(currentTile.getId() + move.getDelta())).is(Type.STREET))
                         betweenTiles.add(currentTile.getId());
-                    edges.add(this.edgeFactory.newEdge(gameTile, currentTile, betweenTiles.size()));
+                    edges.add(WeightedEdge.from(gameTile, currentTile, betweenTiles.size()));
                 }
                 Collections.sort(edges); // TODO ? inutile
                 builder.put(gameTile.getId(), ImmutableList.copyOf(edges));

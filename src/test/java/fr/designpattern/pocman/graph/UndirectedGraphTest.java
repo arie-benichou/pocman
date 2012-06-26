@@ -32,9 +32,6 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import fr.designpattern.pocman.graph.Path;
-import fr.designpattern.pocman.graph.UndirectedGraph;
-import fr.designpattern.pocman.graph.WeightedEdge;
 import fr.designpattern.pocman.graph.Path.Factory;
 import fr.designpattern.pocman.graph.UndirectedGraph.Builder;
 
@@ -140,14 +137,14 @@ public class UndirectedGraphTest {
 
     @Test
     public void testLegalGetEdge1() {
-        final WeightedEdge<String> expectedEdge = new WeightedEdge.Factory<String>().newEdge("A", "B", 1.0);
+        final WeightedEdge<String> expectedEdge = WeightedEdge.from("A", "B", 1.0);
         final WeightedEdge<String> actualEdge = this.graph.getEdge("A", "B");
         assertTrue(actualEdge.equals(expectedEdge));
     }
 
     @Test
     public void testLegalGetEdge2() {
-        final WeightedEdge<String> expectedEdge = new WeightedEdge.Factory<String>().newEdge("B", "A", 1.0);
+        final WeightedEdge<String> expectedEdge = WeightedEdge.from("B", "A", 1.0);
         final WeightedEdge<String> actualEdge = this.graph.getEdge("A", "B");
         assertTrue(actualEdge.equals(expectedEdge));
     }
@@ -160,7 +157,7 @@ public class UndirectedGraphTest {
     @Test
     public void testLegalGetEdges1() {
         final List<WeightedEdge<String>> expectedEdges = Lists.newArrayList();
-        expectedEdges.add(new WeightedEdge.Factory<String>().newEdge("A", "B", 1.0));
+        expectedEdges.add(WeightedEdge.from("A", "B", 1.0));
         final List<WeightedEdge<String>> actualEdges = this.graph.getEdges("A");
         assertTrue(actualEdges.equals(expectedEdges));
     }
@@ -168,7 +165,7 @@ public class UndirectedGraphTest {
     @Test
     public void testLegalGetEdges2() {
         final List<WeightedEdge<String>> expectedEdges = Lists.newArrayList();
-        expectedEdges.add(new WeightedEdge.Factory<String>().newEdge("B", "A", 1.0));
+        expectedEdges.add(WeightedEdge.from("B", "A", 1.0));
         final List<WeightedEdge<String>> actualEdges = this.graph.getEdges("A");
         assertTrue(actualEdges.equals(expectedEdges));
     }

@@ -51,13 +51,11 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
         private final double[][] values;
 
         private final Set<WeightedEdge<T>> edgeSet = Sets.newHashSet();
-        private final WeightedEdge.Factory<T> edgeFactory;
 
         public Builder(final int numberOfVertices) {
             Preconditions.checkArgument(numberOfVertices >= 2, numberOfVertices);
             this.numberOfVertices = numberOfVertices;
             this.values = new double[numberOfVertices][numberOfVertices];
-            this.edgeFactory = new WeightedEdge.Factory<T>();
         }
 
         public int getNumberOfVertices() {
@@ -109,7 +107,7 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
         }
 
         public Builder<T> addEdge(final T endPoint1, final T endPoint2, final double weight) {
-            return this.addEdge(this.edgeFactory.newEdge(endPoint1, endPoint2, weight));
+            return this.addEdge(WeightedEdge.from(endPoint1, endPoint2, weight));
         }
 
         public UndirectedGraph<T> build() {
@@ -179,7 +177,7 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
         for (final T vertex : this.vertices.keySet()) {
             final List<WeightedEdge<T>> edges = this.getEdges(vertex);
             for (final WeightedEdge<T> weightedEdge : edges) {
-                final Integer hashCode = WeightedEdge.Factory.hashCode(weightedEdge.getEndPoint1().hashCode(), weightedEdge.getEndPoint2().hashCode());
+                final Integer hashCode = WeightedEdge.hashCode(weightedEdge.getEndPoint1().hashCode(), weightedEdge.getEndPoint2().hashCode());
                 this.edgeByHashCode.put(hashCode, weightedEdge);
             }
         }
@@ -361,7 +359,7 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
         Preconditions.checkNotNull(endpoint2);
         if (!this.vertices.containsKey(endpoint1) || !this.vertices.containsKey(endpoint2))
             throw new NoSuchElementException("Both nodes must be in the graph.");
-        final Integer hashCode = WeightedEdge.Factory.hashCode(endpoint1.hashCode(), endpoint2.hashCode());
+        final Integer hashCode = WeightedEdge.hashCode(endpoint1.hashCode(), endpoint2.hashCode());
         return this.edgeByHashCode.get(hashCode);
     }
 

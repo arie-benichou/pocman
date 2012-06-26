@@ -24,8 +24,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import fr.designpattern.pocman.graph.Path;
-import fr.designpattern.pocman.graph.WeightedEdge;
 import fr.designpattern.pocman.graph.Path.Factory;
 
 public class PathTest { // TODO à compléter
@@ -166,7 +164,7 @@ public class PathTest { // TODO à compléter
     @Test
     public void testAddWeightedEdgeOfT_On_NullPathOfT() {
         final Path<String> path = this.factory.newPath(9.0);
-        final WeightedEdge<String> edge = new WeightedEdge.Factory<String>().newEdge("A", "B", 1.0);
+        final WeightedEdge<String> edge = WeightedEdge.from("A", "B", 1.0);
         final Path<String> augmentedPath = path.add(edge);
         assertTrue(!augmentedPath.isNull());
         assertTrue(augmentedPath.getEdges().size() == 1);
@@ -178,7 +176,7 @@ public class PathTest { // TODO à compléter
     @Test
     public void testAddWeightedEdgeOfT_On_PathOfTHavingOneSingleEdge1() {
         final Path<String> path = this.factory.newPath("A", "B", 1.0);
-        final WeightedEdge<String> edge = new WeightedEdge.Factory<String>().newEdge("B", "C", 1.0);
+        final WeightedEdge<String> edge = WeightedEdge.from("B", "C", 1.0);
         final Path<String> augmentedPath = path.add(edge);
         assertTrue(augmentedPath.getEdges().size() == 2);
         assertTrue(augmentedPath.getEndPoint1().equals("A"));
@@ -189,7 +187,7 @@ public class PathTest { // TODO à compléter
     @Test
     public void testAddWeightedEdgeOfT_On_PathOfTHavingOneSingleEdge2() {
         final Path<String> path = this.factory.newPath("A", "B", 1.0);
-        final WeightedEdge<String> edge = new WeightedEdge.Factory<String>().newEdge("C", "B", 1.0);
+        final WeightedEdge<String> edge = WeightedEdge.from("C", "B", 1.0);
         final Path<String> augmentedPath = path.add(edge);
         assertTrue(augmentedPath.getEdges().size() == 2);
         assertTrue(augmentedPath.getEndPoint1().equals("A"));
@@ -200,7 +198,7 @@ public class PathTest { // TODO à compléter
     @Test
     public void testAddWeightedEdgeOfT_On_PathOfTHavingOneSingleEdge3() {
         final Path<String> path = this.factory.newPath("B", "A", 1.0);
-        final WeightedEdge<String> edge = new WeightedEdge.Factory<String>().newEdge("B", "C", 1.0);
+        final WeightedEdge<String> edge = WeightedEdge.from("B", "C", 1.0);
         final Path<String> augmentedPath = path.add(edge);
         assertTrue(augmentedPath.getEdges().size() == 2);
         assertTrue(augmentedPath.getEndPoint1().equals("A"));
@@ -211,7 +209,7 @@ public class PathTest { // TODO à compléter
     @Test
     public void testAddWeightedEdgeOfT_On_PathOfTHavingOneSingleEdge4() {
         final Path<String> path = this.factory.newPath("B", "A", 1.0);
-        final WeightedEdge<String> edge = new WeightedEdge.Factory<String>().newEdge("C", "B", 1.0);
+        final WeightedEdge<String> edge = WeightedEdge.from("C", "B", 1.0);
         final Path<String> augmentedPath = path.add(edge);
         assertTrue(augmentedPath.getEdges().size() == 2);
         assertTrue(augmentedPath.getEndPoint1().equals("A"));
@@ -222,14 +220,14 @@ public class PathTest { // TODO à compléter
     @Test(expected = IllegalStateException.class)
     public void testIllegalPathOfTAugmentation1() {
         final Path<String> path = this.factory.newPath("A", "B", 1.0);
-        final WeightedEdge<String> edge = new WeightedEdge.Factory<String>().newEdge("C", "D", 1.0);
+        final WeightedEdge<String> edge = WeightedEdge.from("C", "D", 1.0);
         path.add(edge);
     }
 
     @Test
     public void testAddWeightedEdgeOfT_On_PathOfTHavingManyEdges1() {
-        final Path<String> path = this.factory.newPath("A", "B", 1.0).add(new WeightedEdge.Factory<String>().newEdge("B", "C", 1.0));
-        final WeightedEdge<String> edge = new WeightedEdge.Factory<String>().newEdge("C", "D", 1.0);
+        final Path<String> path = this.factory.newPath("A", "B", 1.0).add(WeightedEdge.from("B", "C", 1.0));
+        final WeightedEdge<String> edge = WeightedEdge.from("C", "D", 1.0);
         final Path<String> augmentedPath = path.add(edge);
         assertTrue(augmentedPath.getEdges().size() == 3);
         assertTrue(augmentedPath.getEndPoint1().equals("A"));
@@ -239,8 +237,8 @@ public class PathTest { // TODO à compléter
 
     @Test
     public void testAddWeightedEdgeOfT_On_PathOfTHavingManyEdges2() {
-        final Path<String> path = this.factory.newPath("A", "B", 1.0).add(new WeightedEdge.Factory<String>().newEdge("B", "C", 1.0));
-        final WeightedEdge<String> edge = new WeightedEdge.Factory<String>().newEdge("D", "C", 1.0);
+        final Path<String> path = this.factory.newPath("A", "B", 1.0).add(WeightedEdge.from("B", "C", 1.0));
+        final WeightedEdge<String> edge = WeightedEdge.from("D", "C", 1.0);
         final Path<String> augmentedPath = path.add(edge);
         assertTrue(augmentedPath.getEdges().size() == 3);
         assertTrue(augmentedPath.getEndPoint1().equals("A"));
@@ -250,8 +248,8 @@ public class PathTest { // TODO à compléter
 
     @Test
     public void testAddWeightedEdgeOfT_On_PathOfTHavingManyEdges3() {
-        final Path<String> path = this.factory.newPath("B", "A", 1.0).add(new WeightedEdge.Factory<String>().newEdge("B", "C", 1.0));
-        final WeightedEdge<String> edge = new WeightedEdge.Factory<String>().newEdge("C", "D", 1.0);
+        final Path<String> path = this.factory.newPath("B", "A", 1.0).add(WeightedEdge.from("B", "C", 1.0));
+        final WeightedEdge<String> edge = WeightedEdge.from("C", "D", 1.0);
         final Path<String> augmentedPath = path.add(edge);
         assertTrue(augmentedPath.getEdges().size() == 3);
         assertTrue(augmentedPath.getEndPoint1().equals("A"));
@@ -261,8 +259,8 @@ public class PathTest { // TODO à compléter
 
     @Test
     public void testAddWeightedEdgeOfT_On_PathOfTHavingManyEdges4() {
-        final Path<String> path = this.factory.newPath("B", "A", 1.0).add(new WeightedEdge.Factory<String>().newEdge("B", "C", 1.0));
-        final WeightedEdge<String> edge = new WeightedEdge.Factory<String>().newEdge("D", "C", 1.0);
+        final Path<String> path = this.factory.newPath("B", "A", 1.0).add(WeightedEdge.from("B", "C", 1.0));
+        final WeightedEdge<String> edge = WeightedEdge.from("D", "C", 1.0);
         final Path<String> augmentedPath = path.add(edge);
         assertTrue(augmentedPath.getEdges().size() == 3);
         assertTrue(augmentedPath.getEndPoint1().equals("A"));
