@@ -9,8 +9,6 @@ import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
-import fr.designpattern.pocman.cpp.ClosedCPP;
-import fr.designpattern.pocman.cpp.EulerianTrail;
 import fr.designpattern.pocman.graph.UndirectedGraph;
 
 public class EulerianTrailTest {
@@ -21,7 +19,8 @@ public class EulerianTrailTest {
                 .addEdge("A", "B", 1.0)
                 .build();
         final List<String> expectedTrail = Lists.newArrayList("A", "B", "A");
-        final List<String> actualTrail = EulerianTrail.from(ClosedCPP.newSolver(input).solveFrom("A"));
+        final Solution<String> solution = ClosedCPP.from(input).solve();
+        final List<String> actualTrail = EulerianTrail.from(input, solution.getTraversalByEdge(), "A");
         assertTrue(actualTrail.equals(expectedTrail));
     }
 
@@ -34,8 +33,9 @@ public class EulerianTrailTest {
                 .build();
         final List<String> expectedTrail1 = Lists.newArrayList("A", "B", "C", "A");
         final List<String> expectedTrail2 = Lists.newArrayList("A", "C", "B", "A");
-        final List<String> eulerianTrail = EulerianTrail.from(ClosedCPP.newSolver(input).solveFrom("A"));
-        assertTrue(eulerianTrail.equals(expectedTrail2) || eulerianTrail.equals(expectedTrail1));
+        final Solution<String> solution = ClosedCPP.from(input).solve();
+        final List<String> actualTrail = EulerianTrail.from(input, solution.getTraversalByEdge(), "A");
+        assertTrue(actualTrail.equals(expectedTrail2) || actualTrail.equals(expectedTrail1));
     }
 
 }

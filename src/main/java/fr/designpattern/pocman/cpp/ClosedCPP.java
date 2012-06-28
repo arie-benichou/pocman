@@ -29,6 +29,17 @@ import fr.designpattern.pocman.graph.WeightedEdge;
 
 public final class ClosedCPP<T> {
 
+    public static <T> ClosedCPP<T> from(final UndirectedGraph<T> graph) {
+        Preconditions.checkArgument(graph != null);
+        Preconditions.checkState(graph.isConnected(), "Graph must be connected.");
+        return new ClosedCPP<T>(graph);
+    }
+
+    public static <T> ClosedCPP<T> from(final Supplier<UndirectedGraph<T>> graphSupplier) {
+        Preconditions.checkArgument(graphSupplier != null);
+        return ClosedCPP.from(graphSupplier.get());
+    }
+
     private final UndirectedGraph<T> graph;
 
     public UndirectedGraph<T> getGraph() {
@@ -37,51 +48,8 @@ public final class ClosedCPP<T> {
 
     private final Double lowerBoundCost;
 
-    public Double getUpperBoundCost() {
-        return this.upperBoundCost;
-    }
-
     public Double getLowerBoundCost() {
         return this.lowerBoundCost;
-    }
-
-    private Map<WeightedEdge<T>, Integer> edgeInstances;
-
-    public Map<WeightedEdge<T>, Integer> getEdgeInstances() {
-        return this.edgeInstances;
-    }
-
-    private Double upperBoundCost;
-
-    public static <T> ClosedCPP<T> newSolver(final UndirectedGraph<T> graph) {
-        Preconditions.checkArgument(graph != null);
-        Preconditions.checkState(graph.isConnected(), "Graph must be connected.");
-        return new ClosedCPP<T>(graph);
-    }
-
-    public static <T> ClosedCPP<T> newSolver(final Supplier<UndirectedGraph<T>> graphSupplier) {
-        Preconditions.checkArgument(graphSupplier != null);
-        return ClosedCPP.newSolver(graphSupplier.get());
-    }
-
-    private ClosedCPP(final UndirectedGraph<T> graph) {
-        this.graph = graph;
-        double lowerBoundCost = 0;
-        for (final T vertex : this.graph)
-            for (final T connectedVertex : this.graph.getConnectedVerticeSet(vertex))
-                lowerBoundCost += this.graph.getEdge(vertex, connectedVertex).getWeight();
-        this.lowerBoundCost = lowerBoundCost / 2; // TODO exposer un set of edges immutable depuis le graphe
-    }
-
-    private void computeOptimalEulerization() {
-        if (this.graph.isEulerian()) {
-            final Map<WeightedEdge<T>, Integer> map = Maps.newHashMap();
-            for (final T vertex : this.graph)
-                for (final T connectedVertex : this.graph.getConnectedVerticeSet(vertex))
-                    map.put(this.graph.getEdge(vertex, connectedVertex), 1);
-            this.edgeInstances = map; // TODO à revoir...
-        }
-        else this.edgeInstances = MinimumWeightPerfectMatching.computeOptimalEulerization(this.graph); // TODO retourner un objet solution
     }
 
     private static <T> double computeCost(final Map<WeightedEdge<T>, Integer> edgeInstances) {
@@ -94,16 +62,52 @@ public final class ClosedCPP<T> {
         return cost;
     }
 
-    public Solution<T> solveFrom(final T vertex) {
+    private Double upperBoundCost = null;
 
-        Preconditions.checkArgument(vertex != null);
+    public Double getUpperBoundCost() {
+        if (this.upperBoundCost == null)
+            this.upperBoundCost = computeCost(this.getTraversalByEdge());
+        return this.upperBoundCost;
+    }
 
-        if (this.edgeInstances == null) {
-            this.computeOptimalEulerization();
-            this.upperBoundCost = computeCost(this.edgeInstances);
+    public Double getExtraCost() {
+        return this.getUpperBoundCost() - this.getLowerBoundCost();
+    }
+
+    // TODO ? retourner un objet solution
+    private static <T> Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final UndirectedGraph<T> graph) {
+        if (graph.isEulerian()) {
+            final Map<WeightedEdge<T>, Integer> map = Maps.newHashMap();
+            for (final T vertex : graph)
+                for (final T connectedVertex : graph.getConnectedVerticeSet(vertex))
+                    map.put(graph.getEdge(vertex, connectedVertex), 1);
+            return map;
         }
+        return MinimumWeightPerfectMatching.computeOptimalEulerization(graph);
+    }
 
-        return new Solution<T>(this.graph, vertex, this.edgeInstances, this.lowerBoundCost, this.upperBoundCost);
+    private Map<WeightedEdge<T>, Integer> edgeInstances = null;
+
+    public Map<WeightedEdge<T>, Integer> getTraversalByEdge() {
+        if (this.edgeInstances == null) this.edgeInstances = computeOptimalEulerization(this.getGraph());
+        return this.edgeInstances;
+    }
+
+    private Solution<T> solution = null;
+
+    private ClosedCPP(final UndirectedGraph<T> graph) {
+        this.graph = graph;
+        double lowerBoundCost = 0;
+        for (final T vertex : this.graph)
+            for (final T connectedVertex : this.graph.getConnectedVerticeSet(vertex))
+                lowerBoundCost += this.graph.getEdge(vertex, connectedVertex).getWeight();
+        this.lowerBoundCost = lowerBoundCost / 2; // TODO exposer un set of edges immutable depuis le graphe
+    }
+
+    public Solution<T> solve() {
+        if (this.solution == null)
+            this.solution = new Solution<T>(this.getGraph(), this.getTraversalByEdge(), this.getLowerBoundCost(), this.getUpperBoundCost());
+        return this.solution;
     }
 
 }

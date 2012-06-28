@@ -119,7 +119,7 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
         }
     }
 
-    private final int n;
+    private final int order;
     private final Map<T, Integer> vertices;
     private final Map<T, List<WeightedEdge<T>>> edgesByVertex;
     private final Map<Integer, WeightedEdge<T>> edgeByHashCode;
@@ -135,9 +135,9 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
     private Path<T>[][] buildPathMatrix() {
         final Factory<T> pathFactory = new Path.Factory<T>();
         @SuppressWarnings("unchecked")
-        final Path<T>[][] paths = new Path[this.n][this.n];
-        for (int i = 0; i < this.n; ++i) {
-            for (int j = 0; j < this.n; ++j) {
+        final Path<T>[][] paths = new Path[this.order][this.order];
+        for (int i = 0; i < this.order; ++i) {
+            for (int j = 0; j < this.order; ++j) {
                 Path<T> path;
                 if (i == j) path = pathFactory.newPath(0);
                 else {
@@ -146,7 +146,7 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
                     final T endpoint1 = this.verticeByIndex.get(i);
                     final T endpoint2 = this.verticeByIndex.get(j);
                     //System.out.println(this.edgeExists(endpoint1, endpoint2));
-                    if (this.edgeExists(endpoint1, endpoint2)) {
+                    if (this.hasEdge(endpoint1, endpoint2)) {
                         //System.out.println(endpoint1 + ", " + endpoint2);
                         final WeightedEdge<T> edge = this.getEdge(endpoint1, endpoint2);
                         //System.out.println(edge);
@@ -162,7 +162,7 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
 
     private UndirectedGraph(final Builder<T> builder) {
 
-        this.n = builder.numberOfVertices;
+        this.order = builder.numberOfVertices;
 
         this.vertices = builder.vertices;
 
@@ -191,9 +191,9 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
         //this.debug(builder.values, INFINITY);
 
         // safe copy
-        final double[][] values = new double[this.n][this.n];
-        for (int i = 0; i < this.n; ++i) {
-            for (int j = 0; j < this.n; ++j) {
+        final double[][] values = new double[this.order][this.order];
+        for (int i = 0; i < this.order; ++i) {
+            for (int j = 0; j < this.order; ++j) {
                 if (i == j) continue;
                 final double value = builder.values[i][j];
                 values[i][j] = value == 0 ? INFINITY : value;
@@ -208,9 +208,9 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
         final Path<T>[][] paths = this.buildPathMatrix();
 
         // Roy-Warshall-Floyd algorithm
-        for (int k = 0; k < this.n; ++k) {
-            for (int i = 0; i < this.n; ++i) {
-                for (int j = 0; j < this.n; ++j) {
+        for (int k = 0; k < this.order; ++k) {
+            for (int i = 0; i < this.order; ++i) {
+                for (int j = 0; j < this.order; ++j) {
                     //if (i == j) continue;
                     final double currentCost = paths[i][j].getWeight();
                     final double newCost = paths[i][k].getWeight() + paths[k][j].getWeight();
@@ -221,9 +221,9 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
 
         this.shortestPaths = paths;
 
-        final double[][] costs = new double[this.n][this.n];
-        for (int ii = 0; ii < this.n; ++ii) {
-            for (int jj = 0; jj < this.n; ++jj) {
+        final double[][] costs = new double[this.order][this.order];
+        for (int ii = 0; ii < this.order; ++ii) {
+            for (int jj = 0; jj < this.order; ++jj) {
                 if (ii == jj) continue;
                 costs[ii][jj] = this.shortestPaths[ii][jj].getWeight();
             }
@@ -232,8 +232,8 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
 
         // a connected graph has a path between every pair of nodes
         boolean isConnected = true;
-        for (int i = 0; i < this.n; ++i) {
-            for (int j = 0; j < this.n; ++j) {
+        for (int i = 0; i < this.order; ++i) {
+            for (int j = 0; j < this.order; ++j) {
                 if (i == j) continue;
                 if (this.shortestPaths[i][j].getWeight() == INFINITY) isConnected = false;
             }
@@ -336,10 +336,15 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
     */
 
     @Override
-    public boolean edgeExists(final T endpoint1, final T endpoint2) {
+    public boolean hasEdge(final T endpoint1, final T endpoint2) {
         if (!this.vertices.containsKey(endpoint1) || !this.vertices.containsKey(endpoint2))
             throw new NoSuchElementException("Both nodes must be in the graph.");
         return this.mGraph.get(endpoint1).contains(endpoint2);
+    }
+
+    @Override
+    public boolean hasVertex(final T endpoint) {
+        return this.vertices.containsKey(endpoint);
     }
 
     @Override
@@ -375,6 +380,19 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
         for (final T vertex : this)
             if (this.getConnectedVerticeSet(vertex).size() % 2 == 1) return false;
         return true;
+    }
+
+    @Override
+    public int getOrder() {
+        return this.order;
+    }
+
+    // TODO NodeVisitor, EdgeVisitor
+    public Set<T> getOddVertices() {// TODO unit tests
+        final Set<T> oddVertices = Sets.newHashSet();
+        for (final T vertex : this)
+            if (this.getConnectedVerticeSet(vertex).size() % 2 == 1) oddVertices.add(vertex);
+        return oddVertices;
     }
 
 }

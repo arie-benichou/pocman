@@ -31,7 +31,7 @@ public final class EdmondsMatching {
 
     private static <T> void updateMatching(final List<T> path, final MutableUndirectedGraph<T> m) {
         for (int i = 0; i < path.size() - 1; ++i) {
-            if (m.edgeExists(path.get(i), path.get(i + 1))) m.removeEdge(path.get(i), path.get(i + 1));
+            if (m.hasEdge(path.get(i), path.get(i + 1))) m.removeEdge(path.get(i), path.get(i + 1));
             else m.addEdge(path.get(i), path.get(i + 1));
         }
     }
@@ -86,7 +86,7 @@ public final class EdmondsMatching {
         }
         while (!worklist.isEmpty()) {
             final Edge<T> curr = worklist.remove();
-            if (m.edgeExists(curr.start, curr.end))
+            if (m.hasEdge(curr.start, curr.end))
                 continue;
             final NodeInformation<T> startInfo = forest.get(curr.start);
             final NodeInformation<T> endInfo = forest.get(curr.end);
@@ -206,7 +206,7 @@ public final class EdmondsMatching {
             final Blossom<T> blossom,
             final T node) {
         for (final T cycleNode : blossom.nodes)
-            if (g.edgeExists(cycleNode, node))
+            if (g.hasEdge(cycleNode, node))
                 return cycleNode;
         throw new AssertionError("Could not find an edge out of the blossom.");
     }

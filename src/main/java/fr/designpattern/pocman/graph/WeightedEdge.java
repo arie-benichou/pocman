@@ -38,14 +38,22 @@ public final class WeightedEdge<T> implements Comparable<WeightedEdge<T>> {
     }
 
     private WeightedEdge(final T endPoint1, final T endPoint2, final double weight) {
-        Preconditions.checkArgument(endPoint1 != null);
-        Preconditions.checkArgument(endPoint2 != null);
-        Preconditions.checkArgument(!endPoint1.equals(endPoint2));
+
+        //Preconditions.checkArgument(endPoint1 != null);
+        //Preconditions.checkArgument(endPoint2 != null);
+        Preconditions.checkArgument(!(endPoint1 == null && endPoint2 == null));
+
+        if (endPoint1 != null)
+            Preconditions.checkArgument(!endPoint1.equals(endPoint2));
+
         Preconditions.checkArgument(weight >= 0.0);
         this.endPoint1 = endPoint1;
         this.endPoint2 = endPoint2;
         this.weight = weight;
-        this.hashCode = hashCode(endPoint1.hashCode(), endPoint2.hashCode());
+
+        if (endPoint1 == null) this.hashCode = hashCode(-1, endPoint2.hashCode());
+        else if (endPoint2 == null) this.hashCode = hashCode(endPoint1.hashCode(), -1);
+        else this.hashCode = hashCode(endPoint1.hashCode(), endPoint2.hashCode());
     }
 
     private WeightedEdge(final WeightedEdge<T> edge) {

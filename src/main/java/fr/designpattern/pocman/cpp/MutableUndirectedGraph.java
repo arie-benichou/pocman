@@ -43,7 +43,7 @@ public final class MutableUndirectedGraph<T> implements UndirectedGraphInterface
     }
 
     @Override
-    public boolean edgeExists(final T one, final T two) {
+    public boolean hasEdge(final T one, final T two) {
         if (!this.mGraph.containsKey(one) || !this.mGraph.containsKey(two))
             throw new NoSuchElementException("Both nodes must be in the graph.");
         return this.mGraph.get(one).contains(two);
@@ -84,6 +84,18 @@ public final class MutableUndirectedGraph<T> implements UndirectedGraphInterface
         if (!(object instanceof MutableUndirectedGraph)) return false;
         final MutableUndirectedGraph<?> that = (MutableUndirectedGraph<?>) object;
         return that.mGraph.equals(this.mGraph);
+    }
+
+    @Override
+    public boolean hasVertex(final T endpoint) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public int getOrder() {
+        // TODO Auto-generated method stub
+        return 0;
     }
 
 }

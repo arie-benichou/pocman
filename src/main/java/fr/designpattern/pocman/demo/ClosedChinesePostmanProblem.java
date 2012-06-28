@@ -59,34 +59,30 @@ public class ClosedChinesePostmanProblem {
 
         final Stopwatch stopwatch = new Stopwatch().start();
 
-        final int pocManPosition = MAZE.indexOf(Tile.POCMAN.toCharacter());
-        Preconditions.checkState(pocManPosition > -1, "POCMAN POSITION NOT FOUND !");
-
         final Maze maze = new Maze(MAZE);
-        final ClosedCPP<Vertex> closedCPPSolver = ClosedCPP.newSolver(maze);
-        final Solution<Vertex> solution = closedCPPSolver.solveFrom(maze.getNode(pocManPosition));
 
-        Preconditions.checkState(solution.getStartingVertex().getId() == 417);
+        final ClosedCPP<Vertex> closedCPPSolver = ClosedCPP.from(maze);
+        final Solution<Vertex> solution = closedCPPSolver.solve();
+
         Preconditions.checkState(solution.getLowerBoundCost().equals(190.0));
         Preconditions.checkState(solution.getUpperBoundCost().equals(357.0));
 
-        final List<Vertex> trail = EulerianTrail.from(solution);
+        final int pocManPosition = MAZE.indexOf(Tile.POCMAN.toCharacter());
+        Preconditions.checkState(pocManPosition > -1, "POCMAN POSITION NOT FOUND !");
+
+        final List<Vertex> trail = EulerianTrail.from(maze, solution.getTraversalByEdge(), maze.getNode(pocManPosition));
 
         stopwatch.stop();
 
         final MazeView view = new MazeView();
 
-        try {
-            for (final Vertex vertex : trail) {
-                System.out.println(view.render(maze, vertex));
+        for (final Vertex vertex : trail) {
+            System.out.println(view.render(maze, vertex));
+            try {
                 Thread.sleep(220);
             }
-            for (final Vertex vertex : trail) {
-                System.out.println(view.render(maze, vertex.getId()));
-                Thread.sleep(160);
-            }
+            catch (final InterruptedException e) {}
         }
-        catch (final InterruptedException e) {}
 
         System.out.println(solution);
 

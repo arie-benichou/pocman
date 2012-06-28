@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Maps;
@@ -33,7 +34,7 @@ public final class EulerianTrail {
     /**
      * Fleury algorithm
      */
-    private static <T> List<T> from(final T startingVertex, final UndirectedGraph<T> graph, final Map<WeightedEdge<T>, Integer> traversalByEdge) {
+    private static <T> List<T> from(final T startingVertex, final Map<WeightedEdge<T>, Integer> traversalByEdge, final UndirectedGraph<T> graph) {
         final Builder<T> trailBuilder = new ImmutableList.Builder<T>();
         for (final WeightedEdge<T> edge : graph.getEdges(startingVertex)) {
             final Integer integer = traversalByEdge.get(edge);
@@ -43,17 +44,45 @@ public final class EulerianTrail {
                 if (startingVertex.equals(edge.getEndPoint1())) nextVertex = edge.getEndPoint2();
                 else if (startingVertex.equals(edge.getEndPoint2())) nextVertex = edge.getEndPoint1();
                 Preconditions.checkState(nextVertex != null);
-                trailBuilder.addAll(EulerianTrail.from(nextVertex, graph, traversalByEdge));
+                trailBuilder.addAll(EulerianTrail.from(nextVertex, traversalByEdge, graph));
             }
         }
         trailBuilder.add(startingVertex);
         return trailBuilder.build();
     }
 
-    public static <T> List<T> from(final Solution<T> solution) {
-        return EulerianTrail.from(solution.getStartingVertex(), solution.getGraph(), Maps.newHashMap(solution.getTraversalByEdge()));
+    public static <T> List<T> from(final UndirectedGraph<T> graph, final Map<WeightedEdge<T>, Integer> traversalByEdge, final T startingVertex) {
+        return from(startingVertex, Maps.newHashMap(traversalByEdge), graph);
+    }
+
+    public static <T> List<T> from(final Supplier<UndirectedGraph<T>> graphSupplier, final Map<WeightedEdge<T>, Integer> traversalByEdge, final T startingVertex) {
+        return from(graphSupplier.get(), traversalByEdge, startingVertex);
     }
 
     private EulerianTrail() {}
+
+    /*
+    public static List<Vertex> from(final Maze maze, final Map<WeightedEdge<Node<Vertex>>, Integer> traversalByEdge, final Vertex node) {
+        final Builder<Vertex> trailBuilder = new ImmutableList.Builder<Vertex>();
+        for (final WeightedEdge<Vertex> edge : maze.get().getEdges(startingVertex)) {
+            final Integer integer = traversalByEdge.get(edge);
+            if (integer > 0) {
+                traversalByEdge.put(edge, integer - 1);
+                T nextVertex = null;
+                if (startingVertex.equals(edge.getEndPoint1())) nextVertex = edge.getEndPoint2();
+                else if (startingVertex.equals(edge.getEndPoint2())) nextVertex = edge.getEndPoint1();
+                Preconditions.checkState(nextVertex != null);
+                trailBuilder.addAll(EulerianTrail.from(nextVertex, traversalByEdge, graph));
+            }
+        }
+        trailBuilder.add(startingVertex);
+        return trailBuilder.build();
+    }
+
+    public static List<Vertex> from(UndirectedGraph<Node<Vertex>> graph, Map<WeightedEdge<Node<Vertex>>, Integer> traversalByEdge, Vertex node) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    */
 
 }

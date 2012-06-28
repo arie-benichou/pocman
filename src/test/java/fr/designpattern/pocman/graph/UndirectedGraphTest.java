@@ -79,9 +79,14 @@ public class UndirectedGraphTest {
         assertTrue(this.graph.isEmpty() == false);
     }
 
+    @Test
+    public void testGetOrder() {
+        assertTrue(this.graph.getOrder() == 2);
+    }
+
     @Test(expected = NoSuchElementException.class)
     public void testIllegalEdgeExists() {
-        this.graph.edgeExists("A", "C");
+        this.graph.hasEdge("A", "C");
     }
 
     @Test
@@ -92,11 +97,11 @@ public class UndirectedGraphTest {
 
         final UndirectedGraph<String> graph = builder.build();
 
-        assertTrue(graph.edgeExists("C", "B") == false);
-        assertTrue(graph.edgeExists("A", "B"));
+        assertTrue(graph.hasEdge("C", "B") == false);
+        assertTrue(graph.hasEdge("A", "B"));
 
-        assertTrue(graph.edgeExists("B", "C") == false);
-        assertTrue(graph.edgeExists("B", "A"));
+        assertTrue(graph.hasEdge("B", "C") == false);
+        assertTrue(graph.hasEdge("B", "A"));
     }
 
     @Test(expected = NoSuchElementException.class)
@@ -242,5 +247,12 @@ public class UndirectedGraphTest {
         assertTrue(this.graph.isConnected());
         final Path<String> actualPath = this.graph.getShortestPathBetween("A", "B");
         assertTrue(actualPath.equals(expectedPath) == false);// TODO SHOULD be false : revoir Equals de Path
+    }
+
+    @Test
+    public void test() {
+        final Builder<String> builder = new UndirectedGraph.Builder<String>(2);
+        builder.addEdge(null, "A", 1.0);
+        final UndirectedGraph<String> graph = builder.build();
     }
 }

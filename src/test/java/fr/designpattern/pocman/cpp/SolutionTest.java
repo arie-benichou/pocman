@@ -5,86 +5,66 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.HashMap;
+import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+
+import com.google.common.collect.ImmutableMap;
 
 import fr.designpattern.pocman.graph.WeightedEdge;
 
-public class SolutionTest { // TODO à compléter...
+public class SolutionTest {
 
-    private Solution<String> solution;
+    private final static Map<WeightedEdge<String>, Integer> TRAVERSAL_BY_EDGE = ImmutableMap.copyOf(new HashMap<WeightedEdge<String>, Integer>());
+    private final static Solution<String> SOLUTION = new Solution<String>(TRAVERSAL_BY_EDGE, 1.0, 2.0);
 
-    @Before
-    public void setUp() throws Exception {
-        this.solution = new Solution<String>(null, "A", new HashMap<WeightedEdge<String>, Integer>(), 1.0, 2.0);
+    @Test(expected = IllegalArgumentException.class)
+    public void testSolution1() {
+        new Solution<String>(null, 1.0, 0.0);
     }
 
-    @After
-    public void tearDown() throws Exception {
-        this.solution = null;
+    @Test(expected = IllegalArgumentException.class)
+    public void testSolution2() {
+        new Solution<String>(TRAVERSAL_BY_EDGE, null, 0.0);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void testSolution() {
-        new Solution<String>(null, "A", new HashMap<WeightedEdge<String>, Integer>(), 1.0, 0.0);
-    }
-
-    @Test
-    public void testGetGraph() {
-        assertTrue(this.solution.getGraph() == null);
-    }
-
-    @Test
-    public void testGetStartingVertex() {
-        assertTrue(this.solution.getStartingVertex().equals("A"));
+    @Test(expected = IllegalArgumentException.class)
+    public void testSolution3() {
+        new Solution<String>(TRAVERSAL_BY_EDGE, 0.0, null);
     }
 
     @Test
     public void testGetLowerBoundCost() {
-        assertTrue(this.solution.getLowerBoundCost().equals(1.0));
+        assertTrue(SOLUTION.getLowerBoundCost().equals(1.0));
     }
 
     @Test
     public void testGetUpperBoundCost() {
-        assertTrue(this.solution.getUpperBoundCost().equals(2.0));
+        assertTrue(SOLUTION.getUpperBoundCost().equals(2.0));
     }
 
     @Test
     public void testGetTraversalByEdge() {
-        assertTrue(this.solution.getTraversalByEdge().equals(new HashMap<WeightedEdge<String>, Integer>()));
+        assertTrue(SOLUTION.getTraversalByEdge().equals(TRAVERSAL_BY_EDGE));
     }
 
     @Test
     public void testEqualsObject() {
-
-        assertTrue(this.solution.equals(null) == false);
-        assertTrue(this.solution.equals(this.solution));
-        assertTrue(this.solution.equals(new Object()) == false);
-
+        assertTrue(SOLUTION.equals(null) == false);
+        assertTrue(SOLUTION.equals(SOLUTION));
+        assertTrue(SOLUTION.equals(new Object()) == false);
         Solution<String> differentSolution;
-        differentSolution = new Solution<String>(null, "A", new HashMap<WeightedEdge<String>, Integer>(), 0.0, 2.0);
-        assertTrue(this.solution.equals(differentSolution) == false);
-
-        differentSolution = new Solution<String>(null, "A", new HashMap<WeightedEdge<String>, Integer>(), 1.0, 3.0);
-        assertTrue(this.solution.equals(differentSolution) == false);
-
-        differentSolution = new Solution<String>(null, "B", new HashMap<WeightedEdge<String>, Integer>(), 1.0, 2.0);
-        assertTrue(this.solution.equals(differentSolution) == false);
-
-        final HashMap<WeightedEdge<String>, Integer> traversalByEdge = new HashMap<WeightedEdge<String>, Integer>();
-        traversalByEdge.put(WeightedEdge.from("A", "B", 1.0), 1);
-        differentSolution = new Solution<String>(null, "A", traversalByEdge, 1.0, 2.0);
-        assertTrue(this.solution.equals(differentSolution) == false);
-
-        final Solution<String> sameSolution = new Solution<String>(null, "A", new HashMap<WeightedEdge<String>, Integer>(), 1.0, 2.0);
-        assertTrue(this.solution.equals(sameSolution));
+        differentSolution = new Solution<String>(TRAVERSAL_BY_EDGE, 0.0, 2.0);
+        assertTrue(SOLUTION.equals(differentSolution) == false);
+        differentSolution = new Solution<String>(TRAVERSAL_BY_EDGE, 1.0, 3.0);
+        assertTrue(SOLUTION.equals(differentSolution) == false);
+        final Solution<String> sameSolution = new Solution<String>(TRAVERSAL_BY_EDGE, 1.0, 2.0);
+        assertTrue(SOLUTION.equals(sameSolution));
     }
 
-    //@Test
+    @Test
     public void testHashCode() {
-        fail("Not yet implemented");
+        fail("Not yet implemented"); // TODO
     }
 
 }

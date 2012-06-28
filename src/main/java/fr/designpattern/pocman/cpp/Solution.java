@@ -12,18 +12,6 @@ import fr.designpattern.pocman.graph.WeightedEdge;
 
 public final class Solution<T> {
 
-    private final UndirectedGraph<T> graph;
-
-    public UndirectedGraph<T> getGraph() {
-        return this.graph;
-    }
-
-    private final T startingVertex;
-
-    public T getStartingVertex() {
-        return this.startingVertex;
-    }
-
     private final Double lowerBoundCost;
 
     public Double getLowerBoundCost() {
@@ -32,22 +20,21 @@ public final class Solution<T> {
 
     private final Double upperBoundCost;
 
+    public Double getUpperBoundCost() {
+        return this.upperBoundCost;
+    }
+
     private final Map<WeightedEdge<T>, Integer> traversalByEdge;
+    public final UndirectedGraph<T> graph; // TODO
 
     public Map<WeightedEdge<T>, Integer> getTraversalByEdge() {
         return this.traversalByEdge;
     }
 
-    public Double getUpperBoundCost() {
-        return this.upperBoundCost;
-    }
-
     @Override
     public int hashCode() { // TODO à la construction
         int hashcode = 17;
-        hashcode += this.getStartingVertex().hashCode();
-        hashcode *= 31;
-        hashcode += this.getTraversalByEdge().hashCode(); // TODO
+        hashcode += this.getTraversalByEdge().hashCode(); // TODO ? sortedMap
         hashcode *= 31;
         hashcode += this.getUpperBoundCost().hashCode();
         hashcode *= 31;
@@ -62,21 +49,21 @@ public final class Solution<T> {
         if (object == this) return true;
         if (!(object instanceof Solution)) return false;
         final Solution<?> that = (Solution<?>) object;
-        //if (!that.getGraph().equals(this.getGraph())) return false; // TODO equals & hascode
         if (!that.getLowerBoundCost().equals(this.getLowerBoundCost())) return false;
         if (!that.getUpperBoundCost().equals(this.getUpperBoundCost())) return false;
-        if (!that.getStartingVertex().equals(this.getStartingVertex())) return false;
-        return that.getTraversalByEdge().equals(this.getTraversalByEdge());
+        return that.getTraversalByEdge().equals(this.getTraversalByEdge()); // TODO ? comparer uniquement la taille des maps
     }
 
-    public Solution(final UndirectedGraph<T> graph, final T startingVertex, final Map<WeightedEdge<T>, Integer> edgeInstances, final Double lowerBoundCost,
+    public Solution(final UndirectedGraph<T> graph, final Map<WeightedEdge<T>, Integer> traversalByEdge, final Double lowerBoundCost,
             final Double upperBoundCost) {
-        this.graph = graph;
-        this.startingVertex = startingVertex;
-        this.traversalByEdge = ImmutableMap.copyOf(edgeInstances);
+        Preconditions.checkArgument(traversalByEdge != null);
+        Preconditions.checkArgument(lowerBoundCost != null);
+        Preconditions.checkArgument(upperBoundCost != null);
+        this.traversalByEdge = ImmutableMap.copyOf(traversalByEdge);
         this.lowerBoundCost = lowerBoundCost;
         this.upperBoundCost = upperBoundCost;
         Preconditions.checkState(this.upperBoundCost >= this.lowerBoundCost, "Cost upper-bound must be greater than lower-bound.");
+        this.graph = graph;
     }
 
     @Override
@@ -85,9 +72,7 @@ public final class Solution<T> {
                 .add("Lower-Bound Cost", this.lowerBoundCost)
                 .add("Upper-Bound Cost", this.upperBoundCost)
                 .add("Extra Cost", this.upperBoundCost - this.lowerBoundCost)
-                .add("Starting Vertex", this.startingVertex)
                 .add("Traversal By Edge", this.traversalByEdge)
-                //.add("Graph", this.graph.toString()) // TODO
                 .toString();
     }
 

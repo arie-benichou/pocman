@@ -103,7 +103,7 @@ public final class MaximumMatching {
 
     private static <T> T findNodeLeavingCycle(final MutableUndirectedGraph<T> g, final Blossom<T> blossom, final T vertex) {
         for (final T cycleNode : blossom.vertices)
-            if (g.edgeExists(cycleNode, vertex)) return cycleNode;
+            if (g.hasEdge(cycleNode, vertex)) return cycleNode;
         throw new AssertionError("Could not find an edge out of the blossom.");
     }
 
@@ -175,7 +175,7 @@ public final class MaximumMatching {
         }
         while (!worklist.isEmpty()) {
             final Edge<T> current = worklist.remove();
-            if (!resultingGraph.edgeExists(current.start, current.end)) {
+            if (!resultingGraph.hasEdge(current.start, current.end)) {
                 final Vertex<T> startInfo = forest.get(current.start);
                 final Vertex<T> endInfo = forest.get(current.end);
                 if (endInfo == null) endInfoIsNull(originalGraph, resultingGraph, forest, worklist, current, startInfo);
@@ -194,7 +194,7 @@ public final class MaximumMatching {
         for (int i = 0; i < n; ++i) {
             final T vertex1 = path.get(i);
             final T vertex2 = path.get(i + 1);
-            if (resultingGraph.edgeExists(vertex1, vertex2)) resultingGraph.removeEdge(vertex1, vertex2);
+            if (resultingGraph.hasEdge(vertex1, vertex2)) resultingGraph.removeEdge(vertex1, vertex2);
             else resultingGraph.addEdge(vertex1, vertex2);
         }
         return true;
