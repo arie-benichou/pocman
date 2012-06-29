@@ -3,11 +3,11 @@ package pocman.demo;
 
 import org.junit.Test;
 
-public class ClosedChinesePostmanProblemTest {
+public class OpenChinesePostmanProblemTest {
 
     @Test
     public void testMain() {
-        ClosedChinesePostmanProblem.main(null);
+        OpenChinesePostmanProblem.main(null);
     }
 
 }

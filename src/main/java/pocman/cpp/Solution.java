@@ -9,7 +9,6 @@ import pocman.graph.WeightedEdge;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 
-
 public final class Solution<T> {
 
     private final Double lowerBoundCost;
@@ -31,7 +30,7 @@ public final class Solution<T> {
         return this.graph;
     }
 
-    private final T MazeNode;
+    private final T node;
 
     public Map<WeightedEdge<T>, Integer> getTraversalByEdge() {
         return this.traversalByEdge;
@@ -61,7 +60,7 @@ public final class Solution<T> {
     }
 
     public Solution(
-            final T MazeNode,
+            final T node,
             final UndirectedGraph<T> graph,
             final Map<WeightedEdge<T>, Integer> traversalByEdge,
             final Double lowerBoundCost,
@@ -70,7 +69,7 @@ public final class Solution<T> {
         //Preconditions.checkArgument(lowerBoundCost != null);
         //Preconditions.checkArgument(upperBoundCost != null);
         this.graph = graph;
-        this.MazeNode = MazeNode;
+        this.node = node;
         if (traversalByEdge != null) this.traversalByEdge = ImmutableMap.copyOf(traversalByEdge);
         else this.traversalByEdge = null;
         this.lowerBoundCost = lowerBoundCost;
@@ -78,17 +77,26 @@ public final class Solution<T> {
         //Preconditions.checkState(this.upperBoundCost >= this.lowerBoundCost, "Cost upper-bound must be greater than lower-bound.");
     }
 
-    /*
-    public OpenSolution(Node<T> node, UndirectedGraph<Node<T>> virtualGraph, Map<WeightedEdge<Node<T>>, Integer> traversalByEdge2, Double lowerBoundCost2,
-            Double upperBoundCost2) {
-        // TODO Auto-generated constructor stub
+    public Solution(
+            final Map<WeightedEdge<T>, Integer> traversalByEdge,
+            final Double lowerBoundCost,
+            final Double upperBoundCost) {
+        //Preconditions.checkArgument(traversalByEdge != null);
+        //Preconditions.checkArgument(lowerBoundCost != null);
+        //Preconditions.checkArgument(upperBoundCost != null);
+        this.graph = null;
+        this.node = null;
+        if (traversalByEdge != null) this.traversalByEdge = ImmutableMap.copyOf(traversalByEdge);
+        else this.traversalByEdge = null;
+        this.lowerBoundCost = lowerBoundCost;
+        this.upperBoundCost = upperBoundCost;
+        //Preconditions.checkState(this.upperBoundCost >= this.lowerBoundCost, "Cost upper-bound must be greater than lower-bound.");
     }
-    */
 
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
-                .add("MazeNode", this.getMazeNode())
+                .add("MazeNode", this.getEndPoint())
                 .add("Lower-Bound Cost", this.lowerBoundCost)
                 .add("Upper-Bound Cost", this.upperBoundCost)
                 .add("Extra Cost", this.upperBoundCost - this.lowerBoundCost)
@@ -96,8 +104,8 @@ public final class Solution<T> {
                 .toString();
     }
 
-    public T getMazeNode() {
-        return this.MazeNode;
+    public T getEndPoint() {
+        return this.node;
     }
 
 }

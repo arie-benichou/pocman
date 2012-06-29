@@ -22,9 +22,9 @@ public class MazeView {
         return sb.toString();
     }
 
-    public String renderAsBoard(final Maze maze, final MazeNode MazeNode) {
+    public String renderAsBoard(final Maze maze, final int nodeId) {
         final StringBuilder sb = new StringBuilder();
-        sb.append(this.mazeAsBoardView.render(maze, MazeNode));
+        sb.append(this.mazeAsBoardView.render(maze, nodeId));
         return sb.toString();
     }
 

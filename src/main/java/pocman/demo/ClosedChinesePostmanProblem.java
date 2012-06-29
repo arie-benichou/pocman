@@ -34,28 +34,6 @@ import com.google.common.base.Stopwatch;
 
 public class ClosedChinesePostmanProblem {
 
-    public final static String _MAZE = "" +
-
-            "┃⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃" +
-            "┃∙              ∙        ∙┃" +
-            "┃ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛⬛⬛ ┃" +
-            "┃∙        ∙┃∙   ∙   ∙┃∙  ∙┃" +
-            "┃ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃" +
-            "┃∙   ∙    ∙┃ ┃∙          ∙┃" +
-            "┃⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛ ┃ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ ┃" +
-            "┃∙   ∙  ∙┃∙ ∙┃∙ ∙        ∙┃" +
-            "┃⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛⬛⬛ ┃" +
-            "┃∙   ∙    ∙┃∙   ∙        ∙┃" +
-            "┃ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛⬛⬛⬛┃" +
-            "┃∙        ∙     ∙        ∙┃" +
-            "┃⬛⬛⬛⬛⬛⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃" +
-            "┃∙        ∙              ∙┃" +
-            "┃ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃" +
-            "┃∙  ∙┃∙   ∙┃⬤            ∙┃" +
-            "┃ ⬛⬛⬛⬛⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ ┃" +
-            "┃∙        ∙              ∙┃" +
-            "┃⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃";
-
     public final static String MAZE = Mazes.DEBUG11333;
 
     public static void main(final String[] args) {
@@ -66,8 +44,8 @@ public class ClosedChinesePostmanProblem {
         final ClosedCPP<MazeNode> closedCPPSolver = ClosedCPP.from(maze);
         final Solution<MazeNode> solution = closedCPPSolver.solve();
 
-        //Preconditions.checkState(solution.getLowerBoundCost().equals(190.0));
-        //Preconditions.checkState(solution.getUpperBoundCost().equals(357.0));
+        Preconditions.checkState(solution.getLowerBoundCost().equals(190.0));
+        Preconditions.checkState(solution.getUpperBoundCost().equals(380.0));
 
         final int pocManPosition = MAZE.indexOf(Tile.POCMAN.toCharacter());
         Preconditions.checkState(pocManPosition > -1, "POCMAN POSITION NOT FOUND !");
@@ -76,7 +54,6 @@ public class ClosedChinesePostmanProblem {
         stopwatch.stop();
 
         debug(maze, trail);
-        System.out.println(solution);
 
         System.out.println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS.toString());
 

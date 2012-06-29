@@ -5,16 +5,20 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import pocman.cpp.ClosedCPP;
-import pocman.cpp.OpenCPP;
 import pocman.graph.UndirectedGraph;
-
 
 public class OpenCPPTest {
 
     @Test(expected = IllegalArgumentException.class)
-    public void testFromNullReference() {
-        OpenCPP.from(null);
+    public void testFromNullReference1() {
+        final UndirectedGraph<?> graph = null;
+        OpenCPP.from(graph);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testFromNullReference2() {
+        final ClosedCPP<?> closedCPP = null;
+        OpenCPP.from(closedCPP);
     }
 
     @Test

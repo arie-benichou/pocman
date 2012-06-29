@@ -23,14 +23,11 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import pocman.cpp.ClosedCPP;
-import pocman.cpp.ClosedSolution;
 import pocman.graph.UndirectedGraph;
 import pocman.graph.WeightedEdge;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
-
 
 public class ClosedCPPTest {
 
@@ -104,8 +101,8 @@ public class ClosedCPPTest {
         final UndirectedGraph<String> input = new UndirectedGraph.Builder<String>(2).addEdge("A", "B", 1.0).build();
         final Map<WeightedEdge<String>, Integer> expectedTraversalByEdge = Maps.newHashMap();
         expectedTraversalByEdge.put(input.getEdge("A", "B"), 2);
-        final ClosedSolution<String> expectedSolution = new ClosedSolution<String>(expectedTraversalByEdge, 1.0, 2.0);
-        final ClosedSolution<String> solution = ClosedCPP.from(input).solve();
+        final Solution<String> expectedSolution = new Solution<String>(expectedTraversalByEdge, 1.0, 2.0);
+        final Solution<String> solution = ClosedCPP.from(input).solve();
         assertTrue(solution.equals(expectedSolution));
     }
 
@@ -121,8 +118,8 @@ public class ClosedCPPTest {
         expectedTraversalByEdge.put(input.getEdge("A", "B"), 1);
         expectedTraversalByEdge.put(input.getEdge("B", "C"), 1);
         expectedTraversalByEdge.put(input.getEdge("C", "A"), 1);
-        final ClosedSolution<String> expectedSolution = new ClosedSolution<String>(expectedTraversalByEdge, 3.0, 3.0);
-        final ClosedSolution<String> solution = ClosedCPP.from(input).solve();
+        final Solution<String> expectedSolution = new Solution<String>(expectedTraversalByEdge, 3.0, 3.0);
+        final Solution<String> solution = ClosedCPP.from(input).solve();
         assertTrue(solution.equals(expectedSolution));
     }
 

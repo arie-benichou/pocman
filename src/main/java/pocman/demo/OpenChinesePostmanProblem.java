@@ -32,44 +32,13 @@ import pocman.view.MazeView;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 
-
 public class OpenChinesePostmanProblem {
 
-    public final static String _MAZE = "" +
-
-            "┃⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃" +
-            "┃∙              ∙        ∙┃" +
-            "┃ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛ ⬛ ┃" +
-            "┃∙  ┃                   ┃ ┃" +
-            "┃ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃ ┃" +
-            "┃∙   ∙    ∙┃ ┃∙         ┃∙┃" +
-            "┃⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛ ┃ ⬛⬛⬛⬛⬛⬛⬛⬛ ┃⬛┃" +
-            "┃∙   ∙  ∙┃∙ ∙┃∙ ∙        ∙┃" +
-            "┃⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛⬛⬛ ┃" +
-            "┃∙   ∙    ∙┃∙   ∙        ∙┃" +
-            "┃ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛⬛⬛⬛┃" +
-            "┃∙        ∙     ∙        ∙┃" +
-            "┃⬛⬛⬛⬛⬛⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃" +
-            "┃∙        ∙              ∙┃" +
-            "┃ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃" +
-            "┃∙  ∙┃∙   ∙┃⬤            ∙┃" +
-            "┃ ⬛⬛⬛⬛⬛⬛⬛⬛ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ ┃" +
-            "┃∙        ∙              ∙┃" +
-            "┃⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃";
-
-    //public final static String MAZE = Mazes.LEVEL155;
-
-    //public final static String MAZE = Mazes.DEBUG11455;
     public final static String MAZE = Mazes.DEBUG11333;
-
-    //public final static String MAZE = Mazes.DEBUG1556;
-    //public final static String MAZE = Mazes.DEBUG1150;
-    //public final static String MAZE = Mazes.DEBUG12;
 
     public static void main(final String[] args) {
 
-        final Stopwatch stopwatch = new Stopwatch();
-        stopwatch.start();
+        final Stopwatch stopwatch = new Stopwatch().start();
 
         final int pocManPosition = MAZE.indexOf(Tile.POCMAN.toCharacter());
         Preconditions.checkState(pocManPosition > -1, "POCMAN POSITION NOT FOUND !");
@@ -78,12 +47,15 @@ public class OpenChinesePostmanProblem {
         final OpenCPP<MazeNode> openCPP = OpenCPP.from(maze);
         final Solution<MazeNode> solution = openCPP.solveFrom(maze.getNode(pocManPosition));
 
-        final List<MazeNode> trail = EulerianTrail.from(maze, solution.getTraversalByEdge(), solution.getMazeNode());
+        Preconditions.checkState(solution.getLowerBoundCost().equals(190.0));
+        Preconditions.checkState(solution.getUpperBoundCost().equals(290.0));
+        Preconditions.checkState(solution.getEndPoint().equals(maze.getNode(196)));
+
+        final List<MazeNode> trail = EulerianTrail.from(maze, solution.getTraversalByEdge(), solution.getEndPoint());
 
         stopwatch.stop();
 
         debug(maze, trail);
-
         System.out.println(stopwatch.elapsedTime(TimeUnit.SECONDS) + " " + TimeUnit.SECONDS.toString());
 
     }
@@ -91,11 +63,12 @@ public class OpenChinesePostmanProblem {
     private static void debug(final Maze maze, final List<MazeNode> trail) {
         final MazeView view = new MazeView();
         for (final MazeNode MazeNode : trail) {
-            System.out.println(view.renderAsBoard(maze, MazeNode));
+            System.out.println(view.renderAsBoard(maze, MazeNode.getId()));
             try {
                 Thread.sleep(200);
             }
             catch (final InterruptedException e) {}
         }
     }
+
 }

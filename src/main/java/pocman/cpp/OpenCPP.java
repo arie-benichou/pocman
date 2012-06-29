@@ -154,7 +154,7 @@ public final class OpenCPP<T> {
             traversalByEdge.put(this.getGraph().getEdge(data1, data2), entry.getValue());
         }
         final Solution<T> unboxedSolution = new Solution<T>(
-                bestSolution.getMazeNode().getData(),
+                bestSolution.getEndPoint().getData(),
                 this.getGraph(),
                 traversalByEdge,
                 this.getLowerBoundCost(),

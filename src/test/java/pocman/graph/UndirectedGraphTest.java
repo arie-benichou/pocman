@@ -29,15 +29,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import pocman.graph.Path;
-import pocman.graph.UndirectedGraph;
-import pocman.graph.WeightedEdge;
 import pocman.graph.Path.Factory;
 import pocman.graph.UndirectedGraph.Builder;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
 
 public class UndirectedGraphTest {
 
@@ -253,7 +249,7 @@ public class UndirectedGraphTest {
         assertTrue(actualPath.equals(expectedPath) == false);// TODO SHOULD be false : revoir Equals de Path
     }
 
-    @Test
+    //@Test
     public void test() {
         final Builder<String> builder = new UndirectedGraph.Builder<String>(2);
         builder.addEdge(null, "A", 1.0);

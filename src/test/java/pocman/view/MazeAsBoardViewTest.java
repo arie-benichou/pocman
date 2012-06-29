@@ -24,8 +24,6 @@ import org.junit.Test;
 
 import pocman.maze.Maze;
 import pocman.maze.MazeAsBoard;
-import pocman.view.MazeAsBoardView;
-
 
 public class MazeAsBoardViewTest {
 
@@ -85,7 +83,6 @@ public class MazeAsBoardViewTest {
         final int nodeId = MazeAsBoard.SIZE - 1;
         final MazeAsBoardView view = new MazeAsBoardView();
         final String rendering = view.render(MAZE, nodeId);
-        System.out.println(rendering);
         final char[] charArray = MAZE.toCharArray();
         charArray[nodeId] = MazeAsBoardView.YOUR_ARE_HERE;
         assertTrue((nodeId + new String(charArray)).equals(rendering.replaceAll("\n", "")));

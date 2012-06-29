@@ -39,8 +39,8 @@ public final class WeightedEdge<T> implements Comparable<WeightedEdge<T>> {
 
     private WeightedEdge(final T endPoint1, final T endPoint2, final double weight) {
 
-        //Preconditions.checkArgument(endPoint1 != null);
-        //Preconditions.checkArgument(endPoint2 != null);
+        Preconditions.checkArgument(endPoint1 != null);
+        Preconditions.checkArgument(endPoint2 != null);
         Preconditions.checkArgument(!(endPoint1 == null && endPoint2 == null));
 
         if (endPoint1 != null)

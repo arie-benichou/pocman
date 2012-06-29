@@ -19,10 +19,8 @@ package pocman.view;
 
 import pocman.maze.Maze;
 import pocman.maze.MazeAsBoard;
-import pocman.maze.MazeNode;
 
 import com.google.common.base.Preconditions;
-
 
 public class MazeAsBoardView {
 
@@ -43,9 +41,19 @@ public class MazeAsBoardView {
         return this.render(maze.toCharArray());
     }
 
+    /*
     public String render(final Maze maze, final MazeNode MazeNode) {
         Preconditions.checkArgument(maze != null);
         final int nodeId = MazeNode.getId();
+        Preconditions.checkArgument(nodeId >= 0 && nodeId < maze.size());
+        final char[] charArray = maze.toCharArray();
+        charArray[nodeId] = YOUR_ARE_HERE;
+        return nodeId + "\n" + this.render(charArray);
+    }
+    */
+
+    public String render(final Maze maze, final int nodeId) {
+        Preconditions.checkArgument(maze != null);
         Preconditions.checkArgument(nodeId >= 0 && nodeId < maze.size());
         final char[] charArray = maze.toCharArray();
         charArray[nodeId] = YOUR_ARE_HERE;
