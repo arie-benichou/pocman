@@ -8,6 +8,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
+import pocman.game.Constants;
+import pocman.maze.MazeAsBoard;
+import pocman.view.MazeAsBoardView;
+
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -19,9 +23,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
-import fr.designpattern.pocman.game.Constants;
-import fr.designpattern.pocman.game.MazeAsBoard;
-import fr.designpattern.pocman.view.MazeAsBoardView;
 
 public class ClosedCPPSolver {
 
@@ -31,20 +32,20 @@ public class ClosedCPPSolver {
         return this.gameGraph;
     }
 
-    public List<Edge> getEdgesByVertexId(final Integer vertexId) {
-        return this.gameGraph.getEdgesByVertexId(vertexId);
+    public List<Edge> getEdgesByMazeNodeId(final Integer MazeNodeId) {
+        return this.gameGraph.getEdgesByMazeNodeId(MazeNodeId);
     }
 
-    private Path getShortestPaths(final Integer vertexIndex1, final Integer vertexIndex2) {
-        return this.gameGraph.getShortestPath(vertexIndex1, vertexIndex2);
+    private Path getShortestPaths(final Integer MazeNodeIndex1, final Integer MazeNodeIndex2) {
+        return this.gameGraph.getShortestPath(MazeNodeIndex1, MazeNodeIndex2);
     }
 
-    public Integer getVertexIdByVertexIndex(final Integer vertexIndex) {
-        return this.gameGraph.getVertexIdByVertexIndex(vertexIndex);
+    public Integer getMazeNodeIdByMazeNodeIndex(final Integer MazeNodeIndex) {
+        return this.gameGraph.getMazeNodeIdByMazeNodeIndex(MazeNodeIndex);
     }
 
-    public Integer getVertexIndexByVertexId(final Integer vertexId) {
-        return this.gameGraph.getVertexIndexByVertexId(vertexId);
+    public Integer getMazeNodeIndexByMazeNodeId(final Integer MazeNodeId) {
+        return this.gameGraph.getMazeNodeIndexByMazeNodeId(MazeNodeId);
     }
 
     private final Map<Edge, Integer> edgeInstancesByEdgeHascode;
@@ -89,7 +90,7 @@ public class ClosedCPPSolver {
             for (int j = 0; j < oddVertices.size(); ++j) {
                 if (i != j) {
                     final Path path = this.getShortestPaths(oddVertices.get(i), oddVertices.get(j));
-                    if (!builder.contains(path.hashCode())) builder.addEdge(path.hashCode(), path.getFirstVertex(), path.getLastVertex(), path.getCost());
+                    if (!builder.contains(path.hashCode())) builder.addEdge(path.hashCode(), path.getFirstMazeNode(), path.getLastMazeNode(), path.getCost());
                 }
             }
         }
@@ -100,8 +101,8 @@ public class ClosedCPPSolver {
         return Lists.transform(verticeIds, new Function<Integer, Integer>() {
 
             @Override
-            public Integer apply(final Integer vertexId) {
-                return ClosedCPPSolver.this.getVertexIndexByVertexId(vertexId);
+            public Integer apply(final Integer MazeNodeId) {
+                return ClosedCPPSolver.this.getMazeNodeIndexByMazeNodeId(MazeNodeId);
             }
         });
     }
@@ -111,8 +112,8 @@ public class ClosedCPPSolver {
         return Lists.transform(verticeIds, new Function<Integer, Integer>() {
 
             @Override
-            public Integer apply(final Integer vertexId) {
-                return ClosedCPPSolver.this.getVertexIdByVertexIndex(vertexId);
+            public Integer apply(final Integer MazeNodeId) {
+                return ClosedCPPSolver.this.getMazeNodeIdByMazeNodeIndex(MazeNodeId);
             }
         });
     }
@@ -123,25 +124,25 @@ public class ClosedCPPSolver {
 
             @Override
             public Path apply(final MatchingSolver.Position position) {
-                final int vertexIndex1 = oddVertices.get(position.getRowIndex());
-                final int vertexIndex2 = oddVertices.get(position.getColumnIndex());
-                return ClosedCPPSolver.this.getShortestPaths(vertexIndex1, vertexIndex2);
+                final int MazeNodeIndex1 = oddVertices.get(position.getRowIndex());
+                final int MazeNodeIndex2 = oddVertices.get(position.getColumnIndex());
+                return ClosedCPPSolver.this.getShortestPaths(MazeNodeIndex1, MazeNodeIndex2);
             }
         };
     }
 
     // TODO extract algo
-    public void fleuryEulerianTrailAlgorithm(final int vertexId, final Map<Edge, Integer> map, final List<Integer> trail) {
-        final List<Edge> edges = this.getEdgesByVertexId(vertexId);
+    public void fleuryEulerianTrailAlgorithm(final int MazeNodeId, final Map<Edge, Integer> map, final List<Integer> trail) {
+        final List<Edge> edges = this.getEdgesByMazeNodeId(MazeNodeId);
         for (final Edge edge : edges) {
             final Integer integer = map.get(edge);
             if (integer < 1) continue;
             map.put(edge, integer - 1);
-            final int v = edge.getFirstVertex() == vertexId ? edge.getLastVertex() : edge.getFirstVertex();
-            //final int v = edge.getLastVertex();
+            final int v = edge.getFirstMazeNode() == MazeNodeId ? edge.getLastMazeNode() : edge.getFirstMazeNode();
+            //final int v = edge.getLastMazeNode();
             this.fleuryEulerianTrailAlgorithm(v, map, trail);
         }
-        trail.add(vertexId);
+        trail.add(MazeNodeId);
     }
 
     public void debugTrail(final List<Integer> trail) throws InterruptedException {
@@ -162,9 +163,9 @@ public class ClosedCPPSolver {
         final Set<Integer> oddVerticeIds = Sets.newHashSet();
 
         for (int i = 0; i < this.gameGraph.getNumberOfVertices(); ++i) {
-            final Integer vertexId = this.getVertexIdByVertexIndex(i);
-            final List<Edge> edges = this.getEdgesByVertexId(vertexId);
-            if (edges.size() % 2 == 1) oddVerticeIds.add(vertexId);
+            final Integer MazeNodeId = this.getMazeNodeIdByMazeNodeIndex(i);
+            final List<Edge> edges = this.getEdgesByMazeNodeId(MazeNodeId);
+            if (edges.size() % 2 == 1) oddVerticeIds.add(MazeNodeId);
             for (final Edge edge : edges)
                 edgeInstancesByEdgeHascode.put(edge, 1);
         }
@@ -172,10 +173,10 @@ public class ClosedCPPSolver {
         // TODO ?! contracter les noeuds de type corner en utilisant un path
         final HashSet<Integer> prunableOddVertices = Sets.newHashSet();
         for (final Integer u : oddVerticeIds) {
-            final List<Edge> edges = this.getEdgesByVertexId(u);
+            final List<Edge> edges = this.getEdgesByMazeNodeId(u);
             if (edges.size() == 1) {
                 final Edge edge = edges.get(0);
-                final Integer v = edge.getLastVertex();
+                final Integer v = edge.getLastMazeNode();
                 if (oddVerticeIds.contains(v) && !prunableOddVertices.contains(v)) {
                     // TODO revoir l'élagage
                     //prunableOddVertices.add(u);
@@ -189,9 +190,9 @@ public class ClosedCPPSolver {
 
         final TreeMap<Double, List<Integer>> map = Maps.newTreeMap();
 
-        for (final Integer vertexIndex : prunedOddVertices) {
-            final Integer vertexId = this.getVertexIdByVertexIndex(vertexIndex);
-            final List<Edge> edges = this.getEdgesByVertexId(vertexId);
+        for (final Integer MazeNodeIndex : prunedOddVertices) {
+            final Integer MazeNodeId = this.getMazeNodeIdByMazeNodeIndex(MazeNodeIndex);
+            final List<Edge> edges = this.getEdgesByMazeNodeId(MazeNodeId);
             /*
             double cost = 0;
             for (final Edge edge : edges) {
@@ -210,9 +211,9 @@ public class ClosedCPPSolver {
 
             List<Integer> list = map.get(cost);
             if (list == null) list = Lists.newArrayList();
-            list.add(vertexIndex);
+            list.add(MazeNodeIndex);
             map.put(cost, list);
-            //System.out.println(vertexId + " : " + cost);
+            //System.out.println(MazeNodeId + " : " + cost);
         }
 
         /*
@@ -291,19 +292,19 @@ public class ClosedCPPSolver {
 
         final GameGraph gameGraph = closedCPPSolver.getGameGraph();
 
-        final Map<Integer, List<Edge>> edgesByVertexId = Maps.newHashMap(gameGraph.getEdgesByVertexId());
+        final Map<Integer, List<Edge>> edgesByMazeNodeId = Maps.newHashMap(gameGraph.getEdgesByMazeNodeId());
 
         final double virtualCost = virtualFrom.getCost();
-        final Integer virtualVertexId = gameGraph.getVertexIdByVertexIndex(virtualFrom.getU());
-        Preconditions.checkState(virtualVertexId == 513); // TODO MAX ID
-        final Integer startingVertexId = gameGraph.getVertexIdByVertexIndex(virtualFrom.getV());
-        final Integer startingOrOddVertexId = gameGraph.getVertexIdByVertexIndex(virtualTo.getU());
+        final Integer virtualMazeNodeId = gameGraph.getMazeNodeIdByMazeNodeIndex(virtualFrom.getU());
+        Preconditions.checkState(virtualMazeNodeId == 513); // TODO MAX ID
+        final Integer startingMazeNodeId = gameGraph.getMazeNodeIdByMazeNodeIndex(virtualFrom.getV());
+        final Integer startingOrOddMazeNodeId = gameGraph.getMazeNodeIdByMazeNodeIndex(virtualTo.getU());
 
-        // TODO ? gérer le cas où startingOrOddVertexId = startingVertexId
+        // TODO ? gérer le cas où startingOrOddMazeNodeId = startingMazeNodeId
 
-        final Edge edge1 = new Edge(virtualVertexId, startingVertexId, virtualCost);
+        final Edge edge1 = new Edge(virtualMazeNodeId, startingMazeNodeId, virtualCost);
         final Edge symetricOfEdge1 = edge1.getSymetric();
-        final Edge edge2 = new Edge(startingOrOddVertexId, virtualVertexId, virtualCost);
+        final Edge edge2 = new Edge(startingOrOddMazeNodeId, virtualMazeNodeId, virtualCost);
         final Edge symetricOfEdge2 = edge2.getSymetric();
 
         /*
@@ -317,44 +318,44 @@ public class ClosedCPPSolver {
         System.out.println();
         */
 
-        final List<Edge> edgesOfStartingVertex = Lists.newArrayList(edgesByVertexId.get(startingVertexId));
-        edgesOfStartingVertex.add(symetricOfEdge1);
-        edgesByVertexId.put(startingVertexId, ImmutableList.copyOf(edgesOfStartingVertex));
+        final List<Edge> edgesOfStartingMazeNode = Lists.newArrayList(edgesByMazeNodeId.get(startingMazeNodeId));
+        edgesOfStartingMazeNode.add(symetricOfEdge1);
+        edgesByMazeNodeId.put(startingMazeNodeId, ImmutableList.copyOf(edgesOfStartingMazeNode));
 
         /*
         System.out.println();
-        System.out.println(startingOrOddVertexId);
-        System.out.println(startingVertexId);
+        System.out.println(startingOrOddMazeNodeId);
+        System.out.println(startingMazeNodeId);
         System.out.println();
 
-        System.out.println(!startingOrOddVertexId.equals(startingVertexId));
+        System.out.println(!startingOrOddMazeNodeId.equals(startingMazeNodeId));
         */
 
-        if (!startingOrOddVertexId.equals(startingVertexId)) {
-            final List<Edge> edgesOfStartingOrOddVertexId = Lists.newArrayList(edgesByVertexId.get(startingOrOddVertexId));
-            edgesOfStartingOrOddVertexId.add(edge2);
-            edgesByVertexId.put(startingOrOddVertexId, ImmutableList.copyOf(edgesOfStartingOrOddVertexId));
-            edgesByVertexId.put(virtualVertexId, ImmutableList.of(edge1, symetricOfEdge2));
+        if (!startingOrOddMazeNodeId.equals(startingMazeNodeId)) {
+            final List<Edge> edgesOfStartingOrOddMazeNodeId = Lists.newArrayList(edgesByMazeNodeId.get(startingOrOddMazeNodeId));
+            edgesOfStartingOrOddMazeNodeId.add(edge2);
+            edgesByMazeNodeId.put(startingOrOddMazeNodeId, ImmutableList.copyOf(edgesOfStartingOrOddMazeNodeId));
+            edgesByMazeNodeId.put(virtualMazeNodeId, ImmutableList.of(edge1, symetricOfEdge2));
         }
         else {
-            edgesByVertexId.put(virtualVertexId, ImmutableList.of(edge1));
+            edgesByMazeNodeId.put(virtualMazeNodeId, ImmutableList.of(edge1));
         }
-        //edgesByVertexId.put(virtualVertexId, ImmutableList.of(edge1, symetricOfEdge2));
+        //edgesByMazeNodeId.put(virtualMazeNodeId, ImmutableList.of(edge1, symetricOfEdge2));
 
-        //System.out.println(edgesOfStartingVertex);
-        //System.out.println(edgesOfStartingOrOddVertexId);
+        //System.out.println(edgesOfStartingMazeNode);
+        //System.out.println(edgesOfStartingOrOddMazeNodeId);
 
         final Builder<Integer, List<Edge>> builder = new ImmutableSortedMap.Builder<Integer, List<Edge>>(Ordering.natural());
-        builder.putAll(edgesByVertexId);
+        builder.putAll(edgesByMazeNodeId);
 
-        final Map<Integer, List<Edge>> IedgesByVertexId = builder.build();
+        final Map<Integer, List<Edge>> IedgesByMazeNodeId = builder.build();
         /*
-        for (final Entry<Integer, List<Edge>> entry : IedgesByVertexId.entrySet())
+        for (final Entry<Integer, List<Edge>> entry : IedgesByMazeNodeId.entrySet())
             System.out.println(entry + ": " + entry.getValue().size());
         */
         //System.exit(0);
 
-        return new GameGraph(gameGraph.getBoard(), gameGraph.getWalkableGameTiles(), IedgesByVertexId);
+        return new GameGraph(gameGraph.getBoard(), gameGraph.getWalkableGameTiles(), IedgesByMazeNodeId);
 
     }
 
@@ -362,15 +363,15 @@ public class ClosedCPPSolver {
         this(newGameGraph(closedCPPSolver, virtualFrom, virtualTo));
     }
 
-    // TODO ?! utiliser l'objet Vertex à la place de vertexId
-    public List<Integer> solveFrom(final int vertexIndex) {
+    // TODO ?! utiliser l'objet MazeNode à la place de MazeNodeId
+    public List<Integer> solveFrom(final int MazeNodeIndex) {
 
         for (final Entry<Edge, Integer> iterable_element : this.edgeInstancesByEdgeHascode.entrySet()) {
             System.out.println(iterable_element);
         }
 
         final List<Integer> trail = Lists.newArrayList();
-        this.fleuryEulerianTrailAlgorithm(this.getVertexIdByVertexIndex(vertexIndex), Maps.newHashMap(this.edgeInstancesByEdgeHascode), trail);
+        this.fleuryEulerianTrailAlgorithm(this.getMazeNodeIdByMazeNodeIndex(MazeNodeIndex), Maps.newHashMap(this.edgeInstancesByEdgeHascode), trail);
         return trail;
     }
 

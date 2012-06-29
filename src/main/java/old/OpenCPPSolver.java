@@ -32,7 +32,7 @@ public class OpenCPPSolver {
         this.lowerBoundCost = closedCPPSolver.getLowerBoundCost();
     }
 
-    public void solveFrom(final int startingVertexIndex) {
+    public void solveFrom(final int startingMazeNodeIndex) {
 
         final int n = this.getGameGraph().getNumberOfVertices();
         final int numberOfOddVertices = this.getClosedCPPSolver().getOddVerticeIndexes().size();
@@ -51,14 +51,14 @@ public class OpenCPPSolver {
             final Arc virtualFrom = Arc.from(
                     "Virtual Start",
                     n,
-                    startingVertexIndex,
+                    startingMazeNodeIndex,
                     cost
                     );
 
             final Arc virtualTo = Arc.from(
                     "Virtual End",
-                    this.getClosedCPPSolver().hasEulerianTrail() ? startingVertexIndex : this.getClosedCPPSolver().getOddVerticeIndexes().get(i),
-                    //this.getClosedCPPSolver().hasEulerianTrail() ? startingVertexIndex : i,
+                    this.getClosedCPPSolver().hasEulerianTrail() ? startingMazeNodeIndex : this.getClosedCPPSolver().getOddVerticeIndexes().get(i),
+                    //this.getClosedCPPSolver().hasEulerianTrail() ? startingMazeNodeIndex : i,
                     n,
                     cost
                     );

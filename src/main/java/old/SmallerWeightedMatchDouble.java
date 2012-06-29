@@ -12,7 +12,7 @@ public final class SmallerWeightedMatchDouble {
 
     private int V;
     private int E;
-    private int dummyVertex;
+    private int dummyMazeNode;
     private int dummyEdge;
 
     private int[] adjacency;
@@ -26,19 +26,19 @@ public final class SmallerWeightedMatchDouble {
 
     private int[] base;
     private final int[] lastEdge = new int[3];
-    private int[] lastVertex;
+    private int[] lastMazeNode;
     private int[] link;
 
     private int[] nextEdge;
     private int[] nextPair;
-    private int[] nextVertex;
+    private int[] nextMazeNode;
 
     private int newBase, nextBase;
     private int stopScan, pairPoint;
     private int neighbor, newLast, nextPoint;
     private int oldFirst, secondMate;
     private int f, nxtEdge, nextE, nextU;
-    private int e, v, i; // edge, vertex, index used by several methods.
+    private int e, v, i; // edge, MazeNode, index used by several methods.
 
     public SmallerWeightedMatchDouble(final double[][] costs) {
         this.costs = costs;
@@ -50,7 +50,7 @@ public final class SmallerWeightedMatchDouble {
         while (true) {
             this.delta = 0;
             for (this.v = 1; this.v <= this.V; this.v++)
-                if (this.mate[this.v] == this.dummyEdge) this.pointer(this.dummyVertex, this.v, this.dummyEdge);
+                if (this.mate[this.v] == this.dummyEdge) this.pointer(this.dummyMazeNode, this.v, this.dummyEdge);
             while (true) {
                 this.i = 1;
                 for (int j = 2; j <= this.V; j++)
@@ -61,7 +61,7 @@ public final class SmallerWeightedMatchDouble {
                     this.unpairAll();
                     for (this.i = 1; this.i <= this.V; this.i++) {
                         this.mate[this.i] = this.end[this.mate[this.i]];
-                        if (this.mate[this.i] == this.dummyVertex) this.mate[this.i] = UNMATCHED;
+                        if (this.mate[this.i] == this.dummyMazeNode) this.mate[this.i] = UNMATCHED;
                     }
                     return this.mate;
                 }
@@ -106,9 +106,9 @@ public final class SmallerWeightedMatchDouble {
 
     private void initialize(final double[][] costs, final boolean minimizeWeight) {
         this.setUp(costs);
-        this.dummyVertex = this.V + 1;
+        this.dummyMazeNode = this.V + 1;
         this.dummyEdge = this.V + 2 * this.E + 1;
-        this.end[this.dummyEdge] = this.dummyVertex;
+        this.end[this.dummyEdge] = this.dummyMazeNode;
         double maxWeight = Integer.MIN_VALUE;
         double minWeight = Integer.MAX_VALUE;
         for (int i = 0; i < this.V; i++)
@@ -129,8 +129,8 @@ public final class SmallerWeightedMatchDouble {
         this.mate = new int[allocationSize];
         this.link = new int[allocationSize];
         this.base = new int[allocationSize];
-        this.nextVertex = new int[allocationSize];
-        this.lastVertex = new int[allocationSize];
+        this.nextMazeNode = new int[allocationSize];
+        this.lastMazeNode = new int[allocationSize];
         this.y = new double[allocationSize];
         this.nextDelta = new double[allocationSize];
         this.nextEdge = new int[allocationSize];
@@ -138,9 +138,9 @@ public final class SmallerWeightedMatchDouble {
         this.nextPair = new int[allocationSize];
         for (this.i = 1; this.i <= this.V + 1; this.i++) {
             this.mate[this.i] = this.nextEdge[this.i] = this.dummyEdge;
-            this.nextVertex[this.i] = 0;
+            this.nextMazeNode[this.i] = 0;
             this.link[this.i] = -this.dummyEdge;
-            this.base[this.i] = this.lastVertex[this.i] = this.i;
+            this.base[this.i] = this.lastMazeNode[this.i] = this.i;
             this.y[this.i] = this.nextDelta[this.i] = this.lastDelta;
 
         }
@@ -180,15 +180,15 @@ public final class SmallerWeightedMatchDouble {
         for (this.v = this.bend(e); this.v != this.newBase; this.v = this.bend(e)) {
             u = this.bmate(this.v);
             this.link[u] = this.oppEdge(e);
-            this.nextVertex[this.newLast] = this.v;
-            this.nextVertex[this.lastVertex[this.v]] = u;
-            this.newLast = this.lastVertex[u];
+            this.nextMazeNode[this.newLast] = this.v;
+            this.nextMazeNode[this.lastMazeNode[this.v]] = u;
+            this.newLast = this.lastMazeNode[u];
             this.i = this.v;
             do {
                 this.base[this.i] = this.newBase;
-                this.i = this.nextVertex[this.i];
+                this.i = this.nextMazeNode[this.i];
             }
-            while (this.i != this.dummyVertex);
+            while (this.i != this.dummyMazeNode);
             e = this.link[this.v];
         }
     }
@@ -222,21 +222,21 @@ public final class SmallerWeightedMatchDouble {
             this.v = this.blink(this.v);
             u = this.bmate(this.v);
         }
-        if (u == this.dummyVertex && this.v != w) return true;
+        if (u == this.dummyMazeNode && this.v != w) return true;
         this.newLast = this.newBase = this.v;
-        this.oldFirst = this.nextVertex[this.v];
+        this.oldFirst = this.nextMazeNode[this.v];
         this.linkPath(this.e);
         this.linkPath(this.oppEdge(this.e));
-        this.nextVertex[this.newLast] = this.oldFirst;
-        if (this.lastVertex[this.newBase] == this.newBase) this.lastVertex[this.newBase] = this.newLast;
+        this.nextMazeNode[this.newLast] = this.oldFirst;
+        if (this.lastMazeNode[this.newBase] == this.newBase) this.lastMazeNode[this.newBase] = this.newLast;
         this.nextPair[this.dummyEdge] = this.dummyEdge;
         this.mergePairs(this.newBase);
-        this.i = this.nextVertex[this.newBase];
+        this.i = this.nextMazeNode[this.newBase];
         do {
             this.mergePairs(this.i);
-            this.i = this.nextVertex[this.lastVertex[this.i]];
+            this.i = this.nextMazeNode[this.lastMazeNode[this.i]];
             this.scan(this.i, 2 * this.delta - this.slack(this.mate[this.i]));
-            this.i = this.nextVertex[this.lastVertex[this.i]];
+            this.i = this.nextMazeNode[this.lastMazeNode[this.i]];
         }
         while (this.i != this.oldFirst);
         return false;
@@ -246,14 +246,14 @@ public final class SmallerWeightedMatchDouble {
         int i;
         double del;
         this.link[u] = -this.dummyEdge;
-        this.nextVertex[this.lastVertex[u]] = this.nextVertex[this.lastVertex[v]] = this.dummyVertex;
-        if (this.lastVertex[u] != u) {
-            i = this.mate[this.nextVertex[u]];
+        this.nextMazeNode[this.lastMazeNode[u]] = this.nextMazeNode[this.lastMazeNode[v]] = this.dummyMazeNode;
+        if (this.lastMazeNode[u] != u) {
+            i = this.mate[this.nextMazeNode[u]];
             del = -this.slack(i) / 2;
         }
         else del = this.lastDelta;
         i = u;
-        for (; i != this.dummyVertex; i = this.nextVertex[i]) {
+        for (; i != this.dummyMazeNode; i = this.nextMazeNode[i]) {
             this.y[i] += del;
             this.nextDelta[i] += del;
         }
@@ -286,8 +286,8 @@ public final class SmallerWeightedMatchDouble {
         int u;
         double delE;
         this.newBase = this.base[x];
-        this.stopScan = this.nextVertex[this.lastVertex[x]];
-        for (; x != this.stopScan; x = this.nextVertex[x]) {
+        this.stopScan = this.nextMazeNode[this.lastMazeNode[x]];
+        for (; x != this.stopScan; x = this.nextMazeNode[x]) {
             this.y[x] += delta;
             this.nextDelta[x] = this.lastDelta;
             this.pairPoint = this.dummyEdge;
@@ -296,7 +296,7 @@ public final class SmallerWeightedMatchDouble {
                 this.neighbor = this.end[this.e];
                 u = this.base[this.neighbor];
                 if (this.link[u] < 0) {
-                    if (this.link[this.bmate(u)] < 0 || this.lastVertex[u] != u) {
+                    if (this.link[this.bmate(u)] < 0 || this.lastMazeNode[u] != u) {
                         delE = this.slack(this.e);
                         if (this.nextDelta[this.neighbor] > delE) {
                             this.nextDelta[this.neighbor] = delE;
@@ -319,17 +319,17 @@ public final class SmallerWeightedMatchDouble {
             }
             this.link[this.v] = -this.link[this.v];
             this.i = this.v;
-            while (this.i != this.dummyVertex) {
+            while (this.i != this.dummyMazeNode) {
                 this.y[this.i] -= this.delta;
-                this.i = this.nextVertex[this.i];
+                this.i = this.nextMazeNode[this.i];
             }
             this.f = this.mate[this.v];
             if (this.f != this.dummyEdge) {
                 this.i = this.bend(this.f);
                 del = this.slack(this.f);
-                while (this.i != this.dummyVertex) {
+                while (this.i != this.dummyMazeNode) {
                     this.y[this.i] -= del;
-                    this.i = this.nextVertex[this.i];
+                    this.i = this.nextMazeNode[this.i];
                 }
             }
             this.nextDelta[this.v] = this.lastDelta;
@@ -353,8 +353,8 @@ public final class SmallerWeightedMatchDouble {
     }
 
     private void unlink(final int oldBase) {
-        this.i = this.newBase = this.nextVertex[oldBase];
-        this.nextBase = this.nextVertex[this.lastVertex[this.newBase]];
+        this.i = this.newBase = this.nextMazeNode[oldBase];
+        this.nextBase = this.nextMazeNode[this.lastMazeNode[this.newBase]];
         this.e = this.link[this.nextBase];
         for (int j = 1; j <= 2; j++) {
             do {
@@ -363,11 +363,11 @@ public final class SmallerWeightedMatchDouble {
                     this.link[this.newBase] = -this.link[this.newBase];
                     do {
                         this.base[this.i] = this.newBase;
-                        this.i = this.nextVertex[this.i];
+                        this.i = this.nextMazeNode[this.i];
                     }
                     while (this.i != this.nextBase);
                     this.newBase = this.nextBase;
-                    this.nextBase = this.nextVertex[this.lastVertex[this.newBase]];
+                    this.nextBase = this.nextMazeNode[this.lastMazeNode[this.newBase]];
                 }
             }
             while (this.link[this.nextBase] == this.nxtEdge);
@@ -379,10 +379,10 @@ public final class SmallerWeightedMatchDouble {
             break;
         }
         this.lastEdge[2] = this.nxtEdge;
-        if (this.base[this.lastVertex[oldBase]] == oldBase) this.nextVertex[oldBase] = this.newBase;
+        if (this.base[this.lastMazeNode[oldBase]] == oldBase) this.nextMazeNode[oldBase] = this.newBase;
         else {
-            this.nextVertex[oldBase] = this.dummyVertex;
-            this.lastVertex[oldBase] = oldBase;
+            this.nextMazeNode[oldBase] = this.dummyMazeNode;
+            this.lastMazeNode[oldBase] = oldBase;
         }
     }
 
@@ -413,25 +413,25 @@ public final class SmallerWeightedMatchDouble {
     private void unpairAll() {
         int u;
         for (this.v = 1; this.v <= this.V; this.v++) {
-            if (this.base[this.v] != this.v || this.lastVertex[this.v] == this.v) continue;
+            if (this.base[this.v] != this.v || this.lastMazeNode[this.v] == this.v) continue;
             this.nextU = this.v;
-            this.nextVertex[this.lastVertex[this.nextU]] = this.dummyVertex;
+            this.nextMazeNode[this.lastMazeNode[this.nextU]] = this.dummyMazeNode;
             while (true) {
                 u = this.nextU;
-                this.nextU = this.nextVertex[this.nextU];
+                this.nextU = this.nextMazeNode[this.nextU];
                 this.unlink(u);
-                if (this.lastVertex[u] != u) {
+                if (this.lastMazeNode[u] != u) {
                     this.f = this.lastEdge[2] == this.oppEdge(this.e) ? this.lastEdge[1] : this.lastEdge[2];
-                    this.nextVertex[this.lastVertex[this.bend(this.f)]] = u;
+                    this.nextMazeNode[this.lastMazeNode[this.bend(this.f)]] = u;
                 }
                 this.newBase = this.bmate(this.bmate(u));
-                if (this.newBase != this.dummyVertex && this.newBase != u) {
+                if (this.newBase != this.dummyMazeNode && this.newBase != u) {
                     this.link[u] = -this.dummyEdge;
                     this.rematch(this.newBase, this.mate[u]);
                 }
-                while (this.lastVertex[this.nextU] == this.nextU && this.nextU != this.dummyVertex)
-                    this.nextU = this.nextVertex[this.nextU];
-                if (this.lastVertex[this.nextU] == this.nextU && this.nextU == this.dummyVertex) break;
+                while (this.lastMazeNode[this.nextU] == this.nextU && this.nextU != this.dummyMazeNode)
+                    this.nextU = this.nextMazeNode[this.nextU];
+                if (this.lastMazeNode[this.nextU] == this.nextU && this.nextU == this.dummyMazeNode) break;
             }
         }
     }

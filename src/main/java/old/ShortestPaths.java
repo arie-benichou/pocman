@@ -73,9 +73,9 @@ public final class ShortestPaths {
             for (final Path path : row) {
                 if (path.getCost() == 0 || path.getCost() == Double.POSITIVE_INFINITY) continue;
                 sb.append("\nThe shortest path from "
-                        + path.getEdges().get(0).getFirstVertex()
+                        + path.getEdges().get(0).getFirstMazeNode()
                         + " to "
-                        + path.getLastEdge().getLastVertex()
+                        + path.getLastEdge().getLastMazeNode()
                         + " is: "
                         + path);
                 sb.append("\n");

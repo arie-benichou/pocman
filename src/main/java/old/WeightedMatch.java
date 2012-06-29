@@ -65,7 +65,7 @@ public final class WeightedMatch
 
     private int V; // the number of vertices in the graph
     private int E; // the number of edges    in the graph
-    private int dummyVertex; // artifical vertex for boundary conditions
+    private int dummyMazeNode; // artifical MazeNode for boundary conditions
     private int dummyEdge; // artifical edge   for boundary conditions
 
     private int[] a; // adjacency list
@@ -75,12 +75,12 @@ public final class WeightedMatch
 
     private int[] base;
     private final int[] lastEdge = new int[3]; // Used by methods that undo blossoms.
-    private int[] lastVertex;
+    private int[] lastMazeNode;
     private int[] link;
     private int[] nextDelta;
     private int[] nextEdge;
     private int[] nextPair;
-    private int[] nextVertex;
+    private int[] nextMazeNode;
     private int[] y;
 
     private int delta, lastDelta;
@@ -89,7 +89,7 @@ public final class WeightedMatch
     private int firstMate, newMate, oldFirst, oldMate, secondMate;
     private int f, nxtEdge, nextE, nextU;
 
-    private int e, v, i; // edge, vertex, index used by several methods.
+    private int e, v, i; // edge, MazeNode, index used by several methods.
 
     /** Construct a WeightedMatch object. */
     public WeightedMatch(final int[][] costs)
@@ -108,8 +108,8 @@ public final class WeightedMatch
      * @param minimizeWeight
      *            if ( minimizeWeight ) performs a minimum cost maximum
      *            matching; else performs a maximum cost maximum matching.
-     * @return an array of the form vertex[i] = j, where vertex i is matched to
-     *         vertex j. The numbering of vertices is 1, ..., n, where the graph
+     * @return an array of the form MazeNode[i] = j, where MazeNode i is matched to
+     *         MazeNode j. The numbering of vertices is 1, ..., n, where the graph
      *         has n vertices. Thus, the 0th element of the returned int[] is
      *         undefined.
      *         <p>
@@ -154,7 +154,7 @@ public final class WeightedMatch
                 if (this.mate[this.v] == this.dummyEdge)
                 {
                     // Link all exposed vertices.
-                    this.pointer(this.dummyVertex, this.v, this.dummyEdge);
+                    this.pointer(this.dummyMazeNode, this.v, this.dummyEdge);
                 }
             }
 
@@ -165,10 +165,10 @@ public final class WeightedMatch
                     System.out.println("W2: i: " + q +
                             ", mate: " + this.mate[q] +
                             ", nextEdge: " + this.nextEdge[q] +
-                            ", nextVertex: " + this.nextVertex[q] +
+                            ", nextMazeNode: " + this.nextMazeNode[q] +
                             ", link: " + this.link[q] +
                             ", base: " + this.base[q] +
-                            ", lastVertex: " + this.lastVertex[q] +
+                            ", lastMazeNode: " + this.lastMazeNode[q] +
                             ", y: " + this.y[q] +
                             ", nextDelta: " + this.nextDelta[q] +
                             ", lastDelta: " + this.lastDelta
@@ -211,7 +211,7 @@ public final class WeightedMatch
                     for (this.i = 1; this.i <= this.V; this.i++)
                     {
                         this.mate[this.i] = this.end[this.mate[this.i]];
-                        if (this.mate[this.i] == this.dummyVertex)
+                        if (this.mate[this.i] == this.dummyMazeNode)
                         {
                             this.mate[this.i] = UNMATCHED;
                         }
@@ -314,13 +314,13 @@ public final class WeightedMatch
             }
         }
 
-        this.dummyVertex = this.V + 1;
+        this.dummyMazeNode = this.V + 1;
         this.dummyEdge = this.V + 2 * this.E + 1;
-        this.end[this.dummyEdge] = this.dummyVertex;
+        this.end[this.dummyEdge] = this.dummyMazeNode;
 
         if (DEBUG)
         {
-            System.out.println("initialize: dummyVertex: " + this.dummyVertex +
+            System.out.println("initialize: dummyMazeNode: " + this.dummyMazeNode +
                     " dummyEdge: " + this.dummyEdge + " oppEdge(dummyEdge): " + this.oppEdge(this.dummyEdge));
         }
 
@@ -371,8 +371,8 @@ public final class WeightedMatch
         this.mate = new int[allocationSize];
         this.link = new int[allocationSize];
         this.base = new int[allocationSize];
-        this.nextVertex = new int[allocationSize];
-        this.lastVertex = new int[allocationSize];
+        this.nextMazeNode = new int[allocationSize];
+        this.lastMazeNode = new int[allocationSize];
         this.y = new int[allocationSize];
         this.nextDelta = new int[allocationSize];
         this.nextEdge = new int[allocationSize];
@@ -383,9 +383,9 @@ public final class WeightedMatch
         for (this.i = 1; this.i <= this.V + 1; this.i++)
         {
             this.mate[this.i] = this.nextEdge[this.i] = this.dummyEdge;
-            this.nextVertex[this.i] = 0;
+            this.nextMazeNode[this.i] = 0;
             this.link[this.i] = -this.dummyEdge;
-            this.base[this.i] = this.lastVertex[this.i] = this.i;
+            this.base[this.i] = this.lastMazeNode[this.i] = this.i;
             this.y[this.i] = this.nextDelta[this.i] = this.lastDelta;
 
             if (DEBUG)
@@ -393,10 +393,10 @@ public final class WeightedMatch
                 System.out.println("initialize: v: " + this.v + ", i: " + this.i +
                         ", mate: " + this.mate[this.i] +
                         ", nextEdge: " + this.nextEdge[this.i] +
-                        ", nextVertex: " + this.nextVertex[this.i] +
+                        ", nextMazeNode: " + this.nextMazeNode[this.i] +
                         ", link: " + this.link[this.i] +
                         ", base: " + this.base[this.i] +
-                        ", lastVertex: " + this.lastVertex[this.i] +
+                        ", lastMazeNode: " + this.lastMazeNode[this.i] +
                         ", y: " + this.y[this.i] +
                         ", nextDelta: " + this.nextDelta[this.i] +
                         ", lastDelta: " + this.lastDelta
@@ -431,7 +431,7 @@ public final class WeightedMatch
     /**
      * Updates a blossom's pair list, possibly inserting a new edge. It is
      * invoked by scan and mergePairs. It is invoked with global int e set to
-     * the edge to be inserted, neighbor set to the end vertex of e, and
+     * the edge to be inserted, neighbor set to the end MazeNode of e, and
      * pairPoint pointing to the next pair to be examined in the pair list.
      */
     private void insertPair()
@@ -491,7 +491,7 @@ public final class WeightedMatch
     /**
      * Links the unlined vertices inthe path P( end[e], newBase ). Edge e
      * completes a linking path. Invoked by pair. Pre-condition: newBase ==
-     * vertex of the new blossom. newLast == vertex that is currently last on
+     * MazeNode of the new blossom. newLast == MazeNode that is currently last on
      * the list of vertices for newBase's blossom.
      */
     private void linkPath(int e)
@@ -506,7 +506,7 @@ public final class WeightedMatch
         // L1. Done?
         for ( /* L1. */this.v = this.bend(e); this.v != this.newBase; this.v = this.bend(e))
         {
-            // L2. Link next vertex.
+            // L2. Link next MazeNode.
             u = this.bmate(this.v);
             this.link[u] = this.oppEdge(e);
 
@@ -516,18 +516,18 @@ public final class WeightedMatch
             }
 
             // L3. Add vertices to blossom list.
-            this.nextVertex[this.newLast] = this.v;
-            this.nextVertex[this.lastVertex[this.v]] = u;
-            this.newLast = this.lastVertex[u];
+            this.nextMazeNode[this.newLast] = this.v;
+            this.nextMazeNode[this.lastMazeNode[this.v]] = u;
+            this.newLast = this.lastMazeNode[u];
             this.i = this.v;
 
             // L4. Update base.
             do
             {
                 this.base[this.i] = this.newBase;
-                this.i = this.nextVertex[this.i];
+                this.i = this.nextMazeNode[this.i];
             }
-            while (this.i != this.dummyVertex);
+            while (this.i != this.dummyMazeNode);
 
             // L5. Get next edge.
             e = this.link[this.v];
@@ -628,37 +628,37 @@ public final class WeightedMatch
         }
 
         // PA5. Augmenting path?
-        if (u == this.dummyVertex && this.v != w) { return true; // augmenting path found
+        if (u == this.dummyMazeNode && this.v != w) { return true; // augmenting path found
         }
 
         // PA6. Prepare to link vertices.
         this.newLast = this.newBase = this.v;
-        this.oldFirst = this.nextVertex[this.v];
+        this.oldFirst = this.nextMazeNode[this.v];
 
         // PA7. Link vertices.
         this.linkPath(this.e);
         this.linkPath(this.oppEdge(this.e));
 
         // PA8. Finish linking.
-        this.nextVertex[this.newLast] = this.oldFirst;
-        if (this.lastVertex[this.newBase] == this.newBase)
+        this.nextMazeNode[this.newLast] = this.oldFirst;
+        if (this.lastMazeNode[this.newBase] == this.newBase)
         {
-            this.lastVertex[this.newBase] = this.newLast;
+            this.lastMazeNode[this.newBase] = this.newLast;
         }
 
         // PA9. Start new pair list.
         this.nextPair[this.dummyEdge] = this.dummyEdge;
         this.mergePairs(this.newBase);
-        this.i = this.nextVertex[this.newBase];
+        this.i = this.nextMazeNode[this.newBase];
         do
         {
             // PA10. Merge subblossom's pair list
             this.mergePairs(this.i);
-            this.i = this.nextVertex[this.lastVertex[this.i]];
+            this.i = this.nextMazeNode[this.lastMazeNode[this.i]];
 
             // PA11. Scan subblossom.
             this.scan(this.i, 2 * this.delta - this.slack(this.mate[this.i]));
-            this.i = this.nextVertex[this.lastVertex[this.i]];
+            this.i = this.nextMazeNode[this.lastMazeNode[this.i]];
         }
         // PA12. More blossoms?
         while (this.i != this.oldFirst);
@@ -668,9 +668,9 @@ public final class WeightedMatch
     }
 
     /**
-     * pointer assigns a pointer link to a vertex. Vertices u & v are the bases
-     * of blossoms matched with each other. Edge e joins a vertex in blossom u
-     * to a linked vertex.
+     * pointer assigns a pointer link to a MazeNode. Vertices u & v are the bases
+     * of blossoms matched with each other. Edge e joins a MazeNode in blossom u
+     * to a linked MazeNode.
      * 
      * pointer is invoked by weightedMatch to link exposed vertices (step W2)
      * and to link unlinked vertices (step W5), and from unpair (steps UP5, UP7)
@@ -703,14 +703,14 @@ public final class WeightedMatch
             System.out.println("PT1. LINK[" + u + "]: " + this.link[u] +
                     " dummyEdge: " + this.dummyEdge);
         }
-        this.nextVertex[this.lastVertex[u]] = this.nextVertex[this.lastVertex[v]] = this.dummyVertex;
+        this.nextMazeNode[this.lastMazeNode[u]] = this.nextMazeNode[this.lastMazeNode[v]] = this.dummyMazeNode;
 
-        //System.out.println("Pointer: PT2. " + (lastVertex[u] != u ));
+        //System.out.println("Pointer: PT2. " + (lastMazeNode[u] != u ));
         // PT2. Find unpairing value.
-        if (this.lastVertex[u] != u)
+        if (this.lastMazeNode[u] != u)
         {
             // u's blossom contains other vertices
-            i = this.mate[this.nextVertex[u]];
+            i = this.mate[this.nextMazeNode[u]];
             //System.out.println("Pointer: true: i: " + i);
             del = -this.slack(i) / 2;
         }
@@ -727,7 +727,7 @@ public final class WeightedMatch
         }
 
         // PT3.
-        for (; i != this.dummyVertex; i = this.nextVertex[i])
+        for (; i != this.dummyMazeNode; i = this.nextMazeNode[i])
         {
             this.y[i] += del;
             this.nextDelta[i] += del;
@@ -780,7 +780,7 @@ public final class WeightedMatch
      * (W7) to augment the matching, and from unpair (UP2) and unpairAll (UA6)
      * to rematch a blossom.
      * 
-     * Pre-conditions: firstMate is the first base vertex on the alternating
+     * Pre-conditions: firstMate is the first base MazeNode on the alternating
      * path. Edge e is the new matched edge for firstMate.
      */
     private void rematch(int firstMate, int e)
@@ -822,7 +822,7 @@ public final class WeightedMatch
     }
 
     /**
-     * scan scans a linked blossom. Vertex x is the base of a blossom that has
+     * scan scans a linked blossom. MazeNode x is the base of a blossom that has
      * just been linked by either pointer or pair. del is used to update y. scan
      * is invoked with the list head nextPair[dummyEdge] pointing to the 1st
      * edge on the pair list of base[x].
@@ -838,8 +838,8 @@ public final class WeightedMatch
 
         // SC1. Initialize.
         this.newBase = this.base[x];
-        this.stopScan = this.nextVertex[this.lastVertex[x]];
-        for (; x != this.stopScan; x = this.nextVertex[x] /* SC7. */)
+        this.stopScan = this.nextMazeNode[this.lastMazeNode[x]];
+        for (; x != this.stopScan; x = this.nextMazeNode[x] /* SC7. */)
         {
             // SC2. Set bounds & initialize for x.
             this.y[x] += del;
@@ -867,7 +867,7 @@ public final class WeightedMatch
                 if (this.link[u] < 0)
                 {
 
-                    if (this.link[this.bmate(u)] < 0 || this.lastVertex[u] != u)
+                    if (this.link[this.bmate(u)] < 0 || this.lastMazeNode[u] != u)
                     {
                         delE = this.slack(this.e);
                         if (this.nextDelta[this.neighbor] > delE)
@@ -916,10 +916,10 @@ public final class WeightedMatch
         }
         int del;
 
-        // SB1. Examine each vertex.
+        // SB1. Examine each MazeNode.
         for (this.v = 1; this.v <= this.V; this.v++)
         {
-            // SB2. Is vertex a linked base?
+            // SB2. Is MazeNode a linked base?
             if (this.link[this.v] < 0 || this.base[this.v] != this.v)
             {
                 // SB8. Update nextDelta.
@@ -945,10 +945,10 @@ public final class WeightedMatch
 
             // SB4. Update y in linked blossom.
             // !! discrepancy: dissertation (do-while); Rothberg (while)
-            while (this.i != this.dummyVertex)
+            while (this.i != this.dummyMazeNode)
             {
                 this.y[this.i] -= this.delta;
-                this.i = this.nextVertex[this.i];
+                this.i = this.nextMazeNode[this.i];
             }
 
             // SB5. Is linked blossom matched?
@@ -961,10 +961,10 @@ public final class WeightedMatch
 
                 // SB7. Update y in unlinked blossom.
                 // !! discrepancy: dissertation (do-while); Rothberg (while)
-                while (this.i != this.dummyVertex)
+                while (this.i != this.dummyMazeNode)
                 {
                     this.y[this.i] -= del;
-                    this.i = this.nextVertex[this.i];
+                    this.i = this.nextMazeNode[this.i];
                 }
             }
             this.nextDelta[this.v] = this.lastDelta;
@@ -1037,8 +1037,8 @@ public final class WeightedMatch
         }
 
         // UL1. Prepare to unlink paths.
-        this.i = this.newBase = this.nextVertex[oldBase];
-        this.nextBase = this.nextVertex[this.lastVertex[this.newBase]];
+        this.i = this.newBase = this.nextMazeNode[oldBase];
+        this.nextBase = this.nextMazeNode[this.lastMazeNode[this.newBase]];
         this.e = this.link[this.nextBase];
 
         // Loop is executed twice, for the 2 paths containing the subblossom.       
@@ -1067,13 +1067,13 @@ public final class WeightedMatch
                     do
                     {
                         this.base[this.i] = this.newBase;
-                        this.i = this.nextVertex[this.i];
+                        this.i = this.nextMazeNode[this.i];
                     }
                     while (this.i != this.nextBase);
 
-                    // UL5. Get next vertex.
+                    // UL5. Get next MazeNode.
                     this.newBase = this.nextBase;
-                    this.nextBase = this.nextVertex[this.lastVertex[this.newBase]];
+                    this.nextBase = this.nextMazeNode[this.lastMazeNode[this.newBase]];
                 }
             }
             // UL6. More vertices?
@@ -1098,21 +1098,21 @@ public final class WeightedMatch
         this.lastEdge[2] = this.nxtEdge;
 
         // UL8. Update blossom list.
-        if (this.base[this.lastVertex[oldBase]] == oldBase)
+        if (this.base[this.lastMazeNode[oldBase]] == oldBase)
         {
-            this.nextVertex[oldBase] = this.newBase;
+            this.nextMazeNode[oldBase] = this.newBase;
         }
         else
         {
-            this.nextVertex[oldBase] = this.dummyVertex;
-            this.lastVertex[oldBase] = oldBase;
+            this.nextMazeNode[oldBase] = this.dummyMazeNode;
+            this.lastMazeNode[oldBase] = oldBase;
         }
     }
 
     /**
      * Undoes a blossom by unlinking, rematching, and relinking subblossoms.
-     * Invoked by weightedMatch Pre-conditions: oldBase == an unlinked vertex,
-     * the base of the blossom to be undone. oldMate == a linked vertex, the
+     * Invoked by weightedMatch Pre-conditions: oldBase == an unlinked MazeNode,
+     * the base of the blossom to be undone. oldMate == a linked MazeNode, the
      * base of the blossom matched to oldBase
      * 
      * It uses a local variable newbase.
@@ -1151,7 +1151,7 @@ public final class WeightedMatch
         // UP4. missing from dissertation.
         do
         {
-            // UP5. Relink a vertex
+            // UP5. Relink a MazeNode
             e = -this.link[u];
             this.v = this.bmate(u);
             this.pointer(u, this.v, -this.link[this.v]);
@@ -1177,44 +1177,44 @@ public final class WeightedMatch
         // UA1. Unpair each blossom.
         for (this.v = 1; this.v <= this.V; this.v++)
         {
-            if (this.base[this.v] != this.v || this.lastVertex[this.v] == this.v)
+            if (this.base[this.v] != this.v || this.lastMazeNode[this.v] == this.v)
             {
                 continue;
             }
 
             // UA2. Prepare to unpair.
             this.nextU = this.v;
-            this.nextVertex[this.lastVertex[this.nextU]] = this.dummyVertex;
+            this.nextMazeNode[this.lastMazeNode[this.nextU]] = this.dummyMazeNode;
 
             while (true)
             {
                 // UA3. Get next blossom to unpair.
                 u = this.nextU;
-                this.nextU = this.nextVertex[this.nextU];
+                this.nextU = this.nextMazeNode[this.nextU];
 
                 // UA4. Unlink a blossom.
                 this.unlink(u);
-                if (this.lastVertex[u] != u)
+                if (this.lastMazeNode[u] != u)
                 {
                     // UA5. List subblossoms to unpair.
                     this.f = this.lastEdge[2] == this.oppEdge(this.e) ? this.lastEdge[1] : this.lastEdge[2];
-                    this.nextVertex[this.lastVertex[this.bend(this.f)]] = u;
+                    this.nextMazeNode[this.lastMazeNode[this.bend(this.f)]] = u;
                 }
 
                 // UA6. Rematch blossom.
                 this.newBase = this.bmate(this.bmate(u));
-                if (this.newBase != this.dummyVertex && this.newBase != u)
+                if (this.newBase != this.dummyMazeNode && this.newBase != u)
                 {
                     this.link[u] = -this.dummyEdge;
                     this.rematch(this.newBase, this.mate[u]);
                 }
 
                 // UA7. Find next blossom to unpair.
-                while (this.lastVertex[this.nextU] == this.nextU && this.nextU != this.dummyVertex)
+                while (this.lastMazeNode[this.nextU] == this.nextU && this.nextU != this.dummyMazeNode)
                 {
-                    this.nextU = this.nextVertex[this.nextU];
+                    this.nextU = this.nextMazeNode[this.nextU];
                 }
-                if (this.lastVertex[this.nextU] == this.nextU && this.nextU == this.dummyVertex)
+                if (this.lastMazeNode[this.nextU] == this.nextU && this.nextU == this.dummyMazeNode)
                 {
                     break;
                 }

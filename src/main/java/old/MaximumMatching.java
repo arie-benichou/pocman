@@ -7,11 +7,12 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import pocman.matching.MutableUndirectedGraph;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import fr.designpattern.pocman.cpp.MutableUndirectedGraph;
 
 /**
  * Ripped from Keith Schwarz (htiek@cs.stanford.edu)
@@ -19,19 +20,19 @@ import fr.designpattern.pocman.cpp.MutableUndirectedGraph;
  */
 public final class MaximumMatching {
 
-    private final static class Vertex<T> {
+    private final static class MazeNode<T> {
 
         private final T parent;
         private final T root;
         private final boolean isOuter;
 
-        private Vertex(final T parent, final T root, final boolean isOuter) {
+        private MazeNode(final T parent, final T root, final boolean isOuter) {
             this.parent = parent;
             this.root = root;
             this.isOuter = isOuter;
         }
 
-        private Vertex(final T root, final boolean isOuter) {
+        private MazeNode(final T root, final boolean isOuter) {
             this(null, root, isOuter);
         }
 
@@ -78,7 +79,7 @@ public final class MaximumMatching {
         return cycle;
     }
 
-    private static <T> Blossom<T> findBlossom(final Map<T, Vertex<T>> forest, final Edge<T> edge) {
+    private static <T> Blossom<T> findBlossom(final Map<T, MazeNode<T>> forest, final Edge<T> edge) {
         final LinkedList<T> onePath = Lists.newLinkedList();
         final LinkedList<T> twoPath = Lists.newLinkedList();
         for (T node = edge.start; node != null; node = forest.get(node).parent) {
@@ -91,23 +92,23 @@ public final class MaximumMatching {
 
     private static <T> MutableUndirectedGraph<T> contractGraph(final MutableUndirectedGraph<T> graph, final Blossom<T> blossom) {
         final MutableUndirectedGraph<T> contractedGraph = new MutableUndirectedGraph<T>();
-        for (final T vertex : graph)
-            if (!blossom.vertices.contains(vertex)) contractedGraph.addVertex(vertex);
-        contractedGraph.addVertex(blossom.root);
-        for (final T vertex : graph)
-            if (!blossom.vertices.contains(vertex))
-                for (final T endpoint : graph.getConnectedVerticeSet(vertex))
-                    contractedGraph.addEdge(vertex, blossom.vertices.contains(endpoint) ? blossom.root : endpoint);
+        for (final T MazeNode : graph)
+            if (!blossom.vertices.contains(MazeNode)) contractedGraph.addMazeNode(MazeNode);
+        contractedGraph.addMazeNode(blossom.root);
+        for (final T MazeNode : graph)
+            if (!blossom.vertices.contains(MazeNode))
+                for (final T endpoint : graph.getConnectedVerticeSet(MazeNode))
+                    contractedGraph.addEdge(MazeNode, blossom.vertices.contains(endpoint) ? blossom.root : endpoint);
         return contractedGraph;
     }
 
-    private static <T> T findNodeLeavingCycle(final MutableUndirectedGraph<T> g, final Blossom<T> blossom, final T vertex) {
+    private static <T> T findNodeLeavingCycle(final MutableUndirectedGraph<T> g, final Blossom<T> blossom, final T MazeNode) {
         for (final T cycleNode : blossom.vertices)
-            if (g.hasEdge(cycleNode, vertex)) return cycleNode;
+            if (g.hasEdge(cycleNode, MazeNode)) return cycleNode;
         throw new AssertionError("Could not find an edge out of the blossom.");
     }
 
-    private static <T> List<T> expandPath(List<T> path, final MutableUndirectedGraph<T> g, final Map<T, Vertex<T>> forest, final Blossom<T> blossom) {
+    private static <T> List<T> expandPath(List<T> path, final MutableUndirectedGraph<T> g, final Map<T, MazeNode<T>> forest, final Blossom<T> blossom) {
         final int index = path.indexOf(blossom.root);
         if (index == -1) return path;
         if (index % 2 == 1) path = Lists.reverse(path);
@@ -132,28 +133,28 @@ public final class MaximumMatching {
     private static <T> void endInfoIsNull(
             final MutableUndirectedGraph<T> originalGraph,
             final MutableUndirectedGraph<T> resultingGraph,
-            final Map<T, Vertex<T>> forest,
+            final Map<T, MazeNode<T>> forest,
             final Queue<Edge<T>> worklist,
             final Edge<T> current,
-            final Vertex<T> startInfo
+            final MazeNode<T> startInfo
             ) {
-        forest.put(current.end, new Vertex<T>(current.start, startInfo.root, false));
+        forest.put(current.end, new MazeNode<T>(current.start, startInfo.root, false));
         final T endpoint = resultingGraph.getConnectedVerticeSet(current.end).iterator().next();
-        forest.put(endpoint, new Vertex<T>(current.end, startInfo.root, true));
+        forest.put(endpoint, new MazeNode<T>(current.end, startInfo.root, true));
         for (final T fringeNode : originalGraph.getConnectedVerticeSet(endpoint))
             worklist.add(new Edge<T>(endpoint, fringeNode));
     }
 
     // TODO rename properly
     private static <T> List<T> endInfoIsOuterAndRootMatchs(final MutableUndirectedGraph<T> originalGraph, final MutableUndirectedGraph<T> resultingGraph,
-            final Map<T, Vertex<T>> forest, final Edge<T> current) {
+            final Map<T, MazeNode<T>> forest, final Edge<T> current) {
         final Blossom<T> blossom = findBlossom(forest, current);
         final List<T> path = findAlternatingPath(contractGraph(originalGraph, blossom), contractGraph(resultingGraph, blossom));
         return path == null ? path : expandPath(path, originalGraph, forest, blossom);
     }
 
     // TODO rename properly
-    private static <T> List<T> endInfoIsOuterAndRootMismatchs(final Map<T, Vertex<T>> forest, final Edge<T> current) {
+    private static <T> List<T> endInfoIsOuterAndRootMismatchs(final Map<T, MazeNode<T>> forest, final Edge<T> current) {
         List<T> result = Lists.newArrayList();
         for (T node = current.start; node != null; node = forest.get(node).parent)
             result.add(node);
@@ -164,11 +165,11 @@ public final class MaximumMatching {
     }
 
     private static <T> List<T> findAlternatingPath(final MutableUndirectedGraph<T> originalGraph, final MutableUndirectedGraph<T> resultingGraph) {
-        final Map<T, Vertex<T>> forest = Maps.newHashMap();
+        final Map<T, MazeNode<T>> forest = Maps.newHashMap();
         final Queue<Edge<T>> worklist = Lists.newLinkedList();
         for (final T node : originalGraph) {
             if (resultingGraph.getConnectedVerticeSet(node).isEmpty()) {
-                forest.put(node, new Vertex<T>(node, true));
+                forest.put(node, new MazeNode<T>(node, true));
                 for (final T endpoint : originalGraph.getConnectedVerticeSet(node))
                     worklist.add(new Edge<T>(node, endpoint));
             }
@@ -176,8 +177,8 @@ public final class MaximumMatching {
         while (!worklist.isEmpty()) {
             final Edge<T> current = worklist.remove();
             if (!resultingGraph.hasEdge(current.start, current.end)) {
-                final Vertex<T> startInfo = forest.get(current.start);
-                final Vertex<T> endInfo = forest.get(current.end);
+                final MazeNode<T> startInfo = forest.get(current.start);
+                final MazeNode<T> endInfo = forest.get(current.end);
                 if (endInfo == null) endInfoIsNull(originalGraph, resultingGraph, forest, worklist, current, startInfo);
                 else if (endInfo.isOuter) {
                     if (startInfo.root.equals(endInfo.root)) return endInfoIsOuterAndRootMatchs(originalGraph, resultingGraph, forest, current);
@@ -192,10 +193,10 @@ public final class MaximumMatching {
         if (path == null) return false;
         final int n = path.size() - 1;
         for (int i = 0; i < n; ++i) {
-            final T vertex1 = path.get(i);
-            final T vertex2 = path.get(i + 1);
-            if (resultingGraph.hasEdge(vertex1, vertex2)) resultingGraph.removeEdge(vertex1, vertex2);
-            else resultingGraph.addEdge(vertex1, vertex2);
+            final T MazeNode1 = path.get(i);
+            final T MazeNode2 = path.get(i + 1);
+            if (resultingGraph.hasEdge(MazeNode1, MazeNode2)) resultingGraph.removeEdge(MazeNode1, MazeNode2);
+            else resultingGraph.addEdge(MazeNode1, MazeNode2);
         }
         return true;
     }
@@ -204,7 +205,7 @@ public final class MaximumMatching {
         final MutableUndirectedGraph<T> resultingGraph = new MutableUndirectedGraph<T>();
         if (!originalGraph.isEmpty()) {
             for (final T node : originalGraph)
-                resultingGraph.addVertex(node);
+                resultingGraph.addMazeNode(node);
             while (updateMatching(findAlternatingPath(originalGraph, resultingGraph), resultingGraph)) {}
         }
         return resultingGraph;
