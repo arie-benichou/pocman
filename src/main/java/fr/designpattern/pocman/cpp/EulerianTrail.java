@@ -61,28 +61,4 @@ public final class EulerianTrail {
 
     private EulerianTrail() {}
 
-    /*
-    public static List<Vertex> from(final Maze maze, final Map<WeightedEdge<Node<Vertex>>, Integer> traversalByEdge, final Vertex node) {
-        final Builder<Vertex> trailBuilder = new ImmutableList.Builder<Vertex>();
-        for (final WeightedEdge<Vertex> edge : maze.get().getEdges(startingVertex)) {
-            final Integer integer = traversalByEdge.get(edge);
-            if (integer > 0) {
-                traversalByEdge.put(edge, integer - 1);
-                T nextVertex = null;
-                if (startingVertex.equals(edge.getEndPoint1())) nextVertex = edge.getEndPoint2();
-                else if (startingVertex.equals(edge.getEndPoint2())) nextVertex = edge.getEndPoint1();
-                Preconditions.checkState(nextVertex != null);
-                trailBuilder.addAll(EulerianTrail.from(nextVertex, traversalByEdge, graph));
-            }
-        }
-        trailBuilder.add(startingVertex);
-        return trailBuilder.build();
-    }
-
-    public static List<Vertex> from(UndirectedGraph<Node<Vertex>> graph, Map<WeightedEdge<Node<Vertex>>, Integer> traversalByEdge, Vertex node) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    */
-
 }

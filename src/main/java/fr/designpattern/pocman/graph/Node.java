@@ -31,4 +31,9 @@ public class Node<T> {
         else return that.getData() == null;
     }
 
+    @Override
+    public String toString() {
+        return this.data == null ? "NULL" : this.data.toString();
+    }
+
 }

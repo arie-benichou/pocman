@@ -22,13 +22,13 @@ public class MazeView {
         return sb.toString();
     }
 
-    public String render(final Maze maze, final int nodeId) {
+    public String renderAsBoard(final Maze maze, final Vertex vertex) {
         final StringBuilder sb = new StringBuilder();
-        sb.append(this.mazeAsBoardView.render(maze, nodeId));
+        sb.append(this.mazeAsBoardView.render(maze, vertex));
         return sb.toString();
     }
 
-    public String render(final Maze maze, final Vertex vertex) {
+    public String renderAsGraph(final Maze maze, final Vertex vertex) {
         final StringBuilder sb = new StringBuilder();
         sb.append(this.mazeAsGraphView.render(maze, vertex));
         return sb.toString();

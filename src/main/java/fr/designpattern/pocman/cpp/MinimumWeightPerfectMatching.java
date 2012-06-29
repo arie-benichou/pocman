@@ -21,8 +21,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -114,9 +116,13 @@ public class MinimumWeightPerfectMatching {
         final MutableUndirectedGraph<T> residualGraph = buildResidualGraph(originalGraph, oddVertices);
         MutableUndirectedGraph<T> maximumMatching = EdmondsMatching.maximumMatching(residualGraph);
         Map<T, T> bestPerfectMatching = null;
+        long elapsedTime = 0L;
         if (isPerfect(maximumMatching)) {
             double bestPerfectMatchingWeight = Double.POSITIVE_INFINITY;
+            final int i = 0;
+            final Stopwatch stopwatch = new Stopwatch();
             do {
+                stopwatch.start();
                 matching = buildMatchingMap(maximumMatching);
                 final Map<WeightedEdge<T>, Integer> eulerized = eulerize(originalGraph, matching);
                 final double cost = computeCost(eulerized);
@@ -127,9 +133,14 @@ public class MinimumWeightPerfectMatching {
                 for (final Entry<T, T> entry : matching.entrySet())
                     residualGraph.removeEdge(entry.getKey(), entry.getValue());
                 maximumMatching = EdmondsMatching.maximumMatching(residualGraph);
+                final long elapsedTime2 = stopwatch.elapsedTime(TimeUnit.MILLISECONDS);
+                elapsedTime += elapsedTime2;
+                //System.out.println(++i + " : " + elapsedTime2);
+                stopwatch.reset();
             }
             while (isPerfect(maximumMatching));
         }
+        //System.out.println(elapsedTime);
         return eulerize(originalGraph, bestPerfectMatching);
     }
 

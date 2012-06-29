@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Stopwatch;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 
@@ -89,7 +90,11 @@ public final class ClosedCPP<T> {
     private Map<WeightedEdge<T>, Integer> edgeInstances = null;
 
     public Map<WeightedEdge<T>, Integer> getTraversalByEdge() {
-        if (this.edgeInstances == null) this.edgeInstances = computeOptimalEulerization(this.getGraph());
+        if (this.edgeInstances == null) {
+            final Stopwatch stopwatch = new Stopwatch().start();
+            this.edgeInstances = computeOptimalEulerization(this.getGraph());
+            //System.out.println(stopwatch.elapsedTime(TimeUnit.SECONDS));
+        }
         return this.edgeInstances;
     }
 

@@ -19,7 +19,6 @@ package fr.designpattern.pocman.graph;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -29,6 +28,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -36,30 +36,126 @@ import com.google.common.collect.Sets;
 
 import fr.designpattern.pocman.graph.Path.Factory;
 
-public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
+public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { // TODO à revoir
 
     private static final double INFINITY = Double.POSITIVE_INFINITY / 2;
 
     public final static class Builder<T> {
 
-        private final int numberOfVertices;
-        private final Map<T, Integer> vertices = Maps.newHashMap();
-        private final Map<T, List<WeightedEdge<T>>> edgesByVertex = Maps.newHashMap();
-        private final Map<T, Set<T>> mGraph = new HashMap<T, Set<T>>();
-
-        private int vertexCounter = 0;
+        private final int order;
+        private final Map<T, Integer> vertices;
+        private final Map<T, List<WeightedEdge<T>>> edgesByVertex;
+        private final Map<T, Set<T>> mGraph;
+        private final Set<WeightedEdge<T>> edgeSet;
         private final double[][] values;
 
-        private final Set<WeightedEdge<T>> edgeSet = Sets.newHashSet();
+        private int ordinal;
 
-        public Builder(final int numberOfVertices) {
-            Preconditions.checkArgument(numberOfVertices >= 2, numberOfVertices);
-            this.numberOfVertices = numberOfVertices;
-            this.values = new double[numberOfVertices][numberOfVertices];
+        /*
+        public Builder(
+                final int order,
+                final int ordinal,
+                final double[][] values,
+                final Map<T, Integer> vertices,
+                final Map<T, List<WeightedEdge<T>>> edgesByVertex,
+                final Map<T, Set<T>> mGraph,
+                final Set<WeightedEdge<T>> edgeSet) {
+
+            this.order = order;
+            System.out.println(order);
+
+            this.ordinal = ordinal;
+            System.out.println(ordinal);
+
+            this.mGraph = Maps.newHashMap(ImmutableMap.copyOf(mGraph));
+            System.out.println(mGraph);
+
+            this.vertices = Maps.newHashMap(ImmutableMap.copyOf(vertices));
+            System.out.println(vertices);
+
+            this.edgesByVertex = Maps.newHashMap(ImmutableMap.copyOf(edgesByVertex));
+            System.out.println(edgesByVertex);
+
+            this.edgeSet = Sets.newHashSet(edgeSet);
+            System.out.println(edgeSet);
+
+            final double[][] valuesCopy = new double[order][order];
+            for (int i = 0; i < order; ++i) {
+                for (int j = 0; j < order; ++j) {
+                    valuesCopy[i][j] = values[i][j];
+                }
+            }
+            this.values = valuesCopy;
+        }
+        */
+
+        public Builder(
+                final int order,
+                final int ordinal,
+                final double[][] values,
+                final Map<T, Integer> vertices,
+                final Map<T, List<WeightedEdge<T>>> edgesByVertex,
+                final Map<T, Set<T>> mGraph,
+                final Set<WeightedEdge<T>> edgeSet) {
+
+            this.order = order;
+            this.ordinal = ordinal;
+            this.mGraph = Maps.newHashMap(ImmutableMap.copyOf(mGraph));
+            this.vertices = Maps.newHashMap(ImmutableMap.copyOf(vertices));
+            this.edgesByVertex = Maps.newHashMap(ImmutableMap.copyOf(edgesByVertex));
+            this.edgeSet = Sets.newHashSet(edgeSet);
+
+            final double[][] valuesCopy = new double[order][order];
+            for (int i = 0; i < order; ++i) {
+                for (int j = 0; j < order; ++j) {
+                    valuesCopy[i][j] = values[i][j];
+                }
+            }
+            this.values = valuesCopy;
+        }
+
+        private Builder(final Builder<T> builder) {
+            this.order = builder.order;
+            this.ordinal = builder.ordinal;
+            this.mGraph = Maps.newHashMap(ImmutableMap.copyOf(builder.mGraph));
+            this.vertices = Maps.newHashMap(ImmutableMap.copyOf(builder.vertices));
+            this.edgesByVertex = Maps.newHashMap(ImmutableMap.copyOf(builder.edgesByVertex));
+            this.edgeSet = Sets.newHashSet(builder.edgeSet);
+
+            final double[][] valuesCopy = new double[this.order][this.order];
+            for (int i = 0; i < this.order; ++i) {
+                for (int j = 0; j < this.order; ++j) {
+                    valuesCopy[i][j] = builder.values[i][j];
+                }
+            }
+            this.values = valuesCopy;
+
+            /*
+            builder.mGraph = null;
+            builder.edgeSet = null;
+            builder.vertices = null;
+            builder.edgesByVertex = null;
+            */
+        }
+
+        public Builder(final int order) {
+            Preconditions.checkArgument(order >= 2, order);
+            this.ordinal = 0;
+            this.order = order;
+            this.mGraph = Maps.newHashMap();
+            this.edgeSet = Sets.newHashSet();
+            this.vertices = Maps.newHashMap();
+            this.edgesByVertex = Maps.newHashMap();
+            this.values = new double[order][order];
+        }
+
+        public Builder<T> copy() {
+            final Builder<T> ref = this;
+            return new Builder<T>(ref);
         }
 
         public int getNumberOfVertices() {
-            return this.numberOfVertices;
+            return this.order;
         }
 
         public boolean contains(final WeightedEdge<T> edge) {
@@ -69,8 +165,8 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
         private Integer getEndPointIndex(final T endPoint) {
             Integer endPointIndex = this.vertices.get(endPoint);
             if (endPointIndex == null) {
-                Preconditions.checkState(this.vertexCounter != this.numberOfVertices, "Maximal number of vertices (" + this.numberOfVertices + ") reached.");
-                endPointIndex = ++this.vertexCounter;
+                Preconditions.checkState(this.ordinal != this.order, "Maximal number of vertices (" + this.order + ") reached.");
+                endPointIndex = ++this.ordinal;
                 this.vertices.put(endPoint, endPointIndex);
                 this.mGraph.put(endPoint, new HashSet<T>());
                 this.edgesByVertex.put(endPoint, new ArrayList<WeightedEdge<T>>());
@@ -112,8 +208,8 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
 
         public UndirectedGraph<T> build() {
             Preconditions.checkState(
-                    this.numberOfVertices == this.vertexCounter,
-                    "Declared number of vertices (" + this.numberOfVertices + ") does not match number of defined vertices (" + this.vertexCounter + ")"
+                    this.order == this.ordinal,
+                    "Declared number of vertices (" + this.order + ") does not match number of defined vertices (" + this.ordinal + ")"
                     );
             return new UndirectedGraph<T>(this);
         }
@@ -123,12 +219,8 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
     private final Map<T, Integer> vertices;
     private final Map<T, List<WeightedEdge<T>>> edgesByVertex;
     private final Map<Integer, WeightedEdge<T>> edgeByHashCode;
-
     private final Map<T, Set<T>> mGraph;
-
-    //private final double[][] values;
     private final boolean isConnected;
-    //private final Map<Integer, Path<T>> shortestPathsByHashcode;
     private final Map<Integer, T> verticeByIndex;
     private final Path<T>[][] shortestPaths;
 
@@ -142,15 +234,10 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
                 if (i == j) path = pathFactory.newPath(0);
                 else {
                     path = pathFactory.newPath(INFINITY);
-
                     final T endpoint1 = this.verticeByIndex.get(i);
                     final T endpoint2 = this.verticeByIndex.get(j);
-                    //System.out.println(this.edgeExists(endpoint1, endpoint2));
                     if (this.hasEdge(endpoint1, endpoint2)) {
-                        //System.out.println(endpoint1 + ", " + endpoint2);
                         final WeightedEdge<T> edge = this.getEdge(endpoint1, endpoint2);
-                        //System.out.println(edge);
-                        //System.out.println();
                         path = pathFactory.newPath(edge);
                     }
                 }
@@ -162,15 +249,23 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
 
     private UndirectedGraph(final Builder<T> builder) {
 
-        this.order = builder.numberOfVertices;
+        this.order = builder.order;
+        this.vertices = ImmutableMap.copyOf(builder.vertices);
+        this.mGraph = ImmutableMap.copyOf(builder.mGraph);
+        final ImmutableMap<T, List<WeightedEdge<T>>> edgesByVertex = ImmutableMap.copyOf(builder.edgesByVertex);
+        // safe copy
+        final double[][] values = new double[this.order][this.order];
+        for (int i = 0; i < this.order; ++i) {
+            for (int j = 0; j < this.order; ++j) {
+                if (i == j) continue;
+                final double value = builder.values[i][j];
+                values[i][j] = value == 0 ? INFINITY : value;
+            }
+        }
 
-        this.vertices = builder.vertices;
-
-        final com.google.common.collect.ImmutableMap.Builder<T, List<WeightedEdge<T>>> edgesByVertexBuilder =
-                                                                                                              new ImmutableMap.Builder<T, List<WeightedEdge<T>>>();
-        for (final Entry<T, List<WeightedEdge<T>>> entry : builder.edgesByVertex.entrySet())
+        final ImmutableMap.Builder<T, List<WeightedEdge<T>>> edgesByVertexBuilder = new ImmutableMap.Builder<T, List<WeightedEdge<T>>>();
+        for (final Entry<T, List<WeightedEdge<T>>> entry : edgesByVertex.entrySet())
             edgesByVertexBuilder.put(entry.getKey(), ImmutableList.copyOf(entry.getValue()));
-
         this.edgesByVertex = edgesByVertexBuilder.build();
 
         this.edgeByHashCode = Maps.newHashMap();
@@ -185,25 +280,6 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
         this.verticeByIndex = Maps.newHashMap();
         for (final Entry<T, Integer> entry : this.vertices.entrySet())
             this.verticeByIndex.put(entry.getValue() - 1, entry.getKey());
-
-        this.mGraph = builder.mGraph; // TODO immutable copy
-
-        //this.debug(builder.values, INFINITY);
-
-        // safe copy
-        final double[][] values = new double[this.order][this.order];
-        for (int i = 0; i < this.order; ++i) {
-            for (int j = 0; j < this.order; ++j) {
-                if (i == j) continue;
-                final double value = builder.values[i][j];
-                values[i][j] = value == 0 ? INFINITY : value;
-            }
-        }
-
-        //this.debug(values, INFINITY);
-
-        //System.out.println(this.vertices);
-        //System.out.println(this.verticeByIndex);
 
         final Path<T>[][] paths = this.buildPathMatrix();
 
@@ -228,7 +304,7 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
                 costs[ii][jj] = this.shortestPaths[ii][jj].getWeight();
             }
         }
-        //this.debug(costs, Double.POSITIVE_INFINITY);
+        //this.debug(costs, INFINITY);
 
         // a connected graph has a path between every pair of nodes
         boolean isConnected = true;
@@ -277,15 +353,14 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
         return this.isConnected;
     }
 
-    /*
     private void debug(final double[][] array, final double infinity) {
         double max = 0;
-        for (int i = 0; i < this.n; ++i)
-            for (int j = 0; j < this.n; ++j)
+        for (int i = 0; i < this.order; ++i)
+            for (int j = 0; j < this.order; ++j)
                 if (i != j && array[i][j] > max && array[i][j] != infinity) max = array[i][j];
         final int n = (int) Math.floor(Math.log10(Double.valueOf(max).intValue())) + 1;
-        for (int i = 0; i < this.n; ++i) {
-            for (int j = 0; j < this.n; ++j) {
+        for (int i = 0; i < this.order; ++i) {
+            for (int j = 0; j < this.order; ++j) {
                 String string;
                 if (i == j) string = Strings.repeat(".", n);
                 else if (array[i][j] == infinity) string = Strings.repeat("X", n);
@@ -296,22 +371,6 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
         }
         System.out.println();
     }
-    */
-
-    /*
-    public static void main(final String[] args) {
-        final Builder<Vertex> builder = new Builder<Vertex>(5);
-
-        builder.addEdge(Vertex.from(1), Vertex.from(2), 1.0);
-        builder.addEdge(Vertex.from(2), Vertex.from(3), 1.0);
-        builder.addEdge(Vertex.from(1), Vertex.from(3), 1.0);
-        builder.addEdge(Vertex.from(2), Vertex.from(4), 1.0);
-        builder.addEdge(Vertex.from(4), Vertex.from(5), 1.0);
-
-        final UndirectedGraph<Vertex> graph = builder.build();
-        System.out.println(graph.isConnected());
-    }
-    */
 
     @Override
     public Iterator<T> iterator() {

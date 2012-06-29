@@ -24,15 +24,12 @@ import old.Mazes;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.Lists;
 
-import fr.designpattern.pocman.cpp.ClosedCPP;
 import fr.designpattern.pocman.cpp.EulerianTrail;
 import fr.designpattern.pocman.cpp.OpenCPP;
-import fr.designpattern.pocman.cpp.Solution;
+import fr.designpattern.pocman.cpp.OpenSolution;
 import fr.designpattern.pocman.game.Maze;
 import fr.designpattern.pocman.game.Tile;
-import fr.designpattern.pocman.graph.Node;
 import fr.designpattern.pocman.graph.Vertex;
 import fr.designpattern.pocman.view.MazeView;
 
@@ -61,85 +58,44 @@ public class OpenChinesePostmanProblem {
             "┃⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃";
 
     //public final static String MAZE = Mazes.LEVEL155;
+
     //public final static String MAZE = Mazes.DEBUG11455;
     public final static String MAZE = Mazes.DEBUG11333;
+
+    //public final static String MAZE = Mazes.DEBUG1556;
+    //public final static String MAZE = Mazes.DEBUG1150;
+    //public final static String MAZE = Mazes.DEBUG12;
 
     public static void main(final String[] args) {
 
         final Stopwatch stopwatch = new Stopwatch();
-
         stopwatch.start();
 
         final int pocManPosition = MAZE.indexOf(Tile.POCMAN.toCharacter());
         Preconditions.checkState(pocManPosition > -1, "POCMAN POSITION NOT FOUND !");
 
         final Maze maze = new Maze(MAZE);
-        final ClosedCPP<Vertex> closedCPPSolver = ClosedCPP.from(maze);
-        final Solution<Vertex> solution = closedCPPSolver.solve();
+        final OpenCPP<Vertex> openCPP = OpenCPP.from(maze);
+        final OpenSolution<Vertex> solution = openCPP.solveFrom(maze.getNode(pocManPosition));
 
-        //Preconditions.checkState(solution.getLowerBoundCost().equals(190.0));
-        //Preconditions.checkState(solution.getUpperBoundCost().equals(357.0));
-
-        final List<Vertex> trail = EulerianTrail.from(maze, solution.getTraversalByEdge(), maze.getNode(pocManPosition));
+        final List<Vertex> trail = EulerianTrail.from(maze, solution.getTraversalByEdge(), solution.getVertex());
 
         stopwatch.stop();
 
+        debug(maze, trail);
+
+        System.out.println(stopwatch.elapsedTime(TimeUnit.SECONDS) + " " + TimeUnit.SECONDS.toString());
+
+    }
+
+    private static void debug(final Maze maze, final List<Vertex> trail) {
         final MazeView view = new MazeView();
-
         for (final Vertex vertex : trail) {
-            //System.out.println(view.render(maze, vertex));
-            /*
+            System.out.println(view.renderAsBoard(maze, vertex));
             try {
-                Thread.sleep(160);
-            }
-            catch (final InterruptedException e) {}
-            */
-        }
-
-        System.out.println(solution);
-
-        System.out.println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS.toString());
-
-        stopwatch.reset();
-        stopwatch.start();
-
-        final OpenCPP<Vertex> openCPP = OpenCPP.from(closedCPPSolver);
-        /*
-        final Solution<Vertex> solution2 = openCPP.solveFrom(maze.getNode(pocManPosition));
-        final List<Vertex> openTrail = EulerianTrail.from(maze, solution2.getTraversalByEdge(), maze.getNode(pocManPosition));
-
-        for (final Vertex vertex : Lists.reverse(openTrail)) {
-            System.out.println(view.render(maze, vertex.getId()));
-            try {
-                Thread.sleep(160);
+                Thread.sleep(200);
             }
             catch (final InterruptedException e) {}
         }
-        */
-
-        openCPP.setMaze(maze);
-
-        final Solution<Node<Vertex>> solution2 = openCPP.solveFrom(maze.getNode(pocManPosition));
-        final List<Node<Vertex>> openTrail =
-                                             EulerianTrail
-                                                     .from(solution2.graph, solution2.getTraversalByEdge(), new Node<Vertex>(maze.getNode(pocManPosition)));
-
-        final List<Node<Vertex>> trail2 = Lists.newArrayList(Lists.reverse(openTrail));
-
-        trail2.remove(trail2.size() - 1);
-        trail2.remove(0);
-
-        for (final Node<Vertex> node : trail2) {
-            final Vertex vertex = node.getData();
-            if (vertex == null) continue;
-            System.out.println(view.render(maze, vertex.getId()));
-            try {
-                Thread.sleep(300);
-            }
-            catch (final InterruptedException e) {}
-        }
-
-        System.out.println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS.toString());
-
     }
 }

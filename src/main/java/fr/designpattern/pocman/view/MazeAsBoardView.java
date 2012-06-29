@@ -21,6 +21,7 @@ import com.google.common.base.Preconditions;
 
 import fr.designpattern.pocman.game.Maze;
 import fr.designpattern.pocman.game.MazeAsBoard;
+import fr.designpattern.pocman.graph.Vertex;
 
 public class MazeAsBoardView {
 
@@ -41,8 +42,9 @@ public class MazeAsBoardView {
         return this.render(maze.toCharArray());
     }
 
-    public String render(final Maze maze, final int nodeId) {
+    public String render(final Maze maze, final Vertex vertex) {
         Preconditions.checkArgument(maze != null);
+        final int nodeId = vertex.getId();
         Preconditions.checkArgument(nodeId >= 0 && nodeId < maze.size());
         final char[] charArray = maze.toCharArray();
         charArray[nodeId] = YOUR_ARE_HERE;
