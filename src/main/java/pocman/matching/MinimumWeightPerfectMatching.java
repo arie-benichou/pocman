@@ -17,6 +17,7 @@
 
 package pocman.matching;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -25,13 +26,14 @@ import java.util.Set;
 import pocman.graph.Path;
 import pocman.graph.UndirectedGraph;
 import pocman.graph.WeightedEdge;
+import pocman.graph.functions.NodeDegreeFunctions;
+import pocman.graph.functions.NodeOfDegree1Pruning;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-
 
 public class MinimumWeightPerfectMatching {
 
@@ -110,8 +112,7 @@ public class MinimumWeightPerfectMatching {
     }
 
     private static <T> Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final UndirectedGraph<T> originalGraph, final List<T> oddVertices,
-            Map<T, T> matching)
-    {
+            Map<T, T> matching) {
         if (oddVertices.size() % 2 != 0) throw new RuntimeException("Number of odd vertices should be even.");
         final MutableUndirectedGraph<T> residualGraph = buildResidualGraph(originalGraph, oddVertices);
         MutableUndirectedGraph<T> maximumMatching = EdmondsMatching.maximumMatching(residualGraph);
@@ -138,11 +139,84 @@ public class MinimumWeightPerfectMatching {
         return eulerize(originalGraph, bestPerfectMatching);
     }
 
+    // TODO degreeByVertice
+    // TODO ?  réduire les noeuds de type corner
     public static <T> Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final UndirectedGraph<T> originalGraph) {
         Preconditions.checkState(!originalGraph.isEulerian());
-        final List<T> oddVertices = oddVertices(originalGraph);
-        final Map<T, T> matching = Maps.newHashMap();
-        return computeOptimalEulerization(originalGraph, oddVertices, matching);
-    }
 
+        final Set<T> oddVertices = originalGraph.getOddVertices();
+        /*
+        System.out.println(oddVertices.size());
+
+        System.out.println();
+        */
+        final NodeDegreeFunctions<T> nodeDegreeVisitor = NodeDegreeFunctions.from(originalGraph);
+        final Map<T, Integer> nodesWithDegree1 = nodeDegreeVisitor.getNodesWithDegree(1);
+        /*
+        System.out.println(nodesWithDegree1.size());
+        for (final Entry<T, Integer> entry : nodesWithDegree1.entrySet()) {
+            System.out.println(entry);
+        }
+        */
+
+        final NodeOfDegree1Pruning<T> nodeOfDegree1Pruning = NodeOfDegree1Pruning.from(nodeDegreeVisitor);
+
+        /*
+        System.out.println();
+        */
+
+        final Set<WeightedEdge<T>> doubledEdges = nodeOfDegree1Pruning.getDoubledEdges();
+        /*
+        for (final WeightedEdge<T> weightedEdge : doubledEdges) {
+            System.out.println(weightedEdge); // TODO permetrait d'affiner le lower bound
+        }
+
+        System.out.println();
+        */
+
+        final Set<T> remainingOddVertices = nodeOfDegree1Pruning.getRemainingOddVertices();
+
+        /*
+        System.out.println(remainingOddVertices.size());
+        for (final T oddVertex : remainingOddVertices) {
+            System.out.println(oddVertex);
+        }
+
+        System.out.println();
+
+        System.out.println(nodeOfDegree1Pruning.hasStillNodeWithOddDegree());
+
+        System.out.println();
+        */
+
+        if (nodeOfDegree1Pruning.hasStillNodeWithOddDegree()) {
+            final Map<WeightedEdge<T>, Integer> eulerization =
+                                                               computeOptimalEulerization(originalGraph, Lists.newArrayList(remainingOddVertices),
+                                                                       new HashMap<T, T>());
+
+            /*
+            for (final Entry<WeightedEdge<T>, Integer> entry : eulerization.entrySet()) {
+                System.out.println(entry);
+            }
+            */
+
+            final HashMap<WeightedEdge<T>, Integer> map = Maps.newHashMap(eulerization);
+            for (final WeightedEdge<T> edge : doubledEdges) {
+                map.put(edge, 2);
+            }
+
+            /*
+            System.out.println();
+
+            for (final Entry<WeightedEdge<T>, Integer> entry : map.entrySet()) {
+                System.out.println(entry);
+            }
+            */
+
+            //System.exit(0);
+
+            return map;
+        }
+        throw new RuntimeException("Not implemented yet"); // TODO
+    }
 }

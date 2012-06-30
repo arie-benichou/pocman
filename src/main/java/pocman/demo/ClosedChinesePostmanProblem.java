@@ -34,7 +34,8 @@ import com.google.common.base.Stopwatch;
 
 public class ClosedChinesePostmanProblem {
 
-    public final static String MAZE = Mazes.DEBUG11333;
+    //public final static String MAZE = Mazes.DEBUG11333;
+    public final static String MAZE = Mazes.LEVEL155;
 
     public static void main(final String[] args) {
 
@@ -44,8 +45,8 @@ public class ClosedChinesePostmanProblem {
         final ClosedCPP<MazeNode> closedCPPSolver = ClosedCPP.from(maze);
         final Solution<MazeNode> solution = closedCPPSolver.solve();
 
-        Preconditions.checkState(solution.getLowerBoundCost().equals(190.0));
-        Preconditions.checkState(solution.getUpperBoundCost().equals(380.0));
+        //Preconditions.checkState(solution.getLowerBoundCost().equals(190.0));
+        //Preconditions.checkState(solution.getUpperBoundCost().equals(380.0));
 
         final int pocManPosition = MAZE.indexOf(Tile.POCMAN.toCharacter());
         Preconditions.checkState(pocManPosition > -1, "POCMAN POSITION NOT FOUND !");

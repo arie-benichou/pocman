@@ -34,7 +34,8 @@ import com.google.common.base.Stopwatch;
 
 public class OpenChinesePostmanProblem {
 
-    public final static String MAZE = Mazes.DEBUG11333;
+    //public final static String MAZE = Mazes.DEBUG11333;
+    public final static String MAZE = Mazes.LEVEL155;
 
     public static void main(final String[] args) {
 
@@ -47,9 +48,9 @@ public class OpenChinesePostmanProblem {
         final OpenCPP<MazeNode> openCPP = OpenCPP.from(maze);
         final Solution<MazeNode> solution = openCPP.solveFrom(maze.getNode(pocManPosition));
 
-        Preconditions.checkState(solution.getLowerBoundCost().equals(190.0));
-        Preconditions.checkState(solution.getUpperBoundCost().equals(290.0));
-        Preconditions.checkState(solution.getEndPoint().equals(maze.getNode(196)));
+        //Preconditions.checkState(solution.getLowerBoundCost().equals(190.0));
+        //Preconditions.checkState(solution.getUpperBoundCost().equals(290.0));
+        //Preconditions.checkState(solution.getEndPoint().equals(maze.getNode(196)));
 
         final List<MazeNode> trail = EulerianTrail.from(maze, solution.getTraversalByEdge(), solution.getEndPoint());
 
