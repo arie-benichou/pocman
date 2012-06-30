@@ -35,16 +35,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public class MinimumWeightPerfectMatching {
-
-    private MinimumWeightPerfectMatching() {}
-
-    private static <T> List<T> oddVertices(final UndirectedGraph<T> graph) {
-        final List<T> oddVertices = Lists.newArrayList();
-        for (final T MazeNode : graph)
-            if (graph.getConnectedVerticeSet(MazeNode).size() % 2 == 1) oddVertices.add(MazeNode);
-        return oddVertices;
-    }
+public final class MinimumWeightPerfectMatching {
 
     private static <T> MutableUndirectedGraph<T> buildResidualGraph(final UndirectedGraph<T> graph, final List<T> oddVertices) {
         final MutableUndirectedGraph<T> residualGraph = new MutableUndirectedGraph<T>();
@@ -139,9 +130,14 @@ public class MinimumWeightPerfectMatching {
         return eulerize(originalGraph, bestPerfectMatching);
     }
 
+    public static <T> Map<WeightedEdge<T>, Integer> _computeOptimalEulerization(final UndirectedGraph<T> originalGraph) {
+        Preconditions.checkState(!originalGraph.isEulerian());
+        return computeOptimalEulerization(originalGraph, Lists.newArrayList(originalGraph.getOddVertices()), new HashMap<T, T>());
+    }
+
     // TODO degreeByVertice
     // TODO ?  réduire les noeuds de type corner
-    public static <T> Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final UndirectedGraph<T> originalGraph) {
+    public static <T> Map<WeightedEdge<T>, Integer> __computeOptimalEulerization(final UndirectedGraph<T> originalGraph) {
         Preconditions.checkState(!originalGraph.isEulerian());
 
         final Set<T> oddVertices = originalGraph.getOddVertices();
@@ -219,4 +215,27 @@ public class MinimumWeightPerfectMatching {
         }
         throw new RuntimeException("Not implemented yet"); // TODO
     }
+
+    // TODO degreeByVertice
+    // TODO ?  réduire les noeuds de type corner
+    public static <T> Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final UndirectedGraph<T> originalGraph) {
+        Preconditions.checkState(!originalGraph.isEulerian());
+        final NodeDegreeFunctions<T> nodeDegreeVisitor = NodeDegreeFunctions.from(originalGraph);
+        final NodeOfDegree1Pruning<T> nodeOfDegree1Pruning = NodeOfDegree1Pruning.from(nodeDegreeVisitor);
+        final Set<WeightedEdge<T>> doubledEdges = nodeOfDegree1Pruning.getDoubledEdges();
+        final Set<T> remainingOddVertices = nodeOfDegree1Pruning.getRemainingOddVertices();
+        if (nodeOfDegree1Pruning.hasStillNodeWithOddDegree()) {
+            final Map<WeightedEdge<T>, Integer> eulerization = computeOptimalEulerization(
+                    originalGraph,
+                    Lists.newArrayList(remainingOddVertices),
+                    new HashMap<T, T>());
+            final HashMap<WeightedEdge<T>, Integer> map = Maps.newHashMap(eulerization);
+            for (final WeightedEdge<T> edge : doubledEdges)
+                map.put(edge, 2);
+            return map;
+        }
+        throw new RuntimeException("Not implemented yet"); // TODO
+    }
+
+    private MinimumWeightPerfectMatching() {}
 }

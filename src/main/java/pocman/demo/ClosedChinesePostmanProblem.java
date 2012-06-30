@@ -35,7 +35,8 @@ import com.google.common.base.Stopwatch;
 public class ClosedChinesePostmanProblem {
 
     //public final static String MAZE = Mazes.DEBUG11333;
-    public final static String MAZE = Mazes.LEVEL155;
+    //public final static String MAZE = Mazes.LEVEL155;
+    public final static String MAZE = Mazes.LEVEL10;
 
     public static void main(final String[] args) {
 
