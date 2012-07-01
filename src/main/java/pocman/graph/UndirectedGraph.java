@@ -290,14 +290,6 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { /
         return this.order;
     }
 
-    // TODO NodeVisitor, EdgeVisitor
-    public Set<T> getOddVertices() {// TODO unit tests
-        final Set<T> oddVertices = Sets.newHashSet();
-        for (final T MazeNode : this)
-            if (this.getConnectedVerticeSet(MazeNode).size() % 2 == 1) oddVertices.add(MazeNode);
-        return oddVertices;
-    }
-
     /*
     private void debug(final double[][] array, final double infinity) {
         double max = 0;

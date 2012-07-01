@@ -17,8 +17,6 @@
 
 package pocman.matching;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -26,34 +24,13 @@ import java.util.Set;
 import pocman.graph.Path;
 import pocman.graph.UndirectedGraph;
 import pocman.graph.WeightedEdge;
-import pocman.graph.functions.NodeDegreeFunctions;
-import pocman.graph.functions.NodeOfDegree1Pruning;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 // TODO ? réduire les noeuds de type corner
 public final class MinimumWeightPerfectMatching {
-
-    private static <T> MutableUndirectedGraph<T> buildResidualGraph(final UndirectedGraph<T> graph, final List<T> oddVertices) {
-        final MutableUndirectedGraph<T> residualGraph = new MutableUndirectedGraph<T>();
-        for (final T vertice : oddVertices)
-            residualGraph.addMazeNode(vertice);
-        for (final T endPoint1 : oddVertices) {
-            for (final T endPoint2 : oddVertices) {
-                if (!endPoint1.equals(endPoint2)) {
-                    final Path<T> shortestPath = graph.getShortestPathBetween(endPoint1, endPoint2);
-                    residualGraph.addEdge(shortestPath.getEndPoint1(), shortestPath.getEndPoint2());
-                }
-            }
-        }
-        return residualGraph;
-    }
 
     private static <T> boolean isPerfect(final MutableUndirectedGraph<T> maximumMatching) {
         for (final T MazeNode : maximumMatching)
@@ -105,12 +82,13 @@ public final class MinimumWeightPerfectMatching {
         return cost;
     }
 
-    private static <T> Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final UndirectedGraph<T> originalGraph, final List<T> oddVertices,
+    public static <T> Map<WeightedEdge<T>, Integer> from(final UndirectedGraph<T> originalGraph, final MutableUndirectedGraph<T> residualGraph,
             Map<T, T> matching) {
-        Preconditions.checkState(oddVertices.size() % 2 == 0, "Number of odd vertices should be even.");
-        final MutableUndirectedGraph<T> residualGraph = buildResidualGraph(originalGraph, oddVertices);
+
         MutableUndirectedGraph<T> maximumMatching = EdmondsMatching.maximumMatching(residualGraph);
+
         Map<T, T> bestPerfectMatching = null;
+
         if (isPerfect(maximumMatching)) {
             double bestPerfectMatchingWeight = Double.POSITIVE_INFINITY;
             final Stopwatch stopwatch = new Stopwatch();
@@ -130,25 +108,8 @@ public final class MinimumWeightPerfectMatching {
             }
             while (isPerfect(maximumMatching));
         }
-        return eulerize(originalGraph, bestPerfectMatching);
-    }
 
-    public static <T> Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final UndirectedGraph<T> originalGraph) {
-        Preconditions.checkState(!originalGraph.isEulerian());
-        final Builder<WeightedEdge<T>, Integer> builder = new ImmutableMap.Builder<WeightedEdge<T>, Integer>();
-        final NodeOfDegree1Pruning<T> nodeOfDegree1Pruning = NodeOfDegree1Pruning.from(NodeDegreeFunctions.from(originalGraph));
-        if (nodeOfDegree1Pruning.hasStillNodeWithOddDegree()) {
-            final Map<WeightedEdge<T>, Integer> eulerization = computeOptimalEulerization(
-                    originalGraph,
-                    Lists.newArrayList(nodeOfDegree1Pruning.getRemainingOddVertices()),
-                    new HashMap<T, T>());
-            for (final WeightedEdge<T> edge : nodeOfDegree1Pruning.getDoubledEdges())
-                eulerization.put(edge, 2);
-            builder.putAll(eulerization);
-        }
-        else for (final WeightedEdge<T> edge : nodeOfDegree1Pruning.getDoubledEdges())
-            builder.put(edge, 2);
-        return builder.build();
+        return eulerize(originalGraph, bestPerfectMatching);
     }
 
     private MinimumWeightPerfectMatching() {}

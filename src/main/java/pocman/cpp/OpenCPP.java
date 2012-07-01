@@ -28,7 +28,6 @@ import pocman.graph.WeightedEdge;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Supplier;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public final class OpenCPP<T> {
@@ -83,7 +82,7 @@ public final class OpenCPP<T> {
         return this.closedCPP;
     }
 
-    private final List<T> oddVertices; // TODO lazy
+    //private final List<T> oddVertices; // TODO lazy
 
     private UndirectedGraph<Box<T>> boxedGraph;
 
@@ -122,7 +121,7 @@ public final class OpenCPP<T> {
 
     private OpenCPP(final UndirectedGraph<T> graph) {
         this.graph = graph;
-        this.oddVertices = Lists.newArrayList(this.getGraph().getOddVertices());
+        //this.oddVertices = Lists.newArrayList(this.getGraph().getOddVertices());
     }
 
     private OpenCPP(final ClosedCPP<T> closedCPP) {
@@ -181,6 +180,7 @@ public final class OpenCPP<T> {
     }
 
     // TODO vérifier qu'il suffit d'itérer sur les noeuds de degré impair
+    // TODO vérifier qu'il suffirait d'itérer uniquement sur les noeuds de degré 1
     private Solution<Box<T>> bestSolution(final UndirectedGraph<Box<T>> boxedGraph, final T startingMazeNode) {
 
         Solution<Box<T>> bestSolution = new Solution<Box<T>>(null, null, null, null, 2 * this.getLowerBoundCost() * 2);
@@ -188,7 +188,7 @@ public final class OpenCPP<T> {
         final Stopwatch stopwatch = new Stopwatch();
 
         final int i = 0;
-        for (final T oddVertice : this.oddVertices) {
+        for (final T oddVertice : this.getClosedCPP().getNodesWithOddDegree().keySet()) {
             stopwatch.start();
             final UndirectedGraph<Box<T>> virtualGraph = this.buildVirtualGraph(boxedGraph, startingMazeNode, oddVertice);
             final ClosedCPP<Box<T>> cppSolver = ClosedCPP.from(virtualGraph);
