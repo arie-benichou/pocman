@@ -32,15 +32,18 @@ import pocman.view.MazeView;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 
+// TODO vérifier qu'il suffit d'itérer sur le s noeuds de degré impair
 public class OpenChinesePostmanProblem {
 
-    //public final static String MAZE = Mazes.DEBUG11333;
+    public final static String MAZE = Mazes.DEBUG11333;
+
     //public final static String MAZE = Mazes.LEVEL155;
+
     //public final static String MAZE = Mazes.LEVEL10;
     //public final static String MAZE = Mazes.LEVEL17;
     //public final static String MAZE = Mazes.DEBUG19;
     //public final static String MAZE = Mazes.DEBUG1144;
-    public final static String MAZE = Mazes.DEBUG155;
+    //public final static String MAZE = Mazes.DEBUG155;
 
     public static void main(final String[] args) {
 
@@ -62,7 +65,7 @@ public class OpenChinesePostmanProblem {
         stopwatch.stop();
 
         debug(maze, trail);
-        System.out.println(stopwatch.elapsedTime(TimeUnit.SECONDS) + " " + TimeUnit.SECONDS.toString());
+        System.out.println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS.toString());
 
     }
 
@@ -71,7 +74,7 @@ public class OpenChinesePostmanProblem {
         for (final MazeNode MazeNode : trail) {
             System.out.println(view.renderAsBoard(maze, MazeNode.getId()));
             try {
-                Thread.sleep(450);
+                Thread.sleep(170);
             }
             catch (final InterruptedException e) {}
         }

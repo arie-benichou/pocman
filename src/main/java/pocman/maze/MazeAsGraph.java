@@ -17,7 +17,6 @@
 
 package pocman.maze;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +34,6 @@ import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
-
 
 public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
 
@@ -87,7 +85,8 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
     }
 
     private Map<Integer, List<WeightedEdge<MazeNode>>> buildEdges(final Map<Integer, MazeNode> gameTiles) {
-        final Builder<Integer, List<WeightedEdge<MazeNode>>> builder = new ImmutableSortedMap.Builder<Integer, List<WeightedEdge<MazeNode>>>(Ordering.natural());
+        final Builder<Integer, List<WeightedEdge<MazeNode>>> builder =
+                                                                       new ImmutableSortedMap.Builder<Integer, List<WeightedEdge<MazeNode>>>(Ordering.natural());
         for (final MazeNode gameTile : gameTiles.values()) {
             if (!gameTile.is(Type.STREET)) {
                 final List<WeightedEdge<MazeNode>> edges = Lists.newArrayList();
@@ -98,7 +97,6 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
                         betweenTiles.add(currentTile.getId());
                     edges.add(WeightedEdge.from(gameTile, currentTile, betweenTiles.size()));
                 }
-                Collections.sort(edges); // TODO ? inutile
                 builder.put(gameTile.getId(), ImmutableList.copyOf(edges));
             }
         }
