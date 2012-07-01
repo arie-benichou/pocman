@@ -21,8 +21,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import pocman.graph.WeightedEdge;
-
 public class WeightedEdgeTest {
 
     @Test(expected = IllegalArgumentException.class)
@@ -72,6 +70,7 @@ public class WeightedEdgeTest {
         assertTrue(symetricEdge.getWeight() == 1.0);
     }
 
+    /*
     @Test
     public void testCompareTo() {
         final WeightedEdge<String> edge1 = WeightedEdge.from("A", "C", 2.0);
@@ -81,6 +80,7 @@ public class WeightedEdgeTest {
         assertTrue(edge2.compareTo(edge2) == 0);
         assertTrue(edge2.compareTo(edge1) == 1);
     }
+    */
 
     @Test
     public void testEqualsObject() {

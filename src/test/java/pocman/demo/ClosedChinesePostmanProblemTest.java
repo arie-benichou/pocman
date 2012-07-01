@@ -6,7 +6,7 @@ import org.junit.Test;
 public class ClosedChinesePostmanProblemTest {
 
     @Test
-    public void testMain() {
+    public void testMain() throws InterruptedException {
         ClosedChinesePostmanProblem.main(null);
     }
 

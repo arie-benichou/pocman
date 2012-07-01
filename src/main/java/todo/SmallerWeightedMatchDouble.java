@@ -1,5 +1,5 @@
 
-package old;
+package todo;
 
 public final class SmallerWeightedMatchDouble {
 
@@ -56,7 +56,7 @@ public final class SmallerWeightedMatchDouble {
                 for (int j = 2; j <= this.V; j++)
                     if (this.nextDelta[this.i] > this.nextDelta[j]) this.i = j;
                 this.delta = this.nextDelta[this.i];
-                if (this.delta == this.lastDelta) {
+                if (Double.compare(this.delta, this.lastDelta) == 0) {
                     this.setBounds();
                     this.unpairAll();
                     for (this.i = 1; this.i <= this.V; this.i++) {
@@ -207,7 +207,7 @@ public final class SmallerWeightedMatchDouble {
     private boolean pair() {
         int u, w, temp;
         this.e = this.nextEdge[this.v];
-        while (this.slack(this.e) != 2 * this.delta)
+        while (Double.compare(this.slack(this.e), 2 * this.delta) != 0)
             this.e = this.nextPair[this.e];
         w = this.bend(this.e);
         this.link[this.bmate(w)] = -this.e;

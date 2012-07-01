@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package old;
+package pocman.demo;
 
 public final class Mazes {
 

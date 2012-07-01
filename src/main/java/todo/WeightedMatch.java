@@ -47,7 +47,7 @@
  * the minimum weight maximum match fails on the test graph.
  */
 
-package old;
+package todo;
 
 public final class WeightedMatch
 {

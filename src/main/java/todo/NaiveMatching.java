@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package old;
+package todo;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -40,7 +40,7 @@ import com.google.common.collect.Sets;
  * @todo Edmonds's matching / Ford-Fulkerson algorithm implementations
  * @todo revoir le max
  */
-public final class MatchingSolver {
+public final class NaiveMatching {
 
     private final static int[] EMPTY_ARRAY = new int[0];
     private final static LowerBound MAX_LOWER_BOUND = new LowerBound(EMPTY_ARRAY, 0);
@@ -100,8 +100,8 @@ public final class MatchingSolver {
             this.rowIndex = rowIndex;
             this.columnIndex = columnIndex;
             //this.hashCode = MatchingSolver.this.dimension + (rowIndex + 1) * (columnIndex + 1) * (rowIndex + columnIndex);
-            final int hashCode1 = rowIndex * MatchingSolver.this.dimension + columnIndex;
-            final int hashCode2 = columnIndex * MatchingSolver.this.dimension + rowIndex;
+            final int hashCode1 = rowIndex * NaiveMatching.this.dimension + columnIndex;
+            final int hashCode2 = columnIndex * NaiveMatching.this.dimension + rowIndex;
             this.hashCode = hashCode1 * hashCode2;
         }
 
@@ -275,7 +275,7 @@ public final class MatchingSolver {
      * @param matrix
      *            the given (read-only) matrix of positive costs.
      */
-    private MatchingSolver(final double[][] matrix) { // TODO
+    private NaiveMatching(final double[][] matrix) { // TODO
         Preconditions.checkNotNull(matrix);
         final int n = matrix.length;
         Preconditions.checkState(n > 0 && n % 2 == 0);
@@ -288,7 +288,7 @@ public final class MatchingSolver {
         this.dimension = n;
     }
 
-    public MatchingSolver(final Graph residualGraph) {
+    public NaiveMatching(final Graph residualGraph) {
         this(residualGraph.getPaths()); // TODO
     }
 
@@ -345,7 +345,7 @@ public final class MatchingSolver {
                 lowerBound = new LowerBound(pairs, cost);
                 matchesCollector.clear().add(pairs);
             }
-            else if (cost == lowerBound.cost) matchesCollector.add(pairs);
+            else if (Double.compare(cost, lowerBound.cost) == 0) matchesCollector.add(pairs);
         }
         return lowerBound;
     }
@@ -466,7 +466,7 @@ public final class MatchingSolver {
         };
         */
 
-        final MatchingSolver matching = new MatchingSolver(matrix);
+        final NaiveMatching matching = new NaiveMatching(matrix);
         final List<String> labels = Lists.newArrayList("A", "B", "C", "D", "E", "F");
 
         final Function<Position, String> mapping = new Function<Position, String>() {

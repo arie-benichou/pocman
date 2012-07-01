@@ -20,7 +20,6 @@ package pocman.demo;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import old.Mazes;
 import pocman.cpp.ClosedCPP;
 import pocman.cpp.EulerianTrail;
 import pocman.cpp.Solution;
@@ -34,20 +33,22 @@ import com.google.common.base.Stopwatch;
 
 public class ClosedChinesePostmanProblem {
 
-    //public final static String MAZE = Mazes.DEBUG11333;
-    //public final static String MAZE = Mazes.LEVEL155;
     public final static String MAZE = Mazes.LEVEL10;
 
-    public static void main(final String[] args) {
+    private static void debug(final Maze maze, final List<MazeNode> trail) throws InterruptedException {
+        final MazeView view = new MazeView();
+        for (final MazeNode MazeNode : trail) {
+            System.out.println(view.renderAsGraph(maze, MazeNode));
+            Thread.sleep(200);
+        }
+    }
 
+    public static void main(final String[] args) throws InterruptedException {
         final Stopwatch stopwatch = new Stopwatch().start();
 
         final Maze maze = new Maze(MAZE);
         final ClosedCPP<MazeNode> closedCPPSolver = ClosedCPP.from(maze);
         final Solution<MazeNode> solution = closedCPPSolver.solve();
-
-        //Preconditions.checkState(solution.getLowerBoundCost().equals(190.0));
-        //Preconditions.checkState(solution.getUpperBoundCost().equals(380.0));
 
         final int pocManPosition = MAZE.indexOf(Tile.POCMAN.toCharacter());
         Preconditions.checkState(pocManPosition > -1, "POCMAN POSITION NOT FOUND !");
@@ -56,20 +57,7 @@ public class ClosedChinesePostmanProblem {
         stopwatch.stop();
 
         debug(maze, trail);
-
         System.out.println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS.toString());
-
-    }
-
-    private static void debug(final Maze maze, final List<MazeNode> trail) {
-        final MazeView view = new MazeView();
-        for (final MazeNode MazeNode : trail) {
-            System.out.println(view.renderAsGraph(maze, MazeNode));
-            try {
-                Thread.sleep(200);
-            }
-            catch (final InterruptedException e) {}
-        }
     }
 
 }

@@ -4,7 +4,6 @@ package pocman.cpp;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
 
 import pocman.graph.UndirectedGraph;
 import pocman.graph.UndirectedGraph.Builder;
@@ -165,13 +164,14 @@ public final class OpenCPP<T> {
         return unboxedSolution;
     }
 
+    // TODO vérifier qu'il suffit d'itérer sur les noeuds de degré impair
     private Solution<Box<T>> bestSolution(final UndirectedGraph<Box<T>> boxedGraph, final T startingMazeNode) {
 
         Solution<Box<T>> bestSolution = new Solution<Box<T>>(null, null, null, null, 2 * this.getLowerBoundCost() * 2);
 
         final Stopwatch stopwatch = new Stopwatch();
 
-        int i = 0;
+        final int i = 0;
         for (final T oddVertice : this.oddVertices) {
             stopwatch.start();
             final UndirectedGraph<Box<T>> virtualGraph = this.buildVirtualGraph(boxedGraph, startingMazeNode, oddVertice);
@@ -180,10 +180,12 @@ public final class OpenCPP<T> {
                 bestSolution = new Solution<Box<T>>(new Box<T>(oddVertice), virtualGraph, cppSolver.getTraversalByEdge(),
                         cppSolver.getLowerBoundCost(), cppSolver.getUpperBoundCost());
             }
+            /*
             System.out.println();
             System.out.println(++i + "/" + this.oddVertices.size() + " : " + stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS);
             System.out.println(oddVertice + " -> " + cppSolver.getUpperBoundCost() + "$");
             System.out.println();
+            */
             stopwatch.reset();
         }
 

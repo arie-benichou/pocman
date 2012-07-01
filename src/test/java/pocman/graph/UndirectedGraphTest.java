@@ -249,10 +249,12 @@ public class UndirectedGraphTest {
         assertTrue(actualPath.equals(expectedPath) == false);// TODO SHOULD be false : revoir Equals de Path
     }
 
-    //@Test
+    /*
+    @Test
     public void test() {
         final Builder<String> builder = new UndirectedGraph.Builder<String>(2);
         builder.addEdge(null, "A", 1.0);
         final UndirectedGraph<String> graph = builder.build();
     }
+    */
 }

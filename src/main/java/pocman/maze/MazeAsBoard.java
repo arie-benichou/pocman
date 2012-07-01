@@ -17,13 +17,12 @@
 
 package pocman.maze;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
 
 public final class MazeAsBoard
 {
@@ -94,7 +93,7 @@ public final class MazeAsBoard
 
     @Override
     public int hashCode() {
-        return this.board.hashCode();
+        return Arrays.hashCode(this.board);
     }
 
     @Override

@@ -1,5 +1,5 @@
 
-package old;
+package todo;
 
 public final class SmallerWeightedMatch {
 

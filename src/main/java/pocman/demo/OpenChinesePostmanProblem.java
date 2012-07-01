@@ -20,7 +20,6 @@ package pocman.demo;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import old.Mazes;
 import pocman.cpp.EulerianTrail;
 import pocman.cpp.OpenCPP;
 import pocman.cpp.Solution;
@@ -32,21 +31,19 @@ import pocman.view.MazeView;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 
-// TODO vérifier qu'il suffit d'itérer sur le s noeuds de degré impair
 public class OpenChinesePostmanProblem {
 
     public final static String MAZE = Mazes.DEBUG11333;
 
-    //public final static String MAZE = Mazes.LEVEL155;
+    private static void debug(final Maze maze, final List<MazeNode> trail) throws InterruptedException {
+        final MazeView view = new MazeView();
+        for (final MazeNode MazeNode : trail) {
+            System.out.println(view.renderAsBoard(maze, MazeNode.getId()));
+            Thread.sleep(170);
+        }
+    }
 
-    //public final static String MAZE = Mazes.LEVEL10;
-    //public final static String MAZE = Mazes.LEVEL17;
-    //public final static String MAZE = Mazes.DEBUG19;
-    //public final static String MAZE = Mazes.DEBUG1144;
-    //public final static String MAZE = Mazes.DEBUG155;
-
-    public static void main(final String[] args) {
-
+    public static void main(final String[] args) throws InterruptedException {
         final Stopwatch stopwatch = new Stopwatch().start();
 
         final int pocManPosition = MAZE.indexOf(Tile.POCMAN.toCharacter());
@@ -55,29 +52,12 @@ public class OpenChinesePostmanProblem {
         final Maze maze = new Maze(MAZE);
         final OpenCPP<MazeNode> openCPP = OpenCPP.from(maze);
         final Solution<MazeNode> solution = openCPP.solveFrom(maze.getNode(pocManPosition));
-
-        //Preconditions.checkState(solution.getLowerBoundCost().equals(190.0));
-        //Preconditions.checkState(solution.getUpperBoundCost().equals(290.0));
-        //Preconditions.checkState(solution.getEndPoint().equals(maze.getNode(196)));
-
         final List<MazeNode> trail = EulerianTrail.from(maze, solution.getTraversalByEdge(), solution.getEndPoint());
 
         stopwatch.stop();
 
         debug(maze, trail);
         System.out.println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS.toString());
-
-    }
-
-    private static void debug(final Maze maze, final List<MazeNode> trail) {
-        final MazeView view = new MazeView();
-        for (final MazeNode MazeNode : trail) {
-            System.out.println(view.renderAsBoard(maze, MazeNode.getId()));
-            try {
-                Thread.sleep(170);
-            }
-            catch (final InterruptedException e) {}
-        }
     }
 
 }

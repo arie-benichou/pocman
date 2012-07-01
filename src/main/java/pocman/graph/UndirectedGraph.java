@@ -30,12 +30,10 @@ import java.util.Set;
 import pocman.graph.Path.Factory;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-
 
 public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { // TODO à revoir
 
@@ -300,6 +298,7 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { /
         return oddVertices;
     }
 
+    /*
     private void debug(final double[][] array, final double infinity) {
         double max = 0;
         for (int i = 0; i < this.order; ++i)
@@ -318,5 +317,6 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { /
         }
         System.out.println();
     }
+    */
 
 }
