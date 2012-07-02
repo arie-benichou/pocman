@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import pocman.graph.UndirectedGraph;
 import pocman.graph.UndirectedGraph.Builder;
 import pocman.graph.WeightedEdge;
+import pocman.matching.MatchingAlgorithm;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
@@ -78,22 +79,31 @@ public final class OpenCPP<T> {
     private ClosedCPP<T> closedCPP = null;
 
     public ClosedCPP<T> getClosedCPP() {
-        if (this.closedCPP == null) this.closedCPP = ClosedCPP.from(this.getGraph());
+        if (this.closedCPP == null) this.closedCPP = ClosedCPP.from(this.getGraph(), this.matchingAlgorithm);
         return this.closedCPP;
     }
 
-    //private final List<T> oddVertices; // TODO lazy
-
     private UndirectedGraph<Box<T>> boxedGraph;
+    private final MatchingAlgorithm matchingAlgorithm;
+
+    public static <T> OpenCPP<T> from(final UndirectedGraph<T> graph, final MatchingAlgorithm matchingAlgorithm) {
+        Preconditions.checkArgument(graph != null);
+        Preconditions.checkArgument(matchingAlgorithm != null);
+        return new OpenCPP<T>(graph, matchingAlgorithm);
+    }
+
+    public static <T> OpenCPP<T> from(final Supplier<UndirectedGraph<T>> graphSupplier, final MatchingAlgorithm matchingAlgorithm) {
+        Preconditions.checkArgument(graphSupplier != null);
+        Preconditions.checkArgument(matchingAlgorithm != null);
+        return OpenCPP.from(graphSupplier.get(), matchingAlgorithm);
+    }
 
     public static <T> OpenCPP<T> from(final UndirectedGraph<T> graph) {
-        Preconditions.checkArgument(graph != null);
-        return new OpenCPP<T>(graph);
+        return OpenCPP.from(graph, ClosedCPP.DEFAULT_MATCHING_ALGORITHM);
     }
 
     public static <T> OpenCPP<T> from(final Supplier<UndirectedGraph<T>> graphSupplier) {
-        Preconditions.checkArgument(graphSupplier != null);
-        return OpenCPP.from(graphSupplier.get());
+        return OpenCPP.from(graphSupplier, ClosedCPP.DEFAULT_MATCHING_ALGORITHM);
     }
 
     public static <T> OpenCPP<T> from(final ClosedCPP<T> closedCPP) {
@@ -119,13 +129,13 @@ public final class OpenCPP<T> {
         return this.boxedGraph;
     }
 
-    private OpenCPP(final UndirectedGraph<T> graph) {
+    private OpenCPP(final UndirectedGraph<T> graph, final MatchingAlgorithm matchingAlgorithm) {
         this.graph = graph;
-        //this.oddVertices = Lists.newArrayList(this.getGraph().getOddVertices());
+        this.matchingAlgorithm = matchingAlgorithm;
     }
 
     private OpenCPP(final ClosedCPP<T> closedCPP) {
-        this(closedCPP.getGraph());
+        this(closedCPP.getGraph(), closedCPP.getMatchingAlgorithm());
         this.closedCPP = closedCPP;
     }
 
@@ -187,7 +197,7 @@ public final class OpenCPP<T> {
 
         final Stopwatch stopwatch = new Stopwatch();
 
-        final int i = 0;
+        //final int i = 0;
         for (final T oddVertice : this.getClosedCPP().getNodesWithOddDegree().keySet()) {
             stopwatch.start();
             final UndirectedGraph<Box<T>> virtualGraph = this.buildVirtualGraph(boxedGraph, startingMazeNode, oddVertice);

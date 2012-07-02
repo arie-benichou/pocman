@@ -24,6 +24,7 @@ import java.util.Set;
 
 import pocman.graph.UndirectedGraph;
 import pocman.matching.Match;
+import pocman.matching.MatchingAlgorithm;
 import pocman.matching.MutableUndirectedGraph;
 
 import com.google.common.collect.ImmutableMap;
@@ -33,7 +34,7 @@ import com.google.common.collect.Sets;
 /**
  * Minimum Weight Perfect Matching Algorithm
  */
-public final class Matching {
+public final class Matching implements MatchingAlgorithm {
 
     private static <T> Map<T, T> buildMatchingMap(final MutableUndirectedGraph<T> maximumMatching) {
         final Builder<T, T> builder = new ImmutableMap.Builder<T, T>();
@@ -63,7 +64,8 @@ public final class Matching {
         return true;
     }
 
-    public static <T> Match<T> from(final UndirectedGraph<T> originalGraph, final MutableUndirectedGraph<T> residualGraph) {
+    @Override
+    public <T> Match<T> from(final UndirectedGraph<T> originalGraph, final MutableUndirectedGraph<T> residualGraph) {
         MutableUndirectedGraph<T> maximumMatching = new MutableUndirectedGraph<T>();
         Match<T> bestMatch = new Match<T>(new HashMap<T, T>(), Double.POSITIVE_INFINITY);
         do {
@@ -77,7 +79,5 @@ public final class Matching {
         while (isPerfect(maximumMatching));
         return bestMatch;
     }
-
-    private Matching() {}
 
 }

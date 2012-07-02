@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import pocman.cpp.EulerianTrail;
 import pocman.cpp.OpenCPP;
 import pocman.cpp.Solution;
+import pocman.matching.MatchingAlgorithm;
 import pocman.maze.Maze;
 import pocman.maze.MazeNode;
 import pocman.maze.Tile;
@@ -33,11 +34,18 @@ import com.google.common.base.Stopwatch;
 
 public class OpenChinesePostmanProblem {
 
-    public final static String MAZE = Mazes.DEBUG11333;
-
+    //public final static String MAZE = Mazes.DEBUG11333;
     //public final static String MAZE = Mazes.DEBUG14;
-    //public final static String MAZE = Mazes.LEVEL155;
     //public final static String MAZE = Mazes.DEBUG15;
+    public final static String MAZE = Mazes.LEVEL155;
+
+    public static List<MazeNode> computeOptimalPath(final Maze maze, final int pocManPosition, final MatchingAlgorithm matchingAlgorithm) {
+        final OpenCPP<MazeNode> openCPP = OpenCPP.from(maze, matchingAlgorithm);
+        final Solution<MazeNode> solution = openCPP.solveFrom(maze.getNode(pocManPosition));
+        System.out.println(solution);
+        return EulerianTrail.from(maze, solution.getTraversalByEdge(), solution.getEndPoint());
+
+    }
 
     private static void debug(final Maze maze, final List<MazeNode> trail) throws InterruptedException {
         final MazeView view = new MazeView();
@@ -48,20 +56,31 @@ public class OpenChinesePostmanProblem {
     }
 
     public static void main(final String[] args) throws InterruptedException {
-        final Stopwatch stopwatch = new Stopwatch().start();
-
         final int pocManPosition = MAZE.indexOf(Tile.POCMAN.toCharacter());
         Preconditions.checkState(pocManPosition > -1, "POCMAN POSITION NOT FOUND !");
-
         final Maze maze = new Maze(MAZE);
-        final OpenCPP<MazeNode> openCPP = OpenCPP.from(maze);
-        final Solution<MazeNode> solution = openCPP.solveFrom(maze.getNode(pocManPosition));
-        final List<MazeNode> trail = EulerianTrail.from(maze, solution.getTraversalByEdge(), solution.getEndPoint());
+        {
+            final String time = time(maze, pocManPosition, new pocman.matching.edmonds1.Matching());
+            System.out.println(time);
+        }
+        /*
+        {
+            final String time = time(maze, pocManPosition, new pocman.matching.edmonds2.Matching());
+            System.out.println(time);
+        }
+        {
+            final String time = time(maze, pocManPosition, new pocman.matching.naive.Matching());
+            System.out.println(time);
+        }
+        */
+    }
 
+    private static String time(final Maze maze, final int pocManPosition, final MatchingAlgorithm matchingAlgorithm) throws InterruptedException {
+        final Stopwatch stopwatch = new Stopwatch().start();
+        final List<MazeNode> trail = computeOptimalPath(maze, pocManPosition, matchingAlgorithm);
         stopwatch.stop();
-
         debug(maze, trail);
-        System.out.println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS.toString());
+        return stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS.toString();
     }
 
 }

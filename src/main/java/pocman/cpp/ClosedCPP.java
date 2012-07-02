@@ -27,6 +27,7 @@ import pocman.graph.WeightedEdge;
 import pocman.graph.functions.NodeDegreeFunctions;
 import pocman.graph.functions.NodeOfDegree1Pruning;
 import pocman.matching.Match;
+import pocman.matching.MatchingAlgorithm;
 import pocman.matching.MutableUndirectedGraph;
 
 import com.google.common.base.Preconditions;
@@ -38,15 +39,26 @@ import com.google.common.collect.Sets;
 
 public final class ClosedCPP<T> {
 
-    public static <T> ClosedCPP<T> from(final UndirectedGraph<T> graph) {
+    public final static MatchingAlgorithm DEFAULT_MATCHING_ALGORITHM = new pocman.matching.edmonds1.Matching();
+
+    public static <T> ClosedCPP<T> from(final UndirectedGraph<T> graph, final MatchingAlgorithm matchingAlgorithm) {
         Preconditions.checkArgument(graph != null);
+        Preconditions.checkArgument(matchingAlgorithm != null);
         Preconditions.checkState(graph.isConnected(), "Graph must be connected.");
-        return new ClosedCPP<T>(graph);
+        return new ClosedCPP<T>(graph, matchingAlgorithm);
+    }
+
+    public static <T> ClosedCPP<T> from(final Supplier<UndirectedGraph<T>> graphSupplier, final MatchingAlgorithm matchingAlgorithm) {
+        Preconditions.checkArgument(graphSupplier != null);
+        return ClosedCPP.from(graphSupplier.get(), matchingAlgorithm);
+    }
+
+    public static <T> ClosedCPP<T> from(final UndirectedGraph<T> graph) {
+        return ClosedCPP.from(graph, DEFAULT_MATCHING_ALGORITHM);
     }
 
     public static <T> ClosedCPP<T> from(final Supplier<UndirectedGraph<T>> graphSupplier) {
-        Preconditions.checkArgument(graphSupplier != null);
-        return ClosedCPP.from(graphSupplier.get());
+        return ClosedCPP.from(graphSupplier, DEFAULT_MATCHING_ALGORITHM);
     }
 
     private final UndirectedGraph<T> graph;
@@ -134,10 +146,7 @@ public final class ClosedCPP<T> {
                     eulerization.put(graph.getEdge(endPoint1, endPoint2), 1);
         }
         else {
-            // TODO
-            //final Match<T> matching = pocman.matching.naive.Matching.from(graph, buildResidualGraph(graph, remainingOddVertices));
-            final Match<T> matching = pocman.matching.edmonds1.Matching.from(graph, buildResidualGraph(graph, remainingOddVertices));
-            //final Match<T> matching = pocman.matching.edmonds2.Matching.from(graph, buildResidualGraph(graph, remainingOddVertices));
+            final Match<T> matching = this.matchingAlgorithm.from(graph, buildResidualGraph(graph, remainingOddVertices));
             eulerization = computeTraversalByEdge(graph, matching.getMatches());
         }
 
@@ -160,16 +169,23 @@ public final class ClosedCPP<T> {
         return this.traversalByEdge;
     }
 
-    private Solution<T> solution = null;
+    private final MatchingAlgorithm matchingAlgorithm;
+
+    public MatchingAlgorithm getMatchingAlgorithm() {
+        return this.matchingAlgorithm;
+    }
+
     private final NodeDegreeFunctions<T> nodeDegreeFunctions;
 
     public Map<T, Integer> getNodesWithOddDegree() {
         return this.nodeDegreeFunctions.getNodesWithOddDegree();
     }
 
-    private ClosedCPP(final UndirectedGraph<T> graph) {
-        this.graph = graph;
+    private Solution<T> solution = null;
 
+    private ClosedCPP(final UndirectedGraph<T> graph, final MatchingAlgorithm matchingAlgorithm) {
+        this.graph = graph;
+        this.matchingAlgorithm = matchingAlgorithm;
         double lowerBoundCost = 0;
         for (final T MazeNode : this.graph)
             for (final T connectedMazeNode : this.graph.getConnectedVerticeSet(MazeNode))

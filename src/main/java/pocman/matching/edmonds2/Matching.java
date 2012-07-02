@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import pocman.graph.UndirectedGraph;
+import pocman.matching.MatchingAlgorithm;
 import pocman.matching.MutableUndirectedGraph;
 import todo.SmallerWeightedMatch;
 
@@ -31,9 +32,10 @@ import com.google.common.primitives.Ints;
 /**
  * Minimum Weight Perfect Matching Algorithm
  */
-public final class Matching {
+public final class Matching implements MatchingAlgorithm {
 
-    public static <T> pocman.matching.Match<T> from(final UndirectedGraph<T> originalGraph, final MutableUndirectedGraph<T> residualGraph) {
+    @Override
+    public <T> pocman.matching.Match<T> from(final UndirectedGraph<T> originalGraph, final MutableUndirectedGraph<T> residualGraph) {
 
         final int order = residualGraph.getOrder();
 
@@ -52,7 +54,7 @@ public final class Matching {
             for (int j = 0; j < order; ++j)
                 matrix[i][j] = originalGraph.getShortestPathBetween(vertexByIndex.get(i), vertexByIndex.get(j)).getWeight();
 
-        final WeightedMatch weightedMatch = new WeightedMatch(matrix);
+        final WeightedMatchDouble weightedMatch = new WeightedMatchDouble(matrix);
         final int[] mate = weightedMatch.weightedMatch(SmallerWeightedMatch.MINIMIZE);
 
         final int[] matched = weightedMatch.getMatched(mate);
@@ -69,7 +71,5 @@ public final class Matching {
 
         return new pocman.matching.Match<T>(matches, cost);
     }
-
-    private Matching() {}
 
 }

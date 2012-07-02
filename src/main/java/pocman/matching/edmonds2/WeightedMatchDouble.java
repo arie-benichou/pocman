@@ -1,7 +1,30 @@
 
 package pocman.matching.edmonds2;
 
-public final class WeightedMatch {
+/**
+ * This class implements a [minimum | maximum] cost maximum matching based on an
+ * O(n^3) implementation of Edmonds' algorithm, as presented by Harold N. Gabow
+ * in his Ph.D. dissertation, Computer Science, Stanford University, 1973.
+ * 
+ * Gabow's implementation of Edmonds' algorithm is described in chapter 6 of
+ * Nonbipartite Matching, of Combinatorial Optimization, Networks and Matroids,
+ * authored by Eugene Lawler, published by Holt, Rinehart, and Winston, 1976.
+ * Lawler's description is referred to in the Notes and References section of
+ * chapter 11, Weighted Matching, of Combinatorial Optimation, Algorithms and
+ * Complexity, authored by Christos Papadimitriou and Kenneth Steiglitz,
+ * published by Prentice-Hall, 1982. The implementation here mimics Gabow's
+ * description and Rothberg's C coding of Gabow's description, making it easy
+ * for others to see the correspondence between this code, Rothberg's C code,
+ * and Gabow's English description of the algorithm, given in Appendix D of his
+ * dissertation. Since the code mimics Gabow's description (Rothberg's C code
+ * does so even more closely), the code below is not object-oriented, much less
+ * good Java. It also violates many Java naming conventions. Currently, the
+ * graph is assumed to be complete & symmetric.
+ * 
+ * WeightedMatchDouble has been adapted from WeightedMatch by Peter Cappello,
+ * July 2003. Original WeightedMatch class is a part of JICOS project.
+ */
+public final class WeightedMatchDouble {
 
     public final static boolean MINIMIZE = true;
     public final static boolean MAXIMIZE = false;
@@ -40,7 +63,7 @@ public final class WeightedMatch {
     private int f, nxtEdge, nextE, nextU;
     private int e, v, i; // edge, MazeNode, index used by several methods.
 
-    public WeightedMatch(final double[][] costs) {
+    public WeightedMatchDouble(final double[][] costs) {
         this.costs = costs;
     }
 
@@ -242,7 +265,7 @@ public final class WeightedMatch {
         return false;
     }
 
-    private WeightedMatch pointer(final int u, final int v, final int e) {
+    private WeightedMatchDouble pointer(final int u, final int v, final int e) {
         int i;
         double del;
         this.link[u] = -this.dummyEdge;
@@ -386,7 +409,7 @@ public final class WeightedMatch {
         }
     }
 
-    private WeightedMatch unpair(final int oldBase, final int oldMate) {
+    private WeightedMatchDouble unpair(final int oldBase, final int oldMate) {
         int e, newbase, u;
         this.unlink(oldBase);
         newbase = this.bmate(oldMate);

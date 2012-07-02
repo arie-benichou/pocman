@@ -268,9 +268,9 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { /
     }
 
     @Override
-    public List<WeightedEdge<T>> getEdges(final T MazeNode) { // TODO retourner un Set ?
-        final List<WeightedEdge<T>> edges = this.edgesByMazeNode.get(MazeNode);
-        if (edges == null) throw new NoSuchElementException("Source node does not exist.");
+    public List<WeightedEdge<T>> getEdges(final T node) { // TODO retourner un Set ?
+        final List<WeightedEdge<T>> edges = this.edgesByMazeNode.get(node);
+        if (edges == null) throw new NoSuchElementException("Source node " + node + " does not exist.");
         return edges;
     }
 
