@@ -55,6 +55,7 @@ public final class MinimumWeightPerfectMatching {
         return matching;
     }
 
+    // TODO appartient à ClosedCPP
     private static <T> Map<WeightedEdge<T>, Integer> eulerize(final UndirectedGraph<T> originalGraph, final Map<T, T> matching) {
         final Set<WeightedEdge<T>> edges = Sets.newHashSet();
         for (final T MazeNode : originalGraph)

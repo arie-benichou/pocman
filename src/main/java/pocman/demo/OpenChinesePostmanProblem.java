@@ -33,9 +33,10 @@ import com.google.common.base.Stopwatch;
 
 public class OpenChinesePostmanProblem {
 
-    //public final static String MAZE = Mazes.DEBUG11333;
+    public final static String MAZE = Mazes.DEBUG11333;
+
     //public final static String MAZE = Mazes.DEBUG14;
-    public final static String MAZE = Mazes.LEVEL155;
+    //public final static String MAZE = Mazes.LEVEL155;
 
     private static void debug(final Maze maze, final List<MazeNode> trail) throws InterruptedException {
         final MazeView view = new MazeView();
@@ -58,7 +59,7 @@ public class OpenChinesePostmanProblem {
 
         stopwatch.stop();
 
-        //debug(maze, trail);
+        debug(maze, trail);
         System.out.println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS.toString());
     }
 

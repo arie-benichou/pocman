@@ -15,14 +15,24 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package todo;
+package pocman.matching;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import pocman.graph.Path;
+import pocman.graph.UndirectedGraph;
+import pocman.graph.WeightedEdge;
+import todo.SmallerWeightedMatch;
+import todo.SmallerWeightedMatchDouble;
 
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
@@ -30,7 +40,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 /**
@@ -288,9 +300,101 @@ public final class NaiveMatching {
         this.dimension = n;
     }
 
+    public static <T> Map<WeightedEdge<T>, Integer> from(final UndirectedGraph<T> originalGraph, final MutableUndirectedGraph<T> residualGraph,
+            final Map<T, T> matching) {
+
+        final ArrayList<T> vertices = Lists.newArrayList(residualGraph);
+        final int order = vertices.size();
+
+        final HashMap<T, Integer> indexByVertice = Maps.newHashMap();
+        for (int i = 0; i < order; ++i) {
+            indexByVertice.put(vertices.get(i), i);
+        }
+
+        //System.out.println(indexByVertice.size());
+        //System.out.println(indexByVertice);
+        //System.out.println(vertices.size());
+
+        final double[][] matrix = new double[order][order];
+        for (final T endPoint1 : vertices)
+            for (final T endPoint2 : residualGraph.getConnectedVerticeSet(endPoint1)) {
+                //final Path<T> shortestPath = originalGraph.getShortestPathBetween(endPoint1, endPoint2);
+                //System.out.println(shortestPath.getWeight());
+                //final Integer integer1 = indexByVertice.get(endPoint1);
+                //final Integer integer2 = indexByVertice.get(endPoint2);
+                //System.out.println(integer1 + " - " + integer2);
+                //System.out.println(endPoint1 + " - " + endPoint2);
+                matrix[indexByVertice.get(endPoint1)][indexByVertice.get(endPoint2)] = originalGraph.getShortestPathBetween(endPoint1, endPoint2).getWeight();
+            }
+
+        for (int i = 0; i < order; i++) {
+            for (int j = 0; j < order; j++) {
+                //System.out.println(matrix[i][j]);
+            }
+        }
+
+        final NaiveMatching naiveMatching = new NaiveMatching(matrix);
+        final Match match = naiveMatching.edmondMatch();
+
+        final Function<Position, Map<T, T>> mapping = new Function<Position, Map<T, T>>() {
+
+            @Override
+            public Map<T, T> apply(final Position position) {
+                final ImmutableMap.Builder<T, T> builder = new ImmutableMap.Builder<T, T>();
+                final T t1 = vertices.get(position.getRowIndex());
+                final T t2 = vertices.get(position.getColumnIndex());
+                builder.put(t1, t2);
+                return builder.build();
+            }
+        };
+
+        final List<Map<T, T>> map = match.apply(mapping);
+
+        final Map<T, T> result = Maps.newHashMap();
+        for (final Map<T, T> entry : map) {
+            result.putAll(entry);
+        }
+
+        return eulerize(originalGraph, result);
+    }
+
+    /*
+    // TODO appartient à ClosedCPP
+    private static <T> Map<WeightedEdge<T>, Integer> computeTraversalByEdge(final UndirectedGraph<T> originalGraph, final Map<T, T> map) {
+        final Map<WeightedEdge<T>, Integer> result = Maps.newHashMap();
+        for (final Entry<T, T> entry : map.entrySet()) {
+            final Path<T> path = originalGraph.getShortestPathBetween(entry.getKey(), entry.getValue());
+            for (final WeightedEdge<T> edge : path.getEdges()) {
+                result.put(edge, 2);
+            }
+        }
+        return result;
+    }
+    */
+
+    // TODO appartient à ClosedCPP
+    private static <T> Map<WeightedEdge<T>, Integer> eulerize(final UndirectedGraph<T> originalGraph, final Map<T, T> matching) {
+        final Set<WeightedEdge<T>> edges = Sets.newHashSet();
+        for (final T MazeNode : originalGraph)
+            edges.addAll(originalGraph.getEdges(MazeNode));
+        final Map<WeightedEdge<T>, Integer> map = Maps.newHashMap();
+        for (final WeightedEdge<T> edge : edges)
+            map.put(edge, 1);
+        for (final Entry<T, T> entry : matching.entrySet()) {
+            final T endPoint1 = entry.getKey();
+            final T endPoint2 = entry.getValue();
+            final Path<T> path = originalGraph.getShortestPathBetween(endPoint1, endPoint2);
+            for (final WeightedEdge<T> edge : path.getEdges())
+                map.put(edge, (map.get(edge) + 1) % 2 == 0 ? 2 : 1);
+        }
+        return map;
+    }
+
+    /*
     public NaiveMatching(final Graph residualGraph) {
         this(residualGraph.getPaths()); // TODO
     }
+    */
 
     private void swap(final int[] data, final int i) {
         final int tmp = data[1];
@@ -419,7 +523,7 @@ public final class NaiveMatching {
     /**
      * Tiny tests / benchmarks.
      */
-    public static void main(final String[] args) {
+    public static void _main(final String[] args) {
 
         /*
         final double[][] matrix =

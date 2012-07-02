@@ -27,8 +27,8 @@ import pocman.graph.UndirectedGraph;
 import pocman.graph.WeightedEdge;
 import pocman.graph.functions.NodeDegreeFunctions;
 import pocman.graph.functions.NodeOfDegree1Pruning;
-import pocman.matching.MinimumWeightPerfectMatching;
 import pocman.matching.MutableUndirectedGraph;
+import pocman.matching.NaiveMatching;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
@@ -117,7 +117,15 @@ public final class ClosedCPP<T> {
         }
         else {
             // TODO
-            eulerization = MinimumWeightPerfectMatching.from(graph, buildResidualGraph(graph, remainingOddVertices), new HashMap<T, T>());
+            //eulerization = MinimumWeightPerfectMatching.from(graph, buildResidualGraph(graph, remainingOddVertices), new HashMap<T, T>());
+            eulerization = NaiveMatching.from(graph, buildResidualGraph(graph, remainingOddVertices), new HashMap<T, T>());
+
+            /*
+            for (final Entry<WeightedEdge<T>, Integer> t : eulerization.entrySet())
+                System.out.println(t);
+            System.exit(0);
+            */
+
         }
 
         final Builder<WeightedEdge<T>, Integer> builder = new ImmutableMap.Builder<WeightedEdge<T>, Integer>();
