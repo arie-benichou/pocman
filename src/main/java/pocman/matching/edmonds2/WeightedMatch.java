@@ -1,7 +1,7 @@
 
-package todo;
+package pocman.matching.edmonds2;
 
-public final class SmallerWeightedMatchDouble {
+public final class WeightedMatch {
 
     public final static boolean MINIMIZE = true;
     public final static boolean MAXIMIZE = false;
@@ -40,7 +40,7 @@ public final class SmallerWeightedMatchDouble {
     private int f, nxtEdge, nextE, nextU;
     private int e, v, i; // edge, MazeNode, index used by several methods.
 
-    public SmallerWeightedMatchDouble(final double[][] costs) {
+    public WeightedMatch(final double[][] costs) {
         this.costs = costs;
     }
 
@@ -242,7 +242,7 @@ public final class SmallerWeightedMatchDouble {
         return false;
     }
 
-    private SmallerWeightedMatchDouble pointer(final int u, final int v, final int e) {
+    private WeightedMatch pointer(final int u, final int v, final int e) {
         int i;
         double del;
         this.link[u] = -this.dummyEdge;
@@ -386,7 +386,7 @@ public final class SmallerWeightedMatchDouble {
         }
     }
 
-    private SmallerWeightedMatchDouble unpair(final int oldBase, final int oldMate) {
+    private WeightedMatch unpair(final int oldBase, final int oldMate) {
         int e, newbase, u;
         this.unlink(oldBase);
         newbase = this.bmate(oldMate);

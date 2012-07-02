@@ -1,5 +1,5 @@
 
-package pocman.matching;
+package pocman.matching.edmonds1;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,11 +10,15 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import pocman.matching.MutableUndirectedGraph;
+
+
 /**
- * Ripped from Keith Schwarz (htiek@cs.stanford.edu)
+ * Edmonds Maximum Matching Algorithl ripped from
+ * Keith Schwarz (htiek@cs.stanford.edu)
  * http://www.keithschwarz.com/interesting/code/?dir=edmonds-matching
  */
-public final class EdmondsMatching {
+public final class EdmondsAlgorithm {
 
     public static <T> MutableUndirectedGraph<T> maximumMatching(final MutableUndirectedGraph<T> g) {
         if (g.isEmpty())
@@ -260,7 +264,7 @@ public final class EdmondsMatching {
 
         System.out.println();
 
-        final MutableUndirectedGraph<String> maximumMatching = EdmondsMatching.maximumMatching(graph);
+        final MutableUndirectedGraph<String> maximumMatching = EdmondsAlgorithm.maximumMatching(graph);
 
         for (final String string : maximumMatching) {
             System.out.print(string + ": ");
@@ -288,7 +292,7 @@ public final class EdmondsMatching {
 
         System.out.println();
 
-        final MutableUndirectedGraph<String> maximumMatching = EdmondsMatching.maximumMatching(graph);
+        final MutableUndirectedGraph<String> maximumMatching = EdmondsAlgorithm.maximumMatching(graph);
 
         for (final String string : maximumMatching) {
             System.out.print(string + ": ");
@@ -328,7 +332,7 @@ public final class EdmondsMatching {
 
         System.out.println();
 
-        final MutableUndirectedGraph<String> maximumMatching = EdmondsMatching.maximumMatching(graph);
+        final MutableUndirectedGraph<String> maximumMatching = EdmondsAlgorithm.maximumMatching(graph);
 
         for (final String string : maximumMatching) {
             System.out.print(string + ": ");

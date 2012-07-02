@@ -21,6 +21,8 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import pocman.matching.edmonds1.EdmondsAlgorithm;
+
 public class EdmondsMatchingTest { // TODO à compléter
 
     @Test
@@ -29,7 +31,7 @@ public class EdmondsMatchingTest { // TODO à compléter
         graph.addMazeNode("A");
         graph.addMazeNode("B");
         graph.addEdge("A", "B");
-        final MutableUndirectedGraph<String> maximumMatching = EdmondsMatching.maximumMatching(graph);
+        final MutableUndirectedGraph<String> maximumMatching = EdmondsAlgorithm.maximumMatching(graph);
         Assert.assertTrue(maximumMatching.equals(graph));
     }
 
@@ -42,7 +44,7 @@ public class EdmondsMatchingTest { // TODO à compléter
         graph.addMazeNode("D");
         graph.addEdge("A", "B");
         graph.addEdge("C", "D");
-        final MutableUndirectedGraph<String> maximumMatching = EdmondsMatching.maximumMatching(graph);
+        final MutableUndirectedGraph<String> maximumMatching = EdmondsAlgorithm.maximumMatching(graph);
         Assert.assertTrue(maximumMatching.equals(graph));
     }
 
@@ -56,7 +58,7 @@ public class EdmondsMatchingTest { // TODO à compléter
         graph.addEdge("A", "B");
         graph.addEdge("B", "C");
         graph.addEdge("C", "D");
-        final MutableUndirectedGraph<String> maximumMatching = EdmondsMatching.maximumMatching(graph);
+        final MutableUndirectedGraph<String> maximumMatching = EdmondsAlgorithm.maximumMatching(graph);
         graph.removeEdge("B", "C");
         Assert.assertTrue(maximumMatching.equals(graph));
     }
@@ -72,7 +74,7 @@ public class EdmondsMatchingTest { // TODO à compléter
         graph.addEdge("B", "C");
         graph.addEdge("C", "D");
         graph.addEdge("A", "D");
-        final MutableUndirectedGraph<String> maximumMatching = EdmondsMatching.maximumMatching(graph);
+        final MutableUndirectedGraph<String> maximumMatching = EdmondsAlgorithm.maximumMatching(graph);
         /*
         for (final String string : maximumMatching) {
             System.out.print(string + ": ");

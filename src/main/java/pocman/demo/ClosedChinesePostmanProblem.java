@@ -35,7 +35,8 @@ public class ClosedChinesePostmanProblem {
 
     //public final static String MAZE = Mazes.LEVEL10;
     //public final static String MAZE = Mazes.LEVEL155;
-    public final static String MAZE = Mazes.DEBUG113;
+    //public final static String MAZE = Mazes.DEBUG113;
+    public final static String MAZE = Mazes.DEBUG15;
 
     private static void debug(final Maze maze, final List<MazeNode> trail) throws InterruptedException {
         final MazeView view = new MazeView();

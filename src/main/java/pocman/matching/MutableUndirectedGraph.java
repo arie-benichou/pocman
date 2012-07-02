@@ -13,7 +13,6 @@ import java.util.Set;
 import pocman.graph.UndirectedGraphInterface;
 import pocman.graph.WeightedEdge;
 
-
 /**
  * Ripped from Keith Schwarz (htiek@cs.stanford.edu)
  * http://www.keithschwarz.com/interesting/code/?dir=edmonds-matching
@@ -95,8 +94,7 @@ public final class MutableUndirectedGraph<T> implements UndirectedGraphInterface
 
     @Override
     public int getOrder() {
-        // TODO Auto-generated method stub
-        return 0;
+        return this.mGraph.size();
     }
 
 }

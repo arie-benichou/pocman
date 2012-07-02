@@ -15,24 +15,18 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package pocman.matching;
+package pocman.matching.naive;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import pocman.graph.Path;
 import pocman.graph.UndirectedGraph;
-import pocman.graph.WeightedEdge;
-import todo.SmallerWeightedMatch;
-import todo.SmallerWeightedMatchDouble;
+import pocman.matching.MutableUndirectedGraph;
 
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
@@ -43,7 +37,6 @@ import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 /**
  * Minimal or maximal cost from independant set with maximal cardinality.
@@ -52,7 +45,7 @@ import com.google.common.collect.Sets;
  * @todo Edmonds's matching / Ford-Fulkerson algorithm implementations
  * @todo revoir le max
  */
-public final class NaiveMatching {
+public final class Matching {
 
     private final static int[] EMPTY_ARRAY = new int[0];
     private final static LowerBound MAX_LOWER_BOUND = new LowerBound(EMPTY_ARRAY, 0);
@@ -108,12 +101,12 @@ public final class NaiveMatching {
         private final int rowIndex, columnIndex;
         private final int hashCode;
 
-        private Position(final int rowIndex, final int columnIndex) {
+        public Position(final int rowIndex, final int columnIndex) {
             this.rowIndex = rowIndex;
             this.columnIndex = columnIndex;
             //this.hashCode = MatchingSolver.this.dimension + (rowIndex + 1) * (columnIndex + 1) * (rowIndex + columnIndex);
-            final int hashCode1 = rowIndex * NaiveMatching.this.dimension + columnIndex;
-            final int hashCode2 = columnIndex * NaiveMatching.this.dimension + rowIndex;
+            final int hashCode1 = rowIndex * Matching.this.dimension + columnIndex;
+            final int hashCode2 = columnIndex * Matching.this.dimension + rowIndex;
             this.hashCode = hashCode1 * hashCode2;
         }
 
@@ -287,7 +280,7 @@ public final class NaiveMatching {
      * @param matrix
      *            the given (read-only) matrix of positive costs.
      */
-    private NaiveMatching(final double[][] matrix) { // TODO
+    private Matching(final double[][] matrix) { // TODO
         Preconditions.checkNotNull(matrix);
         final int n = matrix.length;
         Preconditions.checkState(n > 0 && n % 2 == 0);
@@ -300,49 +293,33 @@ public final class NaiveMatching {
         this.dimension = n;
     }
 
-    public static <T> Map<WeightedEdge<T>, Integer> from(final UndirectedGraph<T> originalGraph, final MutableUndirectedGraph<T> residualGraph,
-            final Map<T, T> matching) {
+    public static <T> pocman.matching.Match<T> from(final UndirectedGraph<T> originalGraph, final MutableUndirectedGraph<T> residualGraph) {
 
-        final ArrayList<T> vertices = Lists.newArrayList(residualGraph);
-        final int order = vertices.size();
+        final int order = residualGraph.getOrder();
+        final Map<T, Integer> indexByVertex = Maps.newHashMap();
+        final Map<Integer, T> vertexByIndex = Maps.newHashMap();
 
-        final HashMap<T, Integer> indexByVertice = Maps.newHashMap();
-        for (int i = 0; i < order; ++i) {
-            indexByVertice.put(vertices.get(i), i);
+        int n = 0;
+        for (final T vertex : residualGraph) {
+            indexByVertex.put(vertex, n);
+            vertexByIndex.put(n, vertex);
+            ++n;
         }
-
-        //System.out.println(indexByVertice.size());
-        //System.out.println(indexByVertice);
-        //System.out.println(vertices.size());
 
         final double[][] matrix = new double[order][order];
-        for (final T endPoint1 : vertices)
-            for (final T endPoint2 : residualGraph.getConnectedVerticeSet(endPoint1)) {
-                //final Path<T> shortestPath = originalGraph.getShortestPathBetween(endPoint1, endPoint2);
-                //System.out.println(shortestPath.getWeight());
-                //final Integer integer1 = indexByVertice.get(endPoint1);
-                //final Integer integer2 = indexByVertice.get(endPoint2);
-                //System.out.println(integer1 + " - " + integer2);
-                //System.out.println(endPoint1 + " - " + endPoint2);
-                matrix[indexByVertice.get(endPoint1)][indexByVertice.get(endPoint2)] = originalGraph.getShortestPathBetween(endPoint1, endPoint2).getWeight();
-            }
+        for (int i = 0; i < order; ++i)
+            for (int j = 0; j < order; ++j)
+                matrix[i][j] = originalGraph.getShortestPathBetween(vertexByIndex.get(i), vertexByIndex.get(j)).getWeight();
 
-        for (int i = 0; i < order; i++) {
-            for (int j = 0; j < order; j++) {
-                //System.out.println(matrix[i][j]);
-            }
-        }
-
-        final NaiveMatching naiveMatching = new NaiveMatching(matrix);
-        final Match match = naiveMatching.edmondMatch();
+        final Match match = new Matching(matrix).match();
 
         final Function<Position, Map<T, T>> mapping = new Function<Position, Map<T, T>>() {
 
             @Override
             public Map<T, T> apply(final Position position) {
                 final ImmutableMap.Builder<T, T> builder = new ImmutableMap.Builder<T, T>();
-                final T t1 = vertices.get(position.getRowIndex());
-                final T t2 = vertices.get(position.getColumnIndex());
+                final T t1 = vertexByIndex.get(position.getRowIndex());
+                final T t2 = vertexByIndex.get(position.getColumnIndex());
                 builder.put(t1, t2);
                 return builder.build();
             }
@@ -350,51 +327,13 @@ public final class NaiveMatching {
 
         final List<Map<T, T>> map = match.apply(mapping);
 
-        final Map<T, T> result = Maps.newHashMap();
-        for (final Map<T, T> entry : map) {
+        final Map<T, T> result = Maps.newHashMap(); // TODO builder Map immutable
+        for (final Map<T, T> entry : map)
             result.putAll(entry);
-        }
 
-        return eulerize(originalGraph, result);
-    }
+        return new pocman.matching.Match<T>(result, match.getCost());
 
-    /*
-    // TODO appartient à ClosedCPP
-    private static <T> Map<WeightedEdge<T>, Integer> computeTraversalByEdge(final UndirectedGraph<T> originalGraph, final Map<T, T> map) {
-        final Map<WeightedEdge<T>, Integer> result = Maps.newHashMap();
-        for (final Entry<T, T> entry : map.entrySet()) {
-            final Path<T> path = originalGraph.getShortestPathBetween(entry.getKey(), entry.getValue());
-            for (final WeightedEdge<T> edge : path.getEdges()) {
-                result.put(edge, 2);
-            }
-        }
-        return result;
     }
-    */
-
-    // TODO appartient à ClosedCPP
-    private static <T> Map<WeightedEdge<T>, Integer> eulerize(final UndirectedGraph<T> originalGraph, final Map<T, T> matching) {
-        final Set<WeightedEdge<T>> edges = Sets.newHashSet();
-        for (final T MazeNode : originalGraph)
-            edges.addAll(originalGraph.getEdges(MazeNode));
-        final Map<WeightedEdge<T>, Integer> map = Maps.newHashMap();
-        for (final WeightedEdge<T> edge : edges)
-            map.put(edge, 1);
-        for (final Entry<T, T> entry : matching.entrySet()) {
-            final T endPoint1 = entry.getKey();
-            final T endPoint2 = entry.getValue();
-            final Path<T> path = originalGraph.getShortestPathBetween(endPoint1, endPoint2);
-            for (final WeightedEdge<T> edge : path.getEdges())
-                map.put(edge, (map.get(edge) + 1) % 2 == 0 ? 2 : 1);
-        }
-        return map;
-    }
-
-    /*
-    public NaiveMatching(final Graph residualGraph) {
-        this(residualGraph.getPaths()); // TODO
-    }
-    */
 
     private void swap(final int[] data, final int i) {
         final int tmp = data[1];
@@ -492,33 +431,28 @@ public final class NaiveMatching {
         return this.match(Extremum.MIN);
     }
 
+    /*
     public Match edmondMatch() {
-        /*
-        final int[][] matrix = new int[this.dimension][this.dimension];
-        for (int i = 0; i < this.dimension; ++i)
-            for (int j = 0; j < this.dimension; ++j) {
-                matrix[i][j] = (int) this.matrix[i][j];
-            }
-        */
-        final SmallerWeightedMatchDouble weightedMatch = new SmallerWeightedMatchDouble(this.matrix);
+    //        final int[][] matrix = new int[this.dimension][this.dimension];
+    //        for (int i = 0; i < this.dimension; ++i)
+    //            for (int j = 0; j < this.dimension; ++j) {
+    //                matrix[i][j] = (int) this.matrix[i][j];
+    //            }
+        final Matching weightedMatch = new Matching(this.matrix);
         //final SmallerWeightedMatch weightedMatch = new SmallerWeightedMatch(matrix);
         //final WeightedMatch weightedMatch = new WeightedMatch(matrix);
-        final int[] mate = weightedMatch.weightedMatch(SmallerWeightedMatch.MINIMIZE);
+        //final int[] mate = weightedMatch.weightedMatch(SmallerWeightedMatch.MINIMIZE);
         final Set<Position> positions = Sets.newHashSet();
         //System.out.println();
         for (int i = 0; i < this.dimension; ++i) {
-            final Position position = new Position(i, mate[i + 1] - 1);
-            positions.add(position);
-            /*
-            System.out.println(position + ": " + position.hashCode());
-            System.out.println(position.getRowIndex() + " " + position.getColumnIndex());
-            System.out.println();
-            */
+            final Position position = new Position(this.i, mate[this.i + 1] - 1);
+            this.positions.add(position);
         }
         //System.out.println();
         //System.out.println(positions);
         return new Match(positions, this.matrix);
     }
+    */
 
     /**
      * Tiny tests / benchmarks.
@@ -570,7 +504,7 @@ public final class NaiveMatching {
         };
         */
 
-        final NaiveMatching matching = new NaiveMatching(matrix);
+        final Matching matching = new Matching(matrix);
         final List<String> labels = Lists.newArrayList("A", "B", "C", "D", "E", "F");
 
         final Function<Position, String> mapping = new Function<Position, String>() {

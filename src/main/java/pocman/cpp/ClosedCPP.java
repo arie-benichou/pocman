@@ -17,7 +17,6 @@
 
 package pocman.cpp;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -27,14 +26,15 @@ import pocman.graph.UndirectedGraph;
 import pocman.graph.WeightedEdge;
 import pocman.graph.functions.NodeDegreeFunctions;
 import pocman.graph.functions.NodeOfDegree1Pruning;
+import pocman.matching.Match;
 import pocman.matching.MutableUndirectedGraph;
-import pocman.matching.NaiveMatching;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 public final class ClosedCPP<T> {
 
@@ -98,6 +98,24 @@ public final class ClosedCPP<T> {
         return residualGraph;
     }
 
+    private static <T> Map<WeightedEdge<T>, Integer> computeTraversalByEdge(final UndirectedGraph<T> originalGraph, final Map<T, T> matching) {
+        final Set<WeightedEdge<T>> edges = Sets.newHashSet();
+        for (final T MazeNode : originalGraph)
+            edges.addAll(originalGraph.getEdges(MazeNode));
+        final Map<WeightedEdge<T>, Integer> map = Maps.newHashMap();
+        for (final WeightedEdge<T> edge : edges)
+            map.put(edge, 1);
+        for (final Entry<T, T> entry : matching.entrySet()) {
+            final T endPoint1 = entry.getKey();
+            final T endPoint2 = entry.getValue();
+            final Path<T> path = originalGraph.getShortestPathBetween(endPoint1, endPoint2);
+            for (final WeightedEdge<T> edge : path.getEdges())
+                map.put(edge, (map.get(edge) + 1) % 2 == 0 ? 2 : 1);
+        }
+        return map;
+    }
+
+    // TODO ? réduire les noeuds de type corner
     private Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final UndirectedGraph<T> graph, final Map<T, Integer> nodesWithOddDegree) {
 
         Preconditions.checkState(nodesWithOddDegree.size() % 2 == 0, "Number of odd vertices should be even.");
@@ -117,15 +135,10 @@ public final class ClosedCPP<T> {
         }
         else {
             // TODO
-            //eulerization = MinimumWeightPerfectMatching.from(graph, buildResidualGraph(graph, remainingOddVertices), new HashMap<T, T>());
-            eulerization = NaiveMatching.from(graph, buildResidualGraph(graph, remainingOddVertices), new HashMap<T, T>());
-
-            /*
-            for (final Entry<WeightedEdge<T>, Integer> t : eulerization.entrySet())
-                System.out.println(t);
-            System.exit(0);
-            */
-
+            //final Match<T> matching = pocman.matching.naive.Matching.from(graph, buildResidualGraph(graph, remainingOddVertices));
+            final Match<T> matching = pocman.matching.edmonds1.Matching.from(graph, buildResidualGraph(graph, remainingOddVertices));
+            //final Match<T> matching = pocman.matching.edmonds2.Matching.from(graph, buildResidualGraph(graph, remainingOddVertices));
+            eulerization = computeTraversalByEdge(graph, matching.getMatches());
         }
 
         final Builder<WeightedEdge<T>, Integer> builder = new ImmutableMap.Builder<WeightedEdge<T>, Integer>();

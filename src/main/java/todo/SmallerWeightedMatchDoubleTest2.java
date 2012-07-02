@@ -4,6 +4,8 @@ package todo;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import pocman.matching.edmonds2.WeightedMatch;
+
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
@@ -24,8 +26,8 @@ public class SmallerWeightedMatchDoubleTest2 {
         final Stopwatch stopwatch = new Stopwatch();
         stopwatch.start();
 
-        final SmallerWeightedMatchDouble weightedMatch = new SmallerWeightedMatchDouble(costs);
-        final int[] mate = weightedMatch.weightedMatch(SmallerWeightedMatchDouble.MINIMIZE);
+        final WeightedMatch weightedMatch = new WeightedMatch(costs);
+        final int[] mate = weightedMatch.weightedMatch(WeightedMatch.MINIMIZE);
 
         stopwatch.stop();
 
