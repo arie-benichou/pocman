@@ -23,7 +23,6 @@ import java.util.Map;
 import pocman.graph.UndirectedGraph;
 import pocman.matching.MatchingAlgorithm;
 import pocman.matching.MutableUndirectedGraph;
-import todo.SmallerWeightedMatch;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -55,7 +54,7 @@ public final class Matching implements MatchingAlgorithm {
                 matrix[i][j] = originalGraph.getShortestPathBetween(vertexByIndex.get(i), vertexByIndex.get(j)).getWeight();
 
         final WeightedMatchDouble weightedMatch = new WeightedMatchDouble(matrix);
-        final int[] mate = weightedMatch.weightedMatch(SmallerWeightedMatch.MINIMIZE);
+        final int[] mate = weightedMatch.weightedMatch(WeightedMatchDouble.MINIMIZE);
 
         final int[] matched = weightedMatch.getMatched(mate);
         final List<List<Integer>> partition = Lists.partition(Ints.asList(matched), 2);
