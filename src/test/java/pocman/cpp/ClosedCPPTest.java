@@ -17,6 +17,8 @@
 
 package pocman.cpp;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
@@ -31,29 +33,11 @@ import com.google.common.collect.Maps;
 
 public class ClosedCPPTest {
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testFromUndirectedGraphOfTWithNullReference() {
-        final UndirectedGraph<?> input = null;
-        ClosedCPP.from(input);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testFromUndirectedGraphOfTWithNotConnectedGraph() {
-        final UndirectedGraph<String> input = new UndirectedGraph.Builder<String>(4).addEdge("A", "B", 1.0).addEdge("C", "D", 1.0).build();
-        ClosedCPP.from(input);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testFromSupplierOfUndirectedGraphOfTWithNullReference() {
-        final Supplier<UndirectedGraph<Object>> input = null;
-        ClosedCPP.from(input);
-    }
-
     @Test
     public void testFromUndirectedGraphOfT() {
         final UndirectedGraph<String> input = new UndirectedGraph.Builder<String>(2).addEdge("A", "B", 1.0).build();
         final ClosedCPP<String> solver = ClosedCPP.from(input);
-        assertTrue(solver != null);
+        assertNotNull(solver);
         assertTrue(solver instanceof ClosedCPP);
     }
 
@@ -67,7 +51,7 @@ public class ClosedCPPTest {
             }
         };
         final ClosedCPP<String> solver = ClosedCPP.from(input);
-        assertTrue(solver != null);
+        assertNotNull(solver);
         assertTrue(solver instanceof ClosedCPP);
     }
 
@@ -75,7 +59,7 @@ public class ClosedCPPTest {
     public void testGetLowerBoundCost1() {
         final UndirectedGraph<String> input = new UndirectedGraph.Builder<String>(2).addEdge("A", "B", 1.0).build();
         final ClosedCPP<String> solver = ClosedCPP.from(input);
-        assertTrue(solver.getLowerBoundCost() == 1.0);
+        assertEquals(1.0, solver.getLowerBoundCost(), 0.1);
     }
 
     @Test
@@ -86,14 +70,14 @@ public class ClosedCPPTest {
                 .addEdge("C", "A", 1.0)
                 .build();
         final ClosedCPP<String> solver = ClosedCPP.from(input);
-        assertTrue(solver.getLowerBoundCost() == 4.0);
+        assertEquals(4.0, solver.getLowerBoundCost(), 0.1);
     }
 
     @Test
     public void testGetUpperBoundCost1() {
         final UndirectedGraph<String> input = new UndirectedGraph.Builder<String>(2).addEdge("A", "B", 1.0).build();
         final ClosedCPP<String> solver = ClosedCPP.from(input);
-        assertTrue(solver.getUpperBoundCost() == 2.0);
+        assertEquals(2.0, solver.getUpperBoundCost(), 0.1);
     }
 
     @Test

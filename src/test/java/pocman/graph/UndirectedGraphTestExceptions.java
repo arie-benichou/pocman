@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import pocman.graph.UndirectedGraph.Builder;
 
-public class UndirectedGraphExceptionsTest {
+public class UndirectedGraphTestExceptions {
 
     private UndirectedGraph<String> graph;
 

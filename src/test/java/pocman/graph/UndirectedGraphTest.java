@@ -29,7 +29,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import pocman.graph.Path.Factory;
 import pocman.graph.UndirectedGraph.Builder;
 
 import com.google.common.collect.Sets;
@@ -178,7 +177,7 @@ public class UndirectedGraphTest {
 
     @Test
     public void testGetShortestPathBetween1() {
-        final Path<String> expectedPath = new Path.Factory<String>().newPath(this.graph.getEdge("A", "B"));
+        final Path<String> expectedPath = Path.from(this.graph.getEdge("A", "B"));
         assertTrue(this.graph.isConnected());
         final Path<String> actualPath = this.graph.getShortestPathBetween("A", "B");
         assertTrue(actualPath.equals(expectedPath));
@@ -192,7 +191,7 @@ public class UndirectedGraphTest {
         builder.addEdge("A", "C", 1.0);
         final UndirectedGraph<String> graph = builder.build();
         assertTrue(graph.isConnected());
-        final Path<String> expectedPath = new Path.Factory<String>().newPath(graph.getEdge("A", "C"));
+        final Path<String> expectedPath = Path.from(graph.getEdge("A", "C"));
         final Path<String> actualPath = graph.getShortestPathBetween("A", "C");
         assertTrue(actualPath.equals(expectedPath));
     }
@@ -205,8 +204,7 @@ public class UndirectedGraphTest {
         builder.addEdge("A", "C", 3.0);
         final UndirectedGraph<String> graph = builder.build();
         assertTrue(graph.isConnected());
-        final Factory<String> factory = new Path.Factory<String>();
-        final Path<String> expectedPath = factory.newPath(graph.getEdge("A", "B")).add(factory.newPath(graph.getEdge("B", "C")));
+        final Path<String> expectedPath = Path.from(graph.getEdge("A", "B")).add(Path.from(graph.getEdge("B", "C")));
         final Path<String> actualPath = graph.getShortestPathBetween("A", "C");
         assertTrue(actualPath.equals(expectedPath));
     }

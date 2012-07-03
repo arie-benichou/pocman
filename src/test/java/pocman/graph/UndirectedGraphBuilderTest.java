@@ -17,31 +17,16 @@
 
 package pocman.graph;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import pocman.graph.UndirectedGraph;
-import pocman.graph.WeightedEdge;
 import pocman.graph.UndirectedGraph.Builder;
 
-
 public class UndirectedGraphBuilderTest {
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testIllegalBuilder1() {
-        new UndirectedGraph.Builder<String>(-1);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testIllegalBuilder2() {
-        new UndirectedGraph.Builder<String>(0);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testIllegalBuilder3() {
-        new UndirectedGraph.Builder<String>(1);
-    }
 
     @Test
     public void testlegalBuilder() {
@@ -51,82 +36,35 @@ public class UndirectedGraphBuilderTest {
     @Test
     public void testGetOrder() {
         final Builder<String> builder = new UndirectedGraph.Builder<String>(2);
-        assertTrue(builder.getOrder() == 2);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testIllegalAddEdgeTTDouble1() {
-        final Builder<String> builder = new UndirectedGraph.Builder<String>(2);
-        builder.addEdge("1", "2", 1.0);
-        builder.addEdge("3", "2", 1.0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testIllegalAddEdgeTTDouble2() {
-        final Builder<String> builder = new UndirectedGraph.Builder<String>(2);
-        builder.addEdge("1", "2", 1.0);
-        builder.addEdge("1", "3", 1.0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testIllegalAddEdgeTTDouble3() {
-        final Builder<String> builder = new UndirectedGraph.Builder<String>(2);
-        builder.addEdge("A", "B", 1.0);
-        builder.addEdge("A", "B", 1.0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testIllegalAddEdgeTTDouble4() {
-        final Builder<String> builder = new UndirectedGraph.Builder<String>(2);
-        builder.addEdge("A", "B", 1.0);
-        builder.addEdge("B", "A", 1.0);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testAddEdgeWithNullReferenceOfWeightedEdgeOfT() {
-        final Builder<String> builder = new UndirectedGraph.Builder<String>(2);
-        builder.addEdge(null);
+        assertEquals(2, builder.getOrder());
     }
 
     @Test
     public void testAddEdgeTTDouble4() {
         final Builder<String> builder = new UndirectedGraph.Builder<String>(3);
-        assertTrue(builder.getOrder() == 3);
-        assertTrue(builder.addEdge("A", "B", 1.0) == builder);
-        assertTrue(builder.addEdge("A", "C", 1.0) == builder);
+        assertEquals(3, builder.getOrder());
+        assertEquals(builder, builder.addEdge("A", "B", 1.0));
+        assertEquals(builder, builder.addEdge("A", "C", 1.0));
     }
 
     @Test
     public void testContains() {
         final Builder<String> builder = new UndirectedGraph.Builder<String>(2);
         final WeightedEdge<String> edge = WeightedEdge.from("A", "B", 1.0);
-        assertTrue(!builder.contains(edge));
-        assertTrue(builder.addEdge("A", "B", 1.0) == builder);
+        assertFalse(builder.contains(edge));
+        assertEquals(builder, builder.addEdge("A", "B", 1.0));
         assertTrue(builder.contains(edge));
         assertTrue(builder.contains(edge.reverse()));
         assertTrue(builder.contains(WeightedEdge.from("B", "A", 1.0)));
-        assertTrue(!builder.contains(WeightedEdge.from("A", "C", 1.0)));
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testIllegalBuild1() {
-        final Builder<String> builder = new UndirectedGraph.Builder<String>(2);
-        builder.build();
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testIllegalBuild2() {
-        final Builder<String> builder = new UndirectedGraph.Builder<String>(3);
-        assertTrue(builder.addEdge("A", "B", 1.0) == builder);
-        builder.build();
+        assertFalse(builder.contains(WeightedEdge.from("A", "C", 1.0)));
     }
 
     @Test
     public void testLegalBuild() {
         final Builder<String> builder = new UndirectedGraph.Builder<String>(2);
-        assertTrue(builder.addEdge("A", "B", 1.0) == builder);
+        assertEquals(builder, builder.addEdge("A", "B", 1.0));
         final UndirectedGraph<String> build = builder.build();
-        assertTrue(build != null);
+        assertNotNull(build);
         assertTrue(build instanceof UndirectedGraph);
     }
 

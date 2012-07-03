@@ -15,20 +15,32 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package pocman.maze;
-
-import static org.junit.Assert.assertEquals;
+package pocman.graph;
 
 import org.junit.Test;
 
-public class TilesTest {
+public class WeightedEdgeTestExceptions {
 
-    private static final Tile[] TILES = Tile.values();
+    /*
+    @Test(expected = IllegalArgumentException.class)
+    public void testNewEdgeFromOneEndpointToSameEndpoint() {
+        WeightedEdge.from("A", "A", 1.0);
+    }
+    */
 
-    @Test
-    public void testFromCharacter() {
-        for (final Tile tile : TILES)
-            assertEquals(tile, Tiles.fromCharacter(tile.toCharacter()));
+    @Test(expected = IllegalArgumentException.class)
+    public void testNewEdgeWithEndpoint1BeingNull() {
+        WeightedEdge.from(null, "B", 1.0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNewEdgeWithEndpoint2BeingNull() {
+        WeightedEdge.from("A", null, 1.0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNewEdgeWithNegativeWeight() {
+        WeightedEdge.from("A", "B", -1.0);
     }
 
 }

@@ -17,18 +17,20 @@
 
 package pocman.maze;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 
-public class TilesTest {
+public class TilesTestExceptions {
 
     private static final Tile[] TILES = Tile.values();
 
-    @Test
-    public void testFromCharacter() {
-        for (final Tile tile : TILES)
-            assertEquals(tile, Tiles.fromCharacter(tile.toCharacter()));
+    @Test(expected = IllegalArgumentException.class)
+    public void testFromCharacterWithNullReference() {
+        Tiles.fromCharacter(null);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testFromCharacterWithUnknownTile() {
+        Tiles.fromCharacter('?');
     }
 
 }

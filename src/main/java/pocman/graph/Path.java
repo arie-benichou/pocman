@@ -34,28 +34,26 @@ public final class Path<T> implements Comparable<Path<T>> {
     private final WeightedEdge<T> lastEdge;
     private final int hashCode;
 
-    public final static class Factory<T> {
+    /*
+    public static Path<?> from(final double cost) {
+        return new Path<Object>(cost);
+    }
 
-        public Path<T> newPath(final double cost) {
-            return new Path<T>(cost);
-        }
+    public static Path<?> from() {
+        return Path.from(0);
+    }
+    */
 
-        public Path<T> newPath() {
-            return this.newPath(0);
-        }
+    public static <T> Path<T> from(final WeightedEdge<T> edge) {
+        return new Path<T>(edge);
+    }
 
-        public Path<T> newPath(final WeightedEdge<T> edge) {
-            return new Path<T>(edge);
-        }
+    public static <T> Path<T> from(final T endPoint1, final T endPoint2, final double weight) {
+        return from(WeightedEdge.from(endPoint1, endPoint2, weight));
+    }
 
-        public Path<T> newPath(final T endPoint1, final T endPoint2, final double weight) {
-            return this.newPath(WeightedEdge.from(endPoint1, endPoint2, weight));
-        }
-
-        private static int hashCode(final int hashCode1, final int hashCode2) {
-            return (17 + hashCode1 * hashCode2) * (hashCode1 + hashCode2);
-        }
-
+    private static int hashCode(final int hashCode1, final int hashCode2) {
+        return (17 + hashCode1 * hashCode2) * (hashCode1 + hashCode2);
     }
 
     private Path(final double cost) {
@@ -82,7 +80,7 @@ public final class Path<T> implements Comparable<Path<T>> {
         this.lastEdge = lastEdge;
         final T endPoint1 = edges.get(0).getEndPoint1();
         final T endPoint2 = lastEdge.getEndPoint2();
-        this.hashCode = Factory.hashCode(endPoint1.hashCode(), endPoint2.hashCode());
+        this.hashCode = hashCode(endPoint1.hashCode(), endPoint2.hashCode());
     }
 
     public boolean isNull() {

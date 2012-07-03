@@ -17,16 +17,10 @@
 
 package pocman.matching;
 
-import java.util.Map;
-
-import pocman.graph.UndirectedGraph;
-import pocman.graph.UndirectedGraph.Builder;
-import pocman.graph.WeightedEdge;
-
-import com.google.common.collect.Maps;
 
 public class MinimumWeightPerfectMatchingTest { // TODO à compléter
 
+    /*
     //@Test(expected = IllegalStateException.class)
     public void testComputeOptimalEulerizationOnEulerianGraph() {
         final Builder<String> builder = new UndirectedGraph.Builder<String>(3);
@@ -64,7 +58,7 @@ public class MinimumWeightPerfectMatchingTest { // TODO à compléter
         expectedTraversalByEdge.put(graph.getEdge("B", "C"), 2);
         //final Map<WeightedEdge<String>, Integer> traversalByEdge = MinimumWeightPerfectMatching.computeOptimalEulerization(graph); // TODO
         //Assert.assertTrue(expectedTraversalByEdge.equals(traversalByEdge));
-
     }
+    */
 
 }

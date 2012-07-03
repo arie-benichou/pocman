@@ -17,8 +17,10 @@
 
 package pocman.maze;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -28,13 +30,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import pocman.game.Move;
-import pocman.maze.MazeNode;
 import pocman.maze.MazeNode.Type;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
 
 public class MazeNodeTest {
 
@@ -57,19 +56,14 @@ public class MazeNodeTest {
         vertices = null;
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testFromUnsupportedMazeNode() {
-        MazeNode.from(-1, Sets.newHashSet(Move.GO_NOWHERE, Move.GO_UP, Move.GO_DOWN, Move.GO_RIGHT, Move.GO_LEFT));
-    }
-
     @Test
     public void testGetId() {
-        assertTrue(vertices.get(Type.ISLAND.name()).getId() == 0);
-        assertTrue(vertices.get(Type.DEAD_END.name()).getId() == 1);
-        assertTrue(vertices.get(Type.STREET.name()).getId() == 2);
-        assertTrue(vertices.get(Type.CORNER.name()).getId() == 3);
-        assertTrue(vertices.get(Type.CROSSROADS.name()).getId() == 4);
-        assertTrue(vertices.get(Type.ROUNDABOUT.name()).getId() == 5);
+        assertEquals(0, vertices.get(Type.ISLAND.name()).getId());
+        assertEquals(1, vertices.get(Type.DEAD_END.name()).getId());
+        assertEquals(2, vertices.get(Type.STREET.name()).getId());
+        assertEquals(3, vertices.get(Type.CORNER.name()).getId());
+        assertEquals(4, vertices.get(Type.CROSSROADS.name()).getId());
+        assertEquals(5, vertices.get(Type.ROUNDABOUT.name()).getId());
     }
 
     @Test
@@ -94,12 +88,12 @@ public class MazeNodeTest {
 
     @Test
     public void testGetNumberOfOptions() {
-        assertTrue(vertices.get(Type.ISLAND.name()).getNumberOfOptions() == 0);
-        assertTrue(vertices.get(Type.DEAD_END.name()).getNumberOfOptions() == 1);
-        assertTrue(vertices.get(Type.STREET.name()).getNumberOfOptions() == 2);
-        assertTrue(vertices.get(Type.CORNER.name()).getNumberOfOptions() == 2);
-        assertTrue(vertices.get(Type.CROSSROADS.name()).getNumberOfOptions() == 3);
-        assertTrue(vertices.get(Type.ROUNDABOUT.name()).getNumberOfOptions() == 4);
+        assertEquals(0, vertices.get(Type.ISLAND.name()).getNumberOfOptions());
+        assertEquals(1, vertices.get(Type.DEAD_END.name()).getNumberOfOptions());
+        assertEquals(2, vertices.get(Type.STREET.name()).getNumberOfOptions());
+        assertEquals(2, vertices.get(Type.CORNER.name()).getNumberOfOptions());
+        assertEquals(3, vertices.get(Type.CROSSROADS.name()).getNumberOfOptions());
+        assertEquals(4, vertices.get(Type.ROUNDABOUT.name()).getNumberOfOptions());
     }
 
     @Test
@@ -112,80 +106,52 @@ public class MazeNodeTest {
         assertTrue(vertices.get(Type.ROUNDABOUT.name()).getOptions().equals(Sets.newHashSet(Move.GO_UP, Move.GO_DOWN, Move.GO_RIGHT, Move.GO_LEFT)));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void testGetOptionsAsImmutableSet0() {
-        vertices.get(Type.ISLAND.name()).getOptions().clear();
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void testGetOptionsAsImmutableSet1() {
-        vertices.get(Type.ISLAND.name()).getOptions().add(Move.GO_NOWHERE);
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void testGetOptionsAsImmutableSet2() {
-        vertices.get(Type.ISLAND.name()).getOptions().addAll(Lists.newArrayList(Move.GO_NOWHERE, Move.GO_NOWHERE));
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void testGetOptionsAsImmutableSet3() {
-        vertices.get(Type.ISLAND.name()).getOptions().remove(Move.GO_NOWHERE);
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void testGetOptionsAsImmutableSet4() {
-        vertices.get(Type.ISLAND.name()).getOptions().removeAll(Lists.newArrayList(Move.GO_NOWHERE, Move.GO_NOWHERE));
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void testGetOptionsAsImmutableSet5() {
-        vertices.get(Type.ISLAND.name()).getOptions().retainAll(Lists.newArrayList(Move.GO_NOWHERE, Move.GO_NOWHERE));
-    }
-
     @Test
     public void testEqualsObject() {
-        assertTrue(vertices.get(Type.ISLAND.name()).equals(null) == false);
-        assertTrue(vertices.get(Type.ISLAND.name()).equals(vertices.get(Type.ISLAND.name())) == true);
-        assertTrue(vertices.get(Type.ISLAND.name()).equals(new Object()) == false);
-        assertTrue(vertices.get(Type.ISLAND.name()).equals(vertices.get(Type.DEAD_END.name())) == false);
-        assertTrue(vertices.get(Type.ISLAND.name()).equals(MazeNode.from(0, new HashSet<Move>())) == true);
-        assertTrue(vertices.get(Type.ISLAND.name()).equals(MazeNode.from(1, new HashSet<Move>())) == false);
-        assertTrue(vertices.get(Type.ISLAND.name()).equals(MazeNode.from(0, Sets.newHashSet(Move.GO_NOWHERE))) == false);
+        assertFalse(vertices.get(Type.ISLAND.name()).equals(null));
+        assertTrue(vertices.get(Type.ISLAND.name()).equals(vertices.get(Type.ISLAND.name())));
+        assertFalse(vertices.get(Type.ISLAND.name()).equals(new Object()));
+        assertFalse(vertices.get(Type.ISLAND.name()).equals(vertices.get(Type.DEAD_END.name())));
+        assertTrue(vertices.get(Type.ISLAND.name()).equals(MazeNode.from(0, new HashSet<Move>())));
+        assertFalse(vertices.get(Type.ISLAND.name()).equals(MazeNode.from(1, new HashSet<Move>())));
+        assertFalse(vertices.get(Type.ISLAND.name()).equals(MazeNode.from(0, Sets.newHashSet(Move.GO_NOWHERE))));
     }
 
     @Test
     public void testHashCode() { // TODO à compléter...
 
-        assertTrue(vertices.get(Type.ISLAND.name()).hashCode() != vertices.get(Type.DEAD_END.name()).hashCode());
-        assertTrue(vertices.get(Type.DEAD_END.name()).hashCode() != vertices.get(Type.STREET.name()).hashCode());
-        assertTrue(vertices.get(Type.STREET.name()).hashCode() != vertices.get(Type.CORNER.name()).hashCode());
-        assertTrue(vertices.get(Type.CORNER.name()).hashCode() != vertices.get(Type.CROSSROADS.name()).hashCode());
-        assertTrue(vertices.get(Type.CROSSROADS.name()).hashCode() != vertices.get(Type.ROUNDABOUT.name()).hashCode());
+        assertNotSame(vertices.get(Type.ISLAND.name()).hashCode(), vertices.get(Type.DEAD_END.name()).hashCode());
+        assertNotSame(vertices.get(Type.DEAD_END.name()).hashCode(), vertices.get(Type.STREET.name()).hashCode());
+        assertNotSame(vertices.get(Type.STREET.name()).hashCode(), vertices.get(Type.CORNER.name()).hashCode());
+        assertNotSame(vertices.get(Type.CORNER.name()).hashCode(), vertices.get(Type.CROSSROADS.name()).hashCode());
+        assertNotSame(vertices.get(Type.CROSSROADS.name()).hashCode(), vertices.get(Type.ROUNDABOUT.name()).hashCode());
 
-        assertTrue(vertices.get(Type.ISLAND.name()).hashCode() == MazeNode.from(0, new HashSet<Move>()).hashCode());
-        assertTrue(vertices.get(Type.ISLAND.name()).hashCode() != MazeNode.from(1, new HashSet<Move>()).hashCode());
-        assertTrue(vertices.get(Type.ISLAND.name()).hashCode() != MazeNode.from(0, Sets.newHashSet(Move.GO_NOWHERE)).hashCode());
+        assertEquals(vertices.get(Type.ISLAND.name()).hashCode(), MazeNode.from(0, new HashSet<Move>()).hashCode());
+        assertNotSame(vertices.get(Type.ISLAND.name()).hashCode(), MazeNode.from(1, new HashSet<Move>()).hashCode());
+        assertNotSame(vertices.get(Type.ISLAND.name()).hashCode(), MazeNode.from(0, Sets.newHashSet(Move.GO_NOWHERE)).hashCode());
 
-        assertTrue(vertices.get(Type.DEAD_END.name()).hashCode() == MazeNode.from(1, Sets.newHashSet(Move.GO_UP)).hashCode());
+        assertEquals(vertices.get(Type.DEAD_END.name()).hashCode(), MazeNode.from(1, Sets.newHashSet(Move.GO_UP)).hashCode());
 
-        assertTrue(vertices.get(Type.STREET.name()).hashCode() == MazeNode.from(2, Sets.newHashSet(Move.GO_UP, Move.GO_DOWN)).hashCode());
-        assertTrue(vertices.get(Type.STREET.name()).hashCode() == MazeNode.from(2, Sets.newHashSet(Move.GO_DOWN, Move.GO_UP)).hashCode());
+        assertEquals(vertices.get(Type.STREET.name()).hashCode(), MazeNode.from(2, Sets.newHashSet(Move.GO_UP, Move.GO_DOWN)).hashCode());
+        assertEquals(vertices.get(Type.STREET.name()).hashCode(), MazeNode.from(2, Sets.newHashSet(Move.GO_DOWN, Move.GO_UP)).hashCode());
 
-        assertTrue(vertices.get(Type.CORNER.name()).hashCode() == MazeNode.from(3, Sets.newHashSet(Move.GO_UP, Move.GO_RIGHT)).hashCode());
-        assertTrue(vertices.get(Type.CORNER.name()).hashCode() == MazeNode.from(3, Sets.newHashSet(Move.GO_RIGHT, Move.GO_UP)).hashCode());
+        assertEquals(vertices.get(Type.CORNER.name()).hashCode(), MazeNode.from(3, Sets.newHashSet(Move.GO_UP, Move.GO_RIGHT)).hashCode());
+        assertEquals(vertices.get(Type.CORNER.name()).hashCode(), MazeNode.from(3, Sets.newHashSet(Move.GO_RIGHT, Move.GO_UP)).hashCode());
 
-        assertTrue(vertices.get(Type.CROSSROADS.name()).hashCode() == MazeNode.from(4, Sets.newHashSet(Move.GO_UP, Move.GO_DOWN, Move.GO_RIGHT)).hashCode());
-        assertTrue(vertices.get(Type.CROSSROADS.name()).hashCode() == MazeNode.from(4, Sets.newHashSet(Move.GO_RIGHT, Move.GO_UP, Move.GO_DOWN)).hashCode());
+        assertEquals(vertices.get(Type.CROSSROADS.name()).hashCode(), MazeNode.from(4, Sets.newHashSet(Move.GO_UP, Move.GO_DOWN, Move.GO_RIGHT)).hashCode());
+        assertEquals(vertices.get(Type.CROSSROADS.name()).hashCode(), MazeNode.from(4, Sets.newHashSet(Move.GO_RIGHT, Move.GO_UP, Move.GO_DOWN)).hashCode());
 
-        assertTrue(vertices.get(Type.ROUNDABOUT.name()).hashCode() == MazeNode.from(5, Sets.newHashSet(Move.GO_UP, Move.GO_DOWN, Move.GO_RIGHT, Move.GO_LEFT))
+        assertEquals(vertices.get(Type.ROUNDABOUT.name()).hashCode(), MazeNode.from(5, Sets.newHashSet(Move.GO_UP, Move.GO_DOWN, Move.GO_RIGHT, Move.GO_LEFT))
                 .hashCode());
-        assertTrue(vertices.get(Type.ROUNDABOUT.name()).hashCode() == MazeNode.from(5, Sets.newHashSet(Move.GO_RIGHT, Move.GO_LEFT, Move.GO_UP, Move.GO_DOWN))
+        assertEquals(vertices.get(Type.ROUNDABOUT.name()).hashCode(), MazeNode.from(5, Sets.newHashSet(Move.GO_RIGHT, Move.GO_LEFT, Move.GO_UP, Move.GO_DOWN))
                 .hashCode());
     }
 
+    /*
     //@Test
     public void testToString() { // TODO tester la vue...
         fail("Not yet implemented");
     }
+    */
 
 }

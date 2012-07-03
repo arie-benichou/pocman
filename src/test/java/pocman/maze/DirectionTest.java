@@ -16,6 +16,7 @@ package /*
          * along with this program. If not, see <http://www.gnu.org/licenses/>.
          */pocman.maze;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -27,7 +28,7 @@ public class DirectionTest {
     @Test
     public void testDirection() {
         final Direction[] values = Direction.values();
-        assertTrue(values.length == NAMES.length);
+        assertEquals(NAMES.length, values.length);
         int i = 0;
         for (final String string : NAMES) {
             assertTrue(Direction.valueOf(string).equals(values[i]));

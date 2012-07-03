@@ -17,10 +17,10 @@
 
 package pocman.matching;
 
-import static org.junit.Assert.fail;
 
 public class MutableUndirectedGraphTest {// TODO refactoring
 
+    /*
     //@Test
     public void testAddMazeNode() {
         fail("Not yet implemented");
@@ -35,5 +35,6 @@ public class MutableUndirectedGraphTest {// TODO refactoring
     public void testRemoveEdge() {
         fail("Not yet implemented");
     }
+    */
 
 }

@@ -17,31 +17,14 @@
 
 package pocman.graph;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 public class WeightedEdgeTest {
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testNewEdgeFromOneEndpointToSameEndpoint() {
-        WeightedEdge.from("A", "A", 1.0);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testNewEdgeWithEndpoint1BeingNull() {
-        WeightedEdge.from(null, "B", 1.0);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testNewEdgeWithEndpoint2BeingNull() {
-        WeightedEdge.from("A", null, 1.0);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testNewEdgeWithNegativeWeight() {
-        WeightedEdge.from("A", "B", -1.0);
-    }
 
     @Test
     public void testGetEndPoint1() {
@@ -58,7 +41,7 @@ public class WeightedEdgeTest {
     @Test
     public void testGetWeight() {
         final WeightedEdge<String> edge = WeightedEdge.from("A", "B", 1.0);
-        assertTrue(edge.getWeight() == 1.0);
+        assertEquals(1.0, edge.getWeight(), 0.1);
     }
 
     @Test
@@ -67,20 +50,8 @@ public class WeightedEdgeTest {
         final WeightedEdge<String> symetricEdge = edge.reverse();
         assertTrue(symetricEdge.getEndPoint1().equals("B"));
         assertTrue(symetricEdge.getEndPoint2().equals("A"));
-        assertTrue(symetricEdge.getWeight() == 1.0);
+        assertEquals(1.0, symetricEdge.getWeight(), 0.1);
     }
-
-    /*
-    @Test
-    public void testCompareTo() {
-        final WeightedEdge<String> edge1 = WeightedEdge.from("A", "C", 2.0);
-        final WeightedEdge<String> edge2 = WeightedEdge.from("A", "D", 4.0);
-        assertTrue(edge1.compareTo(edge1) == 0);
-        assertTrue(edge1.compareTo(edge2) == -1);
-        assertTrue(edge2.compareTo(edge2) == 0);
-        assertTrue(edge2.compareTo(edge1) == 1);
-    }
-    */
 
     @Test
     public void testEqualsObject() {
@@ -88,12 +59,12 @@ public class WeightedEdgeTest {
         final WeightedEdge<String> edge2 = WeightedEdge.from("A", "D", 2.0);
         final WeightedEdge<String> edge3 = edge1.reverse();
 
-        assertTrue(edge1.equals(null) == false);
+        assertFalse(edge1.equals(null));
         assertTrue(edge1.equals(edge1) == true);
-        assertTrue(edge1.equals(new Object()) == false);
+        assertFalse(edge1.equals(new Object()));
 
-        assertTrue(edge1.equals(edge2) == false);
-        assertTrue(edge2.equals(edge1) == false);
+        assertFalse(edge1.equals(edge2));
+        assertFalse(edge2.equals(edge1));
 
         assertTrue(edge1.equals(edge3));
         assertTrue(edge3.equals(edge1));
@@ -101,13 +72,13 @@ public class WeightedEdgeTest {
         assertTrue(edge1.equals(WeightedEdge.from("A", "C", 2.0)) == true);
         assertTrue(edge1.equals(WeightedEdge.from("C", "A", 2.0)) == true);
 
-        assertTrue(edge1.equals(WeightedEdge.from("B", "C", 2.0)) == false);
-        assertTrue(edge1.equals(WeightedEdge.from("A", "B", 2.0)) == false);
-        assertTrue(edge1.equals(WeightedEdge.from("A", "C", 1.0)) == false);
+        assertFalse(edge1.equals(WeightedEdge.from("B", "C", 2.0)));
+        assertFalse(edge1.equals(WeightedEdge.from("A", "B", 2.0)));
+        assertFalse(edge1.equals(WeightedEdge.from("A", "C", 1.0)));
 
         final WeightedEdge<Integer> newEdge1 = WeightedEdge.from(1, 2, 1.0);
         final WeightedEdge<Double> newEdge2 = WeightedEdge.from(1.0, 2.0, 1.0);
-        assertTrue(newEdge1.equals(newEdge2) == false);
+        assertFalse(newEdge1.equals(newEdge2));
     }
 
     @Test
@@ -115,10 +86,10 @@ public class WeightedEdgeTest {
         final WeightedEdge<String> edge1 = WeightedEdge.from("A", "C", 2.0);
         final WeightedEdge<String> edge2 = WeightedEdge.from("A", "D", 2.0);
         final WeightedEdge<String> edge3 = edge1.reverse();
-        assertTrue(edge1.hashCode() != edge2.hashCode());
-        assertTrue(edge1.hashCode() == WeightedEdge.from("A", "C", 2.0).hashCode());
-        assertTrue(edge1.hashCode() == WeightedEdge.from("C", "A", 2.0).hashCode());
-        assertTrue(edge1.hashCode() == edge3.hashCode());
+        assertNotSame(edge1.hashCode(), edge2.hashCode());
+        assertEquals(edge1.hashCode(), WeightedEdge.from("A", "C", 2.0).hashCode());
+        assertEquals(edge1.hashCode(), WeightedEdge.from("C", "A", 2.0).hashCode());
+        assertEquals(edge1.hashCode(), edge3.hashCode());
     }
 
 }

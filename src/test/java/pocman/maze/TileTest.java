@@ -17,6 +17,8 @@
 
 package pocman.maze;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
@@ -31,31 +33,31 @@ public class TileTest {
     public void testToCharacter() {
         final Tile[] tiles = Tile.values();
         final Set<Tile> setOfTiles = Sets.newHashSet(tiles);
-        assertTrue(setOfTiles.size() == tiles.length);
+        assertEquals(setOfTiles.size(), tiles.length);
     }
 
     @Test
     public void testIs() {
         assertTrue(Tile.SPACE.is(Tile.SPACE));
-        assertTrue(!Tile.SPACE.is(Tile.COIN));
+        assertFalse(Tile.SPACE.is(Tile.COIN));
 
         assertTrue(Tile.COIN.is(Tile.COIN));
-        assertTrue(!Tile.COIN.is(Tile.POCMAN));
+        assertFalse(Tile.COIN.is(Tile.POCMAN));
 
         assertTrue(Tile.POCMAN.is(Tile.POCMAN));
-        assertTrue(!Tile.POCMAN.is(Tile.HORIZONTAL_WALL));
+        assertFalse(Tile.POCMAN.is(Tile.HORIZONTAL_WALL));
 
         assertTrue(Tile.HORIZONTAL_WALL.is(Tile.HORIZONTAL_WALL));
-        assertTrue(!Tile.HORIZONTAL_WALL.is(Tile.VERTICAL_WALL));
+        assertFalse(Tile.HORIZONTAL_WALL.is(Tile.VERTICAL_WALL));
 
         assertTrue(Tile.VERTICAL_WALL.is(Tile.VERTICAL_WALL));
     }
 
     @Test
     public void testIsWall() {
-        assertTrue(!Tile.SPACE.isWall());
-        assertTrue(!Tile.COIN.isWall());
-        assertTrue(!Tile.POCMAN.isWall());
+        assertFalse(Tile.SPACE.isWall());
+        assertFalse(Tile.COIN.isWall());
+        assertFalse(Tile.POCMAN.isWall());
         assertTrue(Tile.HORIZONTAL_WALL.isWall());
         assertTrue(Tile.VERTICAL_WALL.isWall());
     }
@@ -65,17 +67,17 @@ public class TileTest {
         assertTrue(Tile.SPACE.isWalkable());
         assertTrue(Tile.COIN.isWalkable());
         assertTrue(Tile.POCMAN.isWalkable());
-        assertTrue(!Tile.HORIZONTAL_WALL.isWalkable());
-        assertTrue(!Tile.VERTICAL_WALL.isWalkable());
+        assertFalse(Tile.HORIZONTAL_WALL.isWalkable());
+        assertFalse(Tile.VERTICAL_WALL.isWalkable());
     }
 
     @Test
     public void testIsCollectable() {
-        assertTrue(!Tile.SPACE.isCollectable());
+        assertFalse(Tile.SPACE.isCollectable());
         assertTrue(Tile.COIN.isCollectable());
-        assertTrue(!Tile.POCMAN.isCollectable());
-        assertTrue(!Tile.HORIZONTAL_WALL.isCollectable());
-        assertTrue(!Tile.VERTICAL_WALL.isCollectable());
+        assertFalse(Tile.POCMAN.isCollectable());
+        assertFalse(Tile.HORIZONTAL_WALL.isCollectable());
+        assertFalse(Tile.VERTICAL_WALL.isCollectable());
     }
 
 }

@@ -17,13 +17,12 @@
 
 package pocman.game;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import pocman.game.Move;
 import pocman.maze.Direction;
-
 
 public class MoveTest {
 
@@ -47,11 +46,10 @@ public class MoveTest {
 
     @Test
     public void testGetDelta() {// TODO devrait appartenir à (Board)Direction
-        assertTrue(Move.from(Direction.NOWHERE).getDelta() == 0);
-        assertTrue(Move.from(Direction.UP).getDelta() == -27);
-        assertTrue(Move.from(Direction.RIGHT).getDelta() == 1);
-        assertTrue(Move.from(Direction.DOWN).getDelta() == 27);
-        assertTrue(Move.from(Direction.LEFT).getDelta() == -1);
+        assertEquals(0, Move.from(Direction.NOWHERE).getDelta());
+        assertEquals(-27, Move.from(Direction.UP).getDelta());
+        assertEquals(1, Move.from(Direction.RIGHT).getDelta());
+        assertEquals(27, Move.from(Direction.DOWN).getDelta());
+        assertEquals(-1, Move.from(Direction.LEFT).getDelta());
     }
-
 }

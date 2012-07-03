@@ -19,6 +19,7 @@ package pocman.cpp;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.junit.Test;
@@ -26,6 +27,7 @@ import org.junit.Test;
 import pocman.graph.UndirectedGraph;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 public class EulerianTrailTest {
 
@@ -47,11 +49,12 @@ public class EulerianTrailTest {
                 .addEdge("B", "C", 1.0)
                 .addEdge("C", "A", 1.0)
                 .build();
-        final List<String> expectedTrail1 = Lists.newArrayList("A", "B", "C", "A");
-        final List<String> expectedTrail2 = Lists.newArrayList("A", "C", "B", "A");
+        final HashSet<List<String>> expected = Sets.newHashSet();
+        expected.add(Lists.newArrayList("A", "B", "C", "A"));
+        expected.add(Lists.newArrayList("A", "C", "B", "A"));
         final Solution<String> solution = ClosedCPP.from(input).solve();
         final List<String> actualTrail = EulerianTrail.from(input, solution.getTraversalByEdge(), "A");
-        assertTrue(actualTrail.equals(expectedTrail2) || actualTrail.equals(expectedTrail1));
+        assertTrue(expected.contains(actualTrail));
     }
 
 }

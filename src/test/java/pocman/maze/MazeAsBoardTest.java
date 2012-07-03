@@ -24,10 +24,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pocman.maze.MazeAsBoard;
-
 import com.google.common.collect.Maps;
-
 
 /**
  * Unit test for simple App.
@@ -75,11 +72,11 @@ public class MazeAsBoardTest
     @Test
     public void testToCharArray()
     {
-        final char[] array1 = this.data.toCharArray();
-        final char[] array2 = this.board.toCharArray();
-        Assert.assertEquals(array1.length, array2.length);
-        for (int i = 0; i < array1.length; ++i)
-            Assert.assertTrue(array1[i] == array2[i]);
+        final char[] expectedArray = this.data.toCharArray();
+        final char[] actualArray = this.board.toCharArray();
+        Assert.assertEquals(expectedArray.length, actualArray.length);
+        for (int i = 0; i < expectedArray.length; ++i)
+            Assert.assertEquals(expectedArray[i], actualArray[i]);
     }
 
     @Test
@@ -117,12 +114,6 @@ public class MazeAsBoardTest
         final int y = MazeAsBoard.HEIGHT - 1 - 1;
         final int x = MazeAsBoard.WIDTH - 1 - 1;
         Assert.assertTrue(this.board.getNeighbours((MazeAsBoard.HEIGHT - 1) * MazeAsBoard.WIDTH - 1 - 1).equals(this.board.getNeighbours(y, x)));
-    }
-
-    //@Test
-    public void testToString() // TODO tester plutôt la vue
-    {
-        Assert.assertEquals(this.data.toString(), this.board.toString());
     }
 
 }

@@ -17,6 +17,7 @@
 
 package pocman.matching;
 
+import static org.junit.Assert.assertTrue;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -45,7 +46,7 @@ public class EdmondsMatchingTest { // TODO à compléter
         graph.addEdge("A", "B");
         graph.addEdge("C", "D");
         final MutableUndirectedGraph<String> maximumMatching = EdmondsAlgorithm.maximumMatching(graph);
-        Assert.assertTrue(maximumMatching.equals(graph));
+        assertTrue(maximumMatching.equals(graph));
     }
 
     @Test
@@ -60,7 +61,7 @@ public class EdmondsMatchingTest { // TODO à compléter
         graph.addEdge("C", "D");
         final MutableUndirectedGraph<String> maximumMatching = EdmondsAlgorithm.maximumMatching(graph);
         graph.removeEdge("B", "C");
-        Assert.assertTrue(maximumMatching.equals(graph));
+        assertTrue(maximumMatching.equals(graph));
     }
 
     @Test
@@ -75,15 +76,9 @@ public class EdmondsMatchingTest { // TODO à compléter
         graph.addEdge("C", "D");
         graph.addEdge("A", "D");
         final MutableUndirectedGraph<String> maximumMatching = EdmondsAlgorithm.maximumMatching(graph);
-        /*
-        for (final String string : maximumMatching) {
-            System.out.print(string + ": ");
-            System.out.println(maximumMatching.getConnectedVerticeSet(string));
-        }
-        */
         graph.removeEdge("A", "B");
         graph.removeEdge("C", "D");
-        Assert.assertTrue(maximumMatching.equals(graph));
+        assertTrue(maximumMatching.equals(graph));
     }
 
 }

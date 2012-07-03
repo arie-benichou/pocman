@@ -26,8 +26,6 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import pocman.graph.Path.Factory;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -130,24 +128,17 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { /
     private Boolean isConnected;
     private Boolean isEulerian;
 
+    @SuppressWarnings("unchecked")
     private Path<T>[][] buildPathMatrix() {
-        final Factory<T> pathFactory = new Path.Factory<T>();
-        @SuppressWarnings("unchecked")
         final Path<T>[][] paths = new Path[this.order][this.order];
         for (int i = 0; i < this.order; ++i) {
             for (int j = 0; j < this.order; ++j) {
-                Path<T> path;
-                if (i == j) path = pathFactory.newPath(0);
-                else {
-                    path = pathFactory.newPath(INFINITY);
-                    final T endpoint1 = this.verticeByIndex.get(i);
-                    final T endpoint2 = this.verticeByIndex.get(j);
-                    if (this.contains(endpoint1, endpoint2)) {
-                        final WeightedEdge<T> edge = this.getEdge(endpoint1, endpoint2);
-                        path = pathFactory.newPath(edge);
-                    }
-                }
-                paths[i][j] = path;
+                double weight;
+                final T endPoint1 = this.verticeByIndex.get(i);
+                final T endPoint2 = this.verticeByIndex.get(j);
+                if (i == j) weight = 0.0;
+                else weight = this.contains(endPoint1, endPoint2) ? this.getEdge(endPoint1, endPoint2).getWeight() : INFINITY;
+                paths[i][j] = Path.from(endPoint1, endPoint2, weight);
             }
         }
         return paths;
@@ -198,7 +189,7 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { /
         for (int k = 0; k < this.order; ++k) {
             for (int i = 0; i < this.order; ++i) {
                 for (int j = 0; j < this.order; ++j) {
-                    //if (i == j) continue;
+                    if (i == j) continue;
                     final double currentCost = paths[i][j].getWeight();
                     final double newCost = paths[i][k].getWeight() + paths[k][j].getWeight();
                     if (newCost < currentCost) paths[i][j] = paths[i][k].add(paths[k][j]);

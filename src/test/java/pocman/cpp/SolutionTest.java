@@ -17,8 +17,8 @@
 
 package pocman.cpp;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +34,7 @@ public class SolutionTest {
     private final static Map<WeightedEdge<String>, Integer> TRAVERSAL_BY_EDGE = ImmutableMap.copyOf(new HashMap<WeightedEdge<String>, Integer>());
     private final static Solution<String> SOLUTION = new Solution<String>(TRAVERSAL_BY_EDGE, 1.0, 2.0);
 
+    /*
     //@Test(expected = IllegalArgumentException.class)
     public void testSolution1() {
         new Solution<String>(null, 1.0, 0.0);
@@ -48,6 +49,7 @@ public class SolutionTest {
     public void testSolution3() {
         new Solution<String>(TRAVERSAL_BY_EDGE, 0.0, null);
     }
+    */
 
     @Test
     public void testGetLowerBoundCost() {
@@ -66,21 +68,23 @@ public class SolutionTest {
 
     @Test
     public void testEqualsObject() {
-        assertTrue(SOLUTION.equals(null) == false);
+        assertFalse(SOLUTION.equals(null));
         assertTrue(SOLUTION.equals(SOLUTION));
-        assertTrue(SOLUTION.equals(new Object()) == false);
+        assertFalse(SOLUTION.equals(new Object()));
         Solution<String> differentSolution;
         differentSolution = new Solution<String>(TRAVERSAL_BY_EDGE, 0.0, 2.0);
-        assertTrue(SOLUTION.equals(differentSolution) == false);
+        assertFalse(SOLUTION.equals(differentSolution));
         differentSolution = new Solution<String>(TRAVERSAL_BY_EDGE, 1.0, 3.0);
-        assertTrue(SOLUTION.equals(differentSolution) == false);
+        assertFalse(SOLUTION.equals(differentSolution));
         final Solution<String> sameSolution = new Solution<String>(TRAVERSAL_BY_EDGE, 1.0, 2.0);
         assertTrue(SOLUTION.equals(sameSolution));
     }
 
-    //@Test
+    /*
+    @Test
     public void testHashCode() {
         fail("Not yet implemented"); // TODO
     }
+    */
 
 }

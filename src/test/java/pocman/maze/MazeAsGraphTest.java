@@ -17,6 +17,7 @@
 
 package pocman.maze;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
@@ -27,13 +28,9 @@ import org.junit.Test;
 
 import pocman.game.Move;
 import pocman.graph.UndirectedGraph;
-import pocman.maze.MazeAsBoard;
-import pocman.maze.MazeAsGraph;
-import pocman.maze.MazeNode;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-
 
 public class MazeAsGraphTest {
 
@@ -82,7 +79,7 @@ public class MazeAsGraphTest {
     @Test
     public void testGetNumberOfVertices() {
         final int expected = 2;
-        assertTrue(expected == this.mazeAsGraph.getNumberOfVertices());
+        assertEquals(expected, this.mazeAsGraph.getNumberOfVertices());
     }
 
     @Test

@@ -121,9 +121,12 @@ public final class ClosedCPP<T> {
             final T endPoint1 = entry.getKey();
             final T endPoint2 = entry.getValue();
             final Path<T> path = originalGraph.getShortestPathBetween(endPoint1, endPoint2);
-            for (final WeightedEdge<T> edge : path.getEdges())
+            for (final WeightedEdge<T> edge : path.getEdges()) {
+                //System.out.println(edge);
                 map.put(edge, (map.get(edge) + 1) % 2 == 0 ? 2 : 1);
+            }
         }
+        //System.exit(0);
         return map;
     }
 
