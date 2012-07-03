@@ -1,5 +1,5 @@
 
-package pocman.matching;
+package pocman.matching.edmonds1;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,18 +9,19 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import pocman.graph.UndirectedGraphInterface;
-import pocman.graph.WeightedEdge;
-
 /**
  * Ripped from Keith Schwarz (htiek@cs.stanford.edu)
  * http://www.keithschwarz.com/interesting/code/?dir=edmonds-matching
  */
-public final class MutableUndirectedGraph<T> implements UndirectedGraphInterface<T> {
+public final class MutableUndirectedGraph<T> implements Iterable<T> {
 
     private final Map<T, Set<T>> mGraph = new HashMap<T, Set<T>>();
 
-    public boolean addMazeNode(final T node) {
+    public boolean isEmpty() {
+        return this.mGraph.isEmpty();
+    }
+
+    public boolean addEndPoint(final T node) {
         if (this.mGraph.containsKey(node))
             return false;
         this.mGraph.put(node, new HashSet<T>());
@@ -41,14 +42,12 @@ public final class MutableUndirectedGraph<T> implements UndirectedGraphInterface
         this.mGraph.get(two).remove(one);
     }
 
-    @Override
     public boolean contains(final T one, final T two) {
         if (!this.mGraph.containsKey(one) || !this.mGraph.containsKey(two))
             throw new NoSuchElementException("Both nodes must be in the graph.");
         return this.mGraph.get(one).contains(two);
     }
 
-    @Override
     public Set<T> getEndPoints(final T node) {
         final Set<T> arcs = this.mGraph.get(node);
         if (arcs == null)
@@ -59,10 +58,6 @@ public final class MutableUndirectedGraph<T> implements UndirectedGraphInterface
     @Override
     public Iterator<T> iterator() {
         return this.mGraph.keySet().iterator();
-    }
-
-    public boolean isEmpty() {
-        return this.mGraph.isEmpty();
     }
 
     @Override
@@ -77,23 +72,6 @@ public final class MutableUndirectedGraph<T> implements UndirectedGraphInterface
         if (!(object instanceof MutableUndirectedGraph)) return false;
         final MutableUndirectedGraph<?> that = (MutableUndirectedGraph<?>) object;
         return that.mGraph.equals(this.mGraph);
-    }
-
-    @Override
-    public int getOrder() {
-        return this.mGraph.size();
-    }
-
-    @Override
-    public boolean contains(final T endpoint) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public Set<WeightedEdge<T>> getEdges(final T MazeNode) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

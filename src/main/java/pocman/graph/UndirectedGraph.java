@@ -32,7 +32,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { // TODO à revoir
+public final class UndirectedGraph<T> implements Iterable<T> {
 
     private static final double INFINITY = Double.POSITIVE_INFINITY / 2;
 
@@ -200,7 +200,6 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { /
         this.shortestPaths = paths;
     }
 
-    @Override
     public boolean contains(final T endPoint) {
         Preconditions.checkArgument(endPoint != null);
         return this.vertices.containsKey(endPoint);
@@ -210,7 +209,6 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { /
         if (!this.contains(endPoint)) throw new NoSuchElementException("Node " + endPoint + "does not exist.");
     }
 
-    @Override
     public boolean contains(final T endPoint1, final T endPoint2) {
         this.checkEndPoint(endPoint1);
         this.checkEndPoint(endPoint2);
@@ -242,7 +240,6 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { /
         return this.vertices.keySet().iterator();
     }
 
-    @Override
     public Set<T> getEndPoints(final T endPoint) {
         this.checkEndPoint(endPoint);
         return this.mGraph.get(endPoint);
@@ -255,7 +252,6 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { /
         return this.edgeByHashCode.get(hashCode);
     }
 
-    @Override
     public Set<WeightedEdge<T>> getEdges(final T endPoint) {
         this.checkEndPoint(endPoint);
         return this.edgesByEndpoint.get(endPoint);
@@ -273,7 +269,6 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { /
         return this.isEulerian;
     }
 
-    @Override
     public int getOrder() {
         return this.order;
     }

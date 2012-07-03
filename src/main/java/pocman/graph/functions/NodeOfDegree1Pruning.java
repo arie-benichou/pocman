@@ -32,6 +32,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+// TODO move to package cpp
 public final class NodeOfDegree1Pruning<T> {
 
     private final NodeDegreeFunctions<T> nodeDegreeVisitor;

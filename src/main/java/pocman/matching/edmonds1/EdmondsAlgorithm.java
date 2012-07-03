@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import pocman.matching.MutableUndirectedGraph;
 
 
 /**
@@ -25,7 +24,7 @@ public final class EdmondsAlgorithm {
             return new MutableUndirectedGraph<T>();
         final MutableUndirectedGraph<T> result = new MutableUndirectedGraph<T>();
         for (final T node : g)
-            result.addMazeNode(node);
+            result.addEndPoint(node);
         while (true) {
             final List<T> path = findAlternatingPath(g, result);
             if (path == null) return result;
@@ -152,9 +151,9 @@ public final class EdmondsAlgorithm {
         final MutableUndirectedGraph<T> result = new MutableUndirectedGraph<T>();
         for (final T node : g) {
             if (!blossom.nodes.contains(node))
-                result.addMazeNode(node);
+                result.addEndPoint(node);
         }
-        result.addMazeNode(blossom.root);
+        result.addEndPoint(blossom.root);
         for (final T node : g) {
             if (blossom.nodes.contains(node)) continue;
             for (T endpoint : g.getEndPoints(node)) {
@@ -229,16 +228,16 @@ public final class EdmondsAlgorithm {
     public static void main1() {
         final MutableUndirectedGraph<String> graph = new MutableUndirectedGraph<String>();
 
-        graph.addMazeNode("A");
-        graph.addMazeNode("B");
-        graph.addMazeNode("C");
-        graph.addMazeNode("D");
-        graph.addMazeNode("E");
-        graph.addMazeNode("F");
-        graph.addMazeNode("G");
-        graph.addMazeNode("H");
-        graph.addMazeNode("I");
-        graph.addMazeNode("J");
+        graph.addEndPoint("A");
+        graph.addEndPoint("B");
+        graph.addEndPoint("C");
+        graph.addEndPoint("D");
+        graph.addEndPoint("E");
+        graph.addEndPoint("F");
+        graph.addEndPoint("G");
+        graph.addEndPoint("H");
+        graph.addEndPoint("I");
+        graph.addEndPoint("J");
 
         graph.addEdge("A", "B");
 
@@ -276,10 +275,10 @@ public final class EdmondsAlgorithm {
 
         final MutableUndirectedGraph<String> graph = new MutableUndirectedGraph<String>();
 
-        graph.addMazeNode("B");
-        graph.addMazeNode("D");
-        graph.addMazeNode("E");
-        graph.addMazeNode("G");
+        graph.addEndPoint("B");
+        graph.addEndPoint("D");
+        graph.addEndPoint("E");
+        graph.addEndPoint("G");
 
         graph.addEdge("D", "B");
         graph.addEdge("D", "E");
@@ -304,10 +303,10 @@ public final class EdmondsAlgorithm {
     public static void main3() {
         final MutableUndirectedGraph<String> graph = new MutableUndirectedGraph<String>();
 
-        graph.addMazeNode("B");
-        graph.addMazeNode("D");
-        graph.addMazeNode("E");
-        graph.addMazeNode("G");
+        graph.addEndPoint("B");
+        graph.addEndPoint("D");
+        graph.addEndPoint("E");
+        graph.addEndPoint("G");
 
         graph.addEdge("B", "D");
         graph.addEdge("B", "E");

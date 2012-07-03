@@ -64,6 +64,7 @@ public class ClosedChinesePostmanProblem {
             final String time = time(maze, pocManPosition, new pocman.matching.edmonds1.Matching());
             System.out.println(time);
         }
+        /*
         {
             final String time = time(maze, pocManPosition, new pocman.matching.edmonds2.Matching());
             System.out.println(time);
@@ -72,13 +73,14 @@ public class ClosedChinesePostmanProblem {
             final String time = time(maze, pocManPosition, new pocman.matching.naive.Matching());
             System.out.println(time);
         }
+        */
     }
 
     private static String time(final Maze maze, final int pocManPosition, final MatchingAlgorithm matchingAlgorithm) throws InterruptedException {
         final Stopwatch stopwatch = new Stopwatch().start();
         final List<MazeNode> trail = computeOptimalPath(maze, pocManPosition, matchingAlgorithm);
         stopwatch.stop();
-        //debug(maze, trail);
+        debug(maze, trail);
         return stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS.toString();
     }
 

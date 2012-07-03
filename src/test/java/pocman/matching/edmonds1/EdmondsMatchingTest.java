@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package pocman.matching;
+package pocman.matching.edmonds1;
 
 import static org.junit.Assert.assertTrue;
 import junit.framework.Assert;
@@ -23,14 +23,15 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import pocman.matching.edmonds1.EdmondsAlgorithm;
+import pocman.matching.edmonds1.MutableUndirectedGraph;
 
 public class EdmondsMatchingTest { // TODO à compléter
 
     @Test
     public void testMaximumMatching1() {
         final MutableUndirectedGraph<String> graph = new MutableUndirectedGraph<String>();
-        graph.addMazeNode("A");
-        graph.addMazeNode("B");
+        graph.addEndPoint("A");
+        graph.addEndPoint("B");
         graph.addEdge("A", "B");
         final MutableUndirectedGraph<String> maximumMatching = EdmondsAlgorithm.maximumMatching(graph);
         Assert.assertTrue(maximumMatching.equals(graph));
@@ -39,10 +40,10 @@ public class EdmondsMatchingTest { // TODO à compléter
     @Test
     public void testMaximumMatching2() {
         final MutableUndirectedGraph<String> graph = new MutableUndirectedGraph<String>();
-        graph.addMazeNode("A");
-        graph.addMazeNode("B");
-        graph.addMazeNode("C");
-        graph.addMazeNode("D");
+        graph.addEndPoint("A");
+        graph.addEndPoint("B");
+        graph.addEndPoint("C");
+        graph.addEndPoint("D");
         graph.addEdge("A", "B");
         graph.addEdge("C", "D");
         final MutableUndirectedGraph<String> maximumMatching = EdmondsAlgorithm.maximumMatching(graph);
@@ -52,10 +53,10 @@ public class EdmondsMatchingTest { // TODO à compléter
     @Test
     public void testMaximumMatching3() {
         final MutableUndirectedGraph<String> graph = new MutableUndirectedGraph<String>();
-        graph.addMazeNode("A");
-        graph.addMazeNode("B");
-        graph.addMazeNode("C");
-        graph.addMazeNode("D");
+        graph.addEndPoint("A");
+        graph.addEndPoint("B");
+        graph.addEndPoint("C");
+        graph.addEndPoint("D");
         graph.addEdge("A", "B");
         graph.addEdge("B", "C");
         graph.addEdge("C", "D");
@@ -67,10 +68,10 @@ public class EdmondsMatchingTest { // TODO à compléter
     @Test
     public void testMaximumMatching4() {
         final MutableUndirectedGraph<String> graph = new MutableUndirectedGraph<String>();
-        graph.addMazeNode("A");
-        graph.addMazeNode("B");
-        graph.addMazeNode("C");
-        graph.addMazeNode("D");
+        graph.addEndPoint("A");
+        graph.addEndPoint("B");
+        graph.addEndPoint("C");
+        graph.addEndPoint("D");
         graph.addEdge("A", "B");
         graph.addEdge("B", "C");
         graph.addEdge("C", "D");

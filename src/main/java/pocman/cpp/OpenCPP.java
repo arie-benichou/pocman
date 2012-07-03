@@ -190,7 +190,7 @@ public final class OpenCPP<T> {
     }
 
     // TODO vérifier qu'il suffit d'itérer sur les noeuds de degré impair
-    // TODO vérifier qu'il suffirait d'itérer uniquement sur les noeuds de degré 1
+    // TODO vérifier s'il suffirait d'itérer uniquement sur les noeuds de degré 1
     private Solution<Box<T>> bestSolution(final UndirectedGraph<Box<T>> boxedGraph, final T startingMazeNode) {
 
         Solution<Box<T>> bestSolution = new Solution<Box<T>>(null, null, null, null, 2 * this.getLowerBoundCost() * 2);

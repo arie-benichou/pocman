@@ -22,7 +22,6 @@ import java.util.Map;
 
 import pocman.graph.UndirectedGraph;
 import pocman.matching.MatchingAlgorithm;
-import pocman.matching.MutableUndirectedGraph;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -34,7 +33,8 @@ import com.google.common.primitives.Ints;
 public final class Matching implements MatchingAlgorithm {
 
     @Override
-    public <T> pocman.matching.Match<T> from(final UndirectedGraph<T> originalGraph, final MutableUndirectedGraph<T> residualGraph) {
+    //public <T> pocman.matching.Match<T> from(final UndirectedGraph<T> originalGraph, final MutableUndirectedGraph<T> residualGraph) {
+    public <T> pocman.matching.Match<T> from(final UndirectedGraph<T> residualGraph) {
 
         final int order = residualGraph.getOrder();
 
@@ -51,7 +51,7 @@ public final class Matching implements MatchingAlgorithm {
         final double[][] matrix = new double[order][order];
         for (int i = 0; i < order; ++i)
             for (int j = 0; j < order; ++j)
-                matrix[i][j] = originalGraph.getShortestPathBetween(vertexByIndex.get(i), vertexByIndex.get(j)).getWeight();
+                matrix[i][j] = residualGraph.getShortestPathBetween(vertexByIndex.get(i), vertexByIndex.get(j)).getWeight();
 
         final WeightedMatchDouble weightedMatch = new WeightedMatchDouble(matrix);
         final int[] mate = weightedMatch.weightedMatch(WeightedMatchDouble.MINIMIZE);

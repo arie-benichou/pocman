@@ -480,9 +480,5 @@ public final class BranchAndBoundMatching {
             System.out.println(match.apply(mapping));
         System.out.println(stopwatch.elapsedTime(TimeUnit.NANOSECONDS) + " " + TimeUnit.NANOSECONDS.toString());
 
-        // TODO max
-        // TODO javadocs
-        // TODO junit
-
     }
 }

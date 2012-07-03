@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package pocman.matching;
+package pocman.matching.edmonds1;
 
 
 public class MinimumWeightPerfectMatchingTest { // TODO à compléter

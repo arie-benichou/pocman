@@ -6,7 +6,6 @@ import java.util.Map;
 
 import pocman.graph.UndirectedGraph;
 import pocman.matching.MatchingAlgorithm;
-import pocman.matching.MutableUndirectedGraph;
 import pocman.matching.naive.BranchAndBoundMatching.Match;
 import pocman.matching.naive.BranchAndBoundMatching.Position;
 
@@ -17,7 +16,8 @@ import com.google.common.collect.Maps;
 public class Matching implements MatchingAlgorithm {
 
     @Override
-    public <T> pocman.matching.Match<T> from(final UndirectedGraph<T> originalGraph, final MutableUndirectedGraph<T> residualGraph) {
+    //public <T> pocman.matching.Match<T> from(final UndirectedGraph<T> originalGraph, final MutableUndirectedGraph<T> residualGraph) {
+    public <T> pocman.matching.Match<T> from(final UndirectedGraph<T> residualGraph) {
 
         final int order = residualGraph.getOrder();
         final Map<T, Integer> indexByVertex = Maps.newHashMap();
@@ -33,7 +33,7 @@ public class Matching implements MatchingAlgorithm {
         final double[][] matrix = new double[order][order];
         for (int i = 0; i < order; ++i)
             for (int j = 0; j < order; ++j)
-                matrix[i][j] = originalGraph.getShortestPathBetween(vertexByIndex.get(i), vertexByIndex.get(j)).getWeight();
+                matrix[i][j] = residualGraph.getShortestPathBetween(vertexByIndex.get(i), vertexByIndex.get(j)).getWeight();
 
         final Match match = new BranchAndBoundMatching(matrix).match();
 

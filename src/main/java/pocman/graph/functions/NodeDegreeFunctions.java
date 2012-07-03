@@ -28,6 +28,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Maps;
 
+// TODO move to package cpp
 public final class NodeDegreeFunctions<T> {
 
     // TODO Extract to Integers

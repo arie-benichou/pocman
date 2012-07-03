@@ -28,7 +28,6 @@ import pocman.graph.functions.NodeDegreeFunctions;
 import pocman.graph.functions.NodeOfDegree1Pruning;
 import pocman.matching.Match;
 import pocman.matching.MatchingAlgorithm;
-import pocman.matching.MutableUndirectedGraph;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
@@ -95,6 +94,7 @@ public final class ClosedCPP<T> {
         return this.getUpperBoundCost() - this.getLowerBoundCost();
     }
 
+    /*
     private static <T> MutableUndirectedGraph<T> buildResidualGraph(final UndirectedGraph<T> graph, final Set<T> oddVertices) {
         final MutableUndirectedGraph<T> residualGraph = new MutableUndirectedGraph<T>();
         for (final T vertice : oddVertices)
@@ -108,6 +108,20 @@ public final class ClosedCPP<T> {
             }
         }
         return residualGraph;
+    }
+    */
+
+    private static <T> UndirectedGraph<T> buildResidualGraph(final UndirectedGraph<T> originalGraph, final Set<T> oddVertices) {
+        final UndirectedGraph.Builder<T> residualGraphBuilder = new UndirectedGraph.Builder<T>(oddVertices.size());
+        for (final T endPoint1 : oddVertices)
+            for (final T endPoint2 : oddVertices)
+                if (!endPoint1.equals(endPoint2)) {
+                    // TODO contains(u, v, w)
+                    final Path<T> shortestPath = originalGraph.getShortestPathBetween(endPoint1, endPoint2);
+                    final WeightedEdge<T> edge = WeightedEdge.from(endPoint1, endPoint2, shortestPath.getWeight());
+                    if (!residualGraphBuilder.contains(edge)) residualGraphBuilder.addEdge(edge);
+                }
+        return residualGraphBuilder.build();
     }
 
     private static <T> Map<WeightedEdge<T>, Integer> computeTraversalByEdge(final UndirectedGraph<T> originalGraph, final Map<T, T> matching) {
@@ -149,7 +163,7 @@ public final class ClosedCPP<T> {
                     eulerization.put(graph.getEdge(endPoint1, endPoint2), 1);
         }
         else {
-            final Match<T> matching = this.matchingAlgorithm.from(graph, buildResidualGraph(graph, remainingOddVertices));
+            final Match<T> matching = this.matchingAlgorithm.from(buildResidualGraph(graph, remainingOddVertices));
             eulerization = computeTraversalByEdge(graph, matching.getMatches());
         }
 

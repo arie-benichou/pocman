@@ -25,7 +25,6 @@ import java.util.Set;
 import pocman.graph.UndirectedGraph;
 import pocman.matching.Match;
 import pocman.matching.MatchingAlgorithm;
-import pocman.matching.MutableUndirectedGraph;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
@@ -65,19 +64,25 @@ public final class Matching implements MatchingAlgorithm {
     }
 
     @Override
-    public <T> Match<T> from(final UndirectedGraph<T> originalGraph, final MutableUndirectedGraph<T> residualGraph) {
+    //public <T> Match<T> from(final UndirectedGraph<T> originalGraph, final MutableUndirectedGraph<T> residualGraph) {
+    public <T> Match<T> from(final UndirectedGraph<T> residualGraph) {
+        final MutableUndirectedGraph<T> mutableResidualGraph = new MutableUndirectedGraph<T>();
+        for (final T endPoint : residualGraph)
+            mutableResidualGraph.addEndPoint(endPoint);
+        for (final T endPoint1 : residualGraph)
+            for (final T endPoint2 : residualGraph.getEndPoints(endPoint1))
+                mutableResidualGraph.addEdge(endPoint1, endPoint2);
         MutableUndirectedGraph<T> maximumMatching = new MutableUndirectedGraph<T>();
         Match<T> bestMatch = new Match<T>(new HashMap<T, T>(), Double.POSITIVE_INFINITY);
         do {
             final Map<T, T> matching = buildMatchingMap(maximumMatching);
-            final double cost = computeCost(originalGraph, matching);
+            final double cost = computeCost(residualGraph, matching);
             if (Double.compare(cost, bestMatch.getCost()) == -1) bestMatch = new Match<T>(matching, cost);
             for (final Entry<T, T> entry : matching.entrySet())
-                residualGraph.removeEdge(entry.getKey(), entry.getValue());
-            maximumMatching = EdmondsAlgorithm.maximumMatching(residualGraph);
+                mutableResidualGraph.removeEdge(entry.getKey(), entry.getValue());
+            maximumMatching = EdmondsAlgorithm.maximumMatching(mutableResidualGraph);
         }
         while (isPerfect(maximumMatching));
         return bestMatch;
     }
-
 }

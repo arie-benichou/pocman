@@ -147,11 +147,4 @@ public class MazeNodeTest {
                 .hashCode());
     }
 
-    /*
-    //@Test
-    public void testToString() { // TODO tester la vue...
-        fail("Not yet implemented");
-    }
-    */
-
 }
