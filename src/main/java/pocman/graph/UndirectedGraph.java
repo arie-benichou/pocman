@@ -261,6 +261,7 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { /
         return this.edgesByEndpoint.get(endPoint);
     }
 
+    // TODO : strictly a graph is also eulerian if it has two and only two endpoints having odd degree. 
     private boolean computeIsEulerian() {
         for (final T MazeNode : this)
             if (this.getEndPoints(MazeNode).size() % 2 == 1) return false;
