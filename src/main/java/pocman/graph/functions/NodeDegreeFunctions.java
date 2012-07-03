@@ -81,7 +81,7 @@ public final class NodeDegreeFunctions<T> {
         if (this.data == null) {
             final Builder<T, Integer> builder = new ImmutableMap.Builder<T, Integer>();
             for (final T node : this.getGraph())
-                builder.put(node, this.getGraph().getConnectedVerticeSet(node).size());
+                builder.put(node, this.getGraph().getEndPoints(node).size());
             this.data = builder.build();
         }
     }

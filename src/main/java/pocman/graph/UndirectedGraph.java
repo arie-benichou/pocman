@@ -18,7 +18,6 @@
 package pocman.graph;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -30,8 +29,8 @@ import java.util.Set;
 import pocman.graph.Path.Factory;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -61,7 +60,7 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { /
             this.values = new double[order][order];
         }
 
-        public int getNumberOfVertices() {
+        public int getOrder() {
             return this.order;
         }
 
@@ -91,8 +90,6 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { /
 
             final T endPoint2 = edge.getEndPoint2();
             final Integer endPoint2Index = this.getEndPointIndex(endPoint2);
-
-            Preconditions.checkState(this.values[endPoint1Index - 1][endPoint2Index - 1] == 0, "Incoherence."); // TODO ? inutile
 
             this.edgeSet.add(edge);
 
@@ -124,7 +121,7 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { /
 
     private final int order;
     private final Map<T, Integer> vertices;
-    private final Map<T, List<WeightedEdge<T>>> edgesByMazeNode;
+    private final Map<T, Set<WeightedEdge<T>>> edgesByEndpoint;
     private final Map<Integer, WeightedEdge<T>> edgeByHashCode;
     private final Map<T, Set<T>> mGraph;
     private final Map<Integer, T> verticeByIndex;
@@ -145,7 +142,7 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { /
                     path = pathFactory.newPath(INFINITY);
                     final T endpoint1 = this.verticeByIndex.get(i);
                     final T endpoint2 = this.verticeByIndex.get(j);
-                    if (this.hasEdge(endpoint1, endpoint2)) {
+                    if (this.contains(endpoint1, endpoint2)) {
                         final WeightedEdge<T> edge = this.getEdge(endpoint1, endpoint2);
                         path = pathFactory.newPath(edge);
                     }
@@ -160,8 +157,14 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { /
 
         this.order = builder.order;
         this.vertices = ImmutableMap.copyOf(builder.vertices);
-        this.mGraph = ImmutableMap.copyOf(builder.mGraph);
-        final ImmutableMap<T, List<WeightedEdge<T>>> edgesByMazeNode = ImmutableMap.copyOf(builder.edgesByMazeNode);
+
+        final ImmutableMap.Builder<T, Set<T>> builder2 = new ImmutableMap.Builder<T, Set<T>>();
+        for (final Entry<T, Set<T>> entry : builder.mGraph.entrySet()) {
+            builder2.put(entry.getKey(), ImmutableSet.copyOf(entry.getValue()));
+        }
+        this.mGraph = builder2.build();
+
+        final ImmutableMap<T, List<WeightedEdge<T>>> edgesByEndpoint = ImmutableMap.copyOf(builder.edgesByMazeNode);
         // safe copy
         final double[][] values = new double[this.order][this.order];
         for (int i = 0; i < this.order; ++i) {
@@ -172,15 +175,14 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { /
             }
         }
 
-        final ImmutableMap.Builder<T, List<WeightedEdge<T>>> edgesByMazeNodeBuilder = new ImmutableMap.Builder<T, List<WeightedEdge<T>>>();
-        for (final Entry<T, List<WeightedEdge<T>>> entry : edgesByMazeNode.entrySet())
-            edgesByMazeNodeBuilder.put(entry.getKey(), ImmutableList.copyOf(entry.getValue()));
-        this.edgesByMazeNode = edgesByMazeNodeBuilder.build();
+        final ImmutableMap.Builder<T, Set<WeightedEdge<T>>> edgesByMazeNodeBuilder = new ImmutableMap.Builder<T, Set<WeightedEdge<T>>>();
+        for (final Entry<T, List<WeightedEdge<T>>> entry : edgesByEndpoint.entrySet())
+            edgesByMazeNodeBuilder.put(entry.getKey(), ImmutableSet.copyOf(entry.getValue()));
+        this.edgesByEndpoint = edgesByMazeNodeBuilder.build();
 
         this.edgeByHashCode = Maps.newHashMap();
         for (final T MazeNode : this.vertices.keySet()) {
-            final List<WeightedEdge<T>> edges = this.getEdges(MazeNode);
-            for (final WeightedEdge<T> weightedEdge : edges) {
+            for (final WeightedEdge<T> weightedEdge : this.getEdges(MazeNode)) {
                 final Integer hashCode = WeightedEdge.hashCode(weightedEdge.getEndPoint1().hashCode(), weightedEdge.getEndPoint2().hashCode());
                 this.edgeByHashCode.put(hashCode, weightedEdge);
             }
@@ -207,11 +209,26 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { /
         this.shortestPaths = paths;
     }
 
+    @Override
+    public boolean contains(final T endPoint) {
+        Preconditions.checkArgument(endPoint != null);
+        return this.vertices.containsKey(endPoint);
+    }
+
+    private void checkEndPoint(final T endPoint) {
+        if (!this.contains(endPoint)) throw new NoSuchElementException("Node " + endPoint + "does not exist.");
+    }
+
+    @Override
+    public boolean contains(final T endPoint1, final T endPoint2) {
+        this.checkEndPoint(endPoint1);
+        this.checkEndPoint(endPoint2);
+        return this.mGraph.get(endPoint1).contains(endPoint2);
+    }
+
     public Path<T> getShortestPathBetween(final T endPoint1, final T endPoint2) {
-        Preconditions.checkNotNull(endPoint1);
-        Preconditions.checkNotNull(endPoint2);
-        if (!this.vertices.containsKey(endPoint1) || !this.vertices.containsKey(endPoint2))
-            throw new NoSuchElementException("Both nodes must be in the graph.");
+        this.checkEndPoint(endPoint1);
+        this.checkEndPoint(endPoint2);
         final int i = this.vertices.get(endPoint1) - 1;
         final int j = this.vertices.get(endPoint2) - 1;
         return this.shortestPaths[i][j];
@@ -235,48 +252,27 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> { /
     }
 
     @Override
-    public boolean hasEdge(final T endpoint1, final T endpoint2) {
-        if (!this.vertices.containsKey(endpoint1) || !this.vertices.containsKey(endpoint2))
-            throw new NoSuchElementException("Both nodes must be in the graph.");
-        return this.mGraph.get(endpoint1).contains(endpoint2);
+    public Set<T> getEndPoints(final T endPoint) {
+        this.checkEndPoint(endPoint);
+        return this.mGraph.get(endPoint);
     }
 
-    @Override
-    public boolean hasMazeNode(final T endpoint) {
-        return this.vertices.containsKey(endpoint);
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return this.vertices.isEmpty(); // should always be false
-    }
-
-    @Override
-    public Set<T> getConnectedVerticeSet(final T MazeNode) {
-        final Set<T> edges = this.mGraph.get(MazeNode);
-        if (edges == null) throw new NoSuchElementException("Source node does not exist.");
-        return Collections.unmodifiableSet(edges); // TODO
-    }
-
-    public WeightedEdge<T> getEdge(final T endpoint1, final T endpoint2) {
-        Preconditions.checkNotNull(endpoint1);
-        Preconditions.checkNotNull(endpoint2);
-        if (!this.vertices.containsKey(endpoint1) || !this.vertices.containsKey(endpoint2))
-            throw new NoSuchElementException("Both nodes must be in the graph.");
-        final Integer hashCode = WeightedEdge.hashCode(endpoint1.hashCode(), endpoint2.hashCode());
+    public WeightedEdge<T> getEdge(final T endPoint1, final T endPoint2) {
+        this.checkEndPoint(endPoint1);
+        this.checkEndPoint(endPoint2);
+        final Integer hashCode = WeightedEdge.hashCode(endPoint1.hashCode(), endPoint2.hashCode());
         return this.edgeByHashCode.get(hashCode);
     }
 
     @Override
-    public List<WeightedEdge<T>> getEdges(final T node) { // TODO retourner un Set ?
-        final List<WeightedEdge<T>> edges = this.edgesByMazeNode.get(node);
-        if (edges == null) throw new NoSuchElementException("Source node " + node + " does not exist.");
-        return edges;
+    public Set<WeightedEdge<T>> getEdges(final T endPoint) {
+        this.checkEndPoint(endPoint);
+        return this.edgesByEndpoint.get(endPoint);
     }
 
     private boolean computeIsEulerian() {
         for (final T MazeNode : this)
-            if (this.getConnectedVerticeSet(MazeNode).size() % 2 == 1) return false;
+            if (this.getEndPoints(MazeNode).size() % 2 == 1) return false;
         return true;
     }
 

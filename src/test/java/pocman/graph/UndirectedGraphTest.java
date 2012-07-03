@@ -17,10 +17,10 @@
 
 package pocman.graph;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.junit.After;
@@ -32,7 +32,6 @@ import org.junit.Test;
 import pocman.graph.Path.Factory;
 import pocman.graph.UndirectedGraph.Builder;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 public class UndirectedGraphTest {
@@ -57,64 +56,33 @@ public class UndirectedGraphTest {
         this.graph = null;
     }
 
-    /*
-    @Test(expected = UnsupportedOperationException.class)
-    public void testAddMazeNode() {
-        this.graph.addMazeNode("C");
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void testAddEdge() {
-        this.graph.addEdge("A", "C");
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void testRemoveEdge() {
-        this.graph.addEdge("A", "B");
-    }
-    */
-
-    @Test
-    public void testIsEmpty() {
-        assertTrue(this.graph.isEmpty() == false);
-    }
-
     @Test
     public void testGetOrder() {
-        assertTrue(this.graph.getOrder() == 2);
-    }
-
-    @Test(expected = NoSuchElementException.class)
-    public void testIllegalEdgeExists() {
-        this.graph.hasEdge("A", "C");
+        final int order = this.graph.getOrder();
+        assertEquals(2, order);
     }
 
     @Test
-    public void testLegalEdgeExists() {
+    public void testLegalContainsEdge() {
         final Builder<String> builder = new UndirectedGraph.Builder<String>(3);
         builder.addEdge("A", "B", 1.0);
         builder.addEdge("A", "C", 1.0);
 
         final UndirectedGraph<String> graph = builder.build();
 
-        assertTrue(graph.hasEdge("C", "B") == false);
-        assertTrue(graph.hasEdge("A", "B"));
+        assertFalse(graph.contains("C", "B"));
+        assertTrue(graph.contains("A", "B"));
 
-        assertTrue(graph.hasEdge("B", "C") == false);
-        assertTrue(graph.hasEdge("B", "A"));
-    }
-
-    @Test(expected = NoSuchElementException.class)
-    public void testIllegalGetConnectedVerticeSet() {
-        this.graph.getConnectedVerticeSet("C");
+        assertFalse(graph.contains("B", "C"));
+        assertTrue(graph.contains("B", "A"));
     }
 
     @Test
     public void testLegalGetConnectedVerticeSet() {
-        assertTrue(this.graph.getConnectedVerticeSet("A").equals(Sets.newHashSet("C")) == false);
-        assertTrue(this.graph.getConnectedVerticeSet("A").equals(Sets.newHashSet("B")));
-        assertTrue(this.graph.getConnectedVerticeSet("B").equals(Sets.newHashSet("C")) == false);
-        assertTrue(this.graph.getConnectedVerticeSet("B").equals(Sets.newHashSet("A")));
+        assertFalse(this.graph.getEndPoints("A").equals(Sets.newHashSet("C")));
+        assertTrue(this.graph.getEndPoints("A").equals(Sets.newHashSet("B")));
+        assertFalse(this.graph.getEndPoints("B").equals(Sets.newHashSet("C")));
+        assertTrue(this.graph.getEndPoints("B").equals(Sets.newHashSet("A")));
     }
 
     @Test
@@ -126,18 +94,8 @@ public class UndirectedGraphTest {
             ++i;
             actualSet.add(MazeNode);
         }
-        assertTrue(i == expectedSet.size());
+        assertEquals(expectedSet.size(), i);
         assertTrue(actualSet.equals(expectedSet));
-    }
-
-    @Test(expected = NoSuchElementException.class)
-    public void testIllegalGetEdge1() {
-        this.graph.getEdge("C", "A");
-    }
-
-    @Test(expected = NoSuchElementException.class)
-    public void testIllegalGetEdge2() {
-        this.graph.getEdge("A", "C");
     }
 
     @Test
@@ -154,56 +112,68 @@ public class UndirectedGraphTest {
         assertTrue(actualEdge.equals(expectedEdge));
     }
 
-    @Test(expected = NoSuchElementException.class)
-    public void testIllegalGetEdges() {
-        this.graph.getEdges("C");
-    }
-
     @Test
     public void testLegalGetEdges1() {
-        final List<WeightedEdge<String>> expectedEdges = Lists.newArrayList();
+        final Set<WeightedEdge<String>> expectedEdges = Sets.newHashSet();
         expectedEdges.add(WeightedEdge.from("A", "B", 1.0));
-        final List<WeightedEdge<String>> actualEdges = this.graph.getEdges("A");
+        final Set<WeightedEdge<String>> actualEdges = this.graph.getEdges("A");
         assertTrue(actualEdges.equals(expectedEdges));
     }
 
     @Test
     public void testLegalGetEdges2() {
-        final List<WeightedEdge<String>> expectedEdges = Lists.newArrayList();
+        final Set<WeightedEdge<String>> expectedEdges = Sets.newHashSet();
         expectedEdges.add(WeightedEdge.from("B", "A", 1.0));
-        final List<WeightedEdge<String>> actualEdges = this.graph.getEdges("A");
+        final Set<WeightedEdge<String>> actualEdges = this.graph.getEdges("A");
         assertTrue(actualEdges.equals(expectedEdges));
     }
 
     @Test
-    public void testIsConnected() {
+    public void testContainsT() {
+        assertFalse(this.graph.contains("C"));
+        assertTrue(this.graph.contains("A"));
+        assertTrue(this.graph.contains("B"));
+        assertFalse(this.graph.contains(""));
+    }
+
+    @Test
+    public void testIsConnected1() {
         final Builder<String> builder = new UndirectedGraph.Builder<String>(4);
         builder.addEdge("A", "B", 1.0);
         builder.addEdge("C", "D", 1.0);
         final UndirectedGraph<String> graph = builder.build();
-        assertTrue(graph.isConnected() == false);
-        assertTrue(this.graph.isConnected());
+        assertFalse(graph.isConnected());
+        assertFalse(graph.isConnected());
     }
 
     @Test
-    public void testIsEulerian() {
-        assertTrue(this.graph.isEulerian() == false);
+    public void testIsConnected2() {
+        final Builder<String> builder = new UndirectedGraph.Builder<String>(2);
+        builder.addEdge("A", "B", 1.0);
+        final UndirectedGraph<String> graph = builder.build();
+        assertTrue(graph.isConnected());
+        assertTrue(graph.isConnected());
+    }
+
+    @Test
+    public void testIsEulerian1() {
         final Builder<String> builder = new UndirectedGraph.Builder<String>(3);
         builder.addEdge("A", "B", 1.0);
         builder.addEdge("B", "C", 1.0);
         builder.addEdge("C", "A", 1.0);
         final UndirectedGraph<String> graph = builder.build();
         assertTrue(graph.isEulerian());
+        assertTrue(graph.isEulerian());
     }
 
-    @Test(expected = NoSuchElementException.class)
-    public void testIllegalGetShortestPathBetween1() {
-        this.graph.getShortestPathBetween("A", "C");
-    }
-
-    @Test(expected = NoSuchElementException.class)
-    public void testIllegalGetShortestPathBetween2() {
-        this.graph.getShortestPathBetween("C", "A");
+    @Test
+    public void testIsNotEulerian2() {
+        final Builder<String> builder = new UndirectedGraph.Builder<String>(3);
+        builder.addEdge("A", "B", 1.0);
+        builder.addEdge("B", "C", 1.0);
+        final UndirectedGraph<String> graph = builder.build();
+        assertFalse(graph.isEulerian());
+        assertFalse(graph.isEulerian());
     }
 
     @Test
@@ -241,20 +211,14 @@ public class UndirectedGraphTest {
         assertTrue(actualPath.equals(expectedPath));
     }
 
-    //@Test
+    /*
+    @Test
     public void testGetShortestPathBetween4() {
         final Path<String> expectedPath = new Path.Factory<String>().newPath("A", "B", 999.999);
         assertTrue(this.graph.isConnected());
         final Path<String> actualPath = this.graph.getShortestPathBetween("A", "B");
         assertTrue(actualPath.equals(expectedPath) == false);// TODO SHOULD be false : revoir Equals de Path
     }
-
-    /*
-    @Test
-    public void test() {
-        final Builder<String> builder = new UndirectedGraph.Builder<String>(2);
-        builder.addEdge(null, "A", 1.0);
-        final UndirectedGraph<String> graph = builder.build();
-    }
     */
+
 }

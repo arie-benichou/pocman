@@ -40,7 +40,7 @@ public final class Matching implements MatchingAlgorithm {
         final Builder<T, T> builder = new ImmutableMap.Builder<T, T>();
         final Set<T> set = Sets.newHashSet();
         for (final T endPoint1 : maximumMatching) {
-            final T endPoint2 = maximumMatching.getConnectedVerticeSet(endPoint1).iterator().next();
+            final T endPoint2 = maximumMatching.getEndPoints(endPoint1).iterator().next();
             if (!set.contains(endPoint2)) {
                 set.add(endPoint1);
                 set.add(endPoint2);
@@ -60,7 +60,7 @@ public final class Matching implements MatchingAlgorithm {
 
     private static <T> boolean isPerfect(final MutableUndirectedGraph<T> maximumMatching) {
         for (final T MazeNode : maximumMatching)
-            if (maximumMatching.getConnectedVerticeSet(MazeNode).size() != 1) return false;
+            if (maximumMatching.getEndPoints(MazeNode).size() != 1) return false;
         return true;
     }
 

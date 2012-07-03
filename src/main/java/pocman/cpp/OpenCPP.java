@@ -17,9 +17,9 @@
 
 package pocman.cpp;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import pocman.graph.UndirectedGraph;
 import pocman.graph.UndirectedGraph.Builder;
@@ -115,7 +115,7 @@ public final class OpenCPP<T> {
         if (this.boxedGraph == null) {
             final Builder<Box<T>> builder = new UndirectedGraph.Builder<Box<T>>(this.getGraph().getOrder());
             for (final T MazeNode : this.getGraph()) {
-                final List<WeightedEdge<T>> edges = this.getGraph().getEdges(MazeNode);
+                final Set<WeightedEdge<T>> edges = this.getGraph().getEdges(MazeNode);
                 for (final WeightedEdge<T> weightedEdge : edges) {
                     final WeightedEdge<Box<T>> edge = WeightedEdge.from(
                             new Box<T>(weightedEdge.getEndPoint1()),
@@ -147,7 +147,7 @@ public final class OpenCPP<T> {
     private UndirectedGraph<Box<T>> buildVirtualGraph(final UndirectedGraph<Box<T>> boxedGraph, final T startingMazeNode, final T oddVertice) {
         final Builder<Box<T>> builder = new UndirectedGraph.Builder<Box<T>>(boxedGraph.getOrder() + 1);
         for (final Box<T> MazeNode : boxedGraph) {
-            final List<WeightedEdge<Box<T>>> edges = boxedGraph.getEdges(MazeNode);
+            final Set<WeightedEdge<Box<T>>> edges = boxedGraph.getEdges(MazeNode);
             for (final WeightedEdge<Box<T>> edge : edges)
                 if (!builder.contains(edge)) builder.addEdge(edge);
         }
@@ -163,7 +163,7 @@ public final class OpenCPP<T> {
     public Solution<T> solveFrom(final T startingMazeNode) {
 
         Preconditions.checkArgument(startingMazeNode != null);
-        Preconditions.checkState(this.getGraph().hasMazeNode(startingMazeNode));
+        Preconditions.checkState(this.getGraph().contains(startingMazeNode));
 
         final Solution<Box<T>> bestSolution = this.bestSolution(this.getBoxedGraph(), startingMazeNode);
 

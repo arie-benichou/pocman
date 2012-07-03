@@ -22,11 +22,12 @@ import com.google.common.base.Preconditions;
 // TODO EdgeInterface
 // TODO WeightedEdgeInterface
 // TODO implémenter WeightedEdgeInterface
-public final class WeightedEdge<T> /*implements Comparable<WeightedEdge<T>>*/{
+public final class WeightedEdge<T> {
 
     private final T endPoint1;
     private final T endPoint2;
     private final double weight;
+
     private final int hashCode;
 
     public static <T> WeightedEdge<T> from(final T endPoint1, final T endPoint2, final double weight) {
@@ -41,19 +42,14 @@ public final class WeightedEdge<T> /*implements Comparable<WeightedEdge<T>>*/{
 
         Preconditions.checkArgument(endPoint1 != null);
         Preconditions.checkArgument(endPoint2 != null);
-        Preconditions.checkArgument(!(endPoint1 == null && endPoint2 == null));
-
-        if (endPoint1 != null)
-            Preconditions.checkArgument(!endPoint1.equals(endPoint2));
+        Preconditions.checkArgument(!endPoint1.equals(endPoint2));
 
         Preconditions.checkArgument(weight >= 0.0);
         this.endPoint1 = endPoint1;
         this.endPoint2 = endPoint2;
         this.weight = weight;
 
-        if (endPoint1 == null) this.hashCode = hashCode(-1, endPoint2.hashCode());
-        else if (endPoint2 == null) this.hashCode = hashCode(endPoint1.hashCode(), -1);
-        else this.hashCode = hashCode(endPoint1.hashCode(), endPoint2.hashCode());
+        this.hashCode = hashCode(endPoint1.hashCode(), endPoint2.hashCode());
     }
 
     private WeightedEdge(final WeightedEdge<T> edge) {
@@ -71,13 +67,6 @@ public final class WeightedEdge<T> /*implements Comparable<WeightedEdge<T>>*/{
     public double getWeight() {
         return this.weight;
     }
-
-    /*
-    @Override
-    public int compareTo(final WeightedEdge<T> that) {
-        //return Double.compare(this.weight, that.getWeight());
-    }
-    */
 
     public WeightedEdge<T> reverse() {
         return new WeightedEdge<T>(this);

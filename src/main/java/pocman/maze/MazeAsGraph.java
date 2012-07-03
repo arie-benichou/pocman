@@ -49,12 +49,6 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
         return this.walkableGameTiles;
     }
 
-    private final Map<Integer, List<WeightedEdge<MazeNode>>> edgeByMazeNodeId;
-
-    public Map<Integer, List<WeightedEdge<MazeNode>>> getEdgeByMazeNodeId() {
-        return this.edgeByMazeNodeId;
-    }
-
     private final UndirectedGraph<MazeNode> graph;
 
     private final int numberOfVertices;
@@ -106,10 +100,10 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
     private MazeAsGraph(final MazeAsBoard board) {
         this.board = board;
         this.walkableGameTiles = this.buildVertices(this.getBoard());
-        this.edgeByMazeNodeId = this.buildEdges(this.getWalkableNodes());
-        this.numberOfVertices = this.edgeByMazeNodeId.size();
+        final Map<Integer, List<WeightedEdge<MazeNode>>> edgeByNodeId = this.buildEdges(this.getWalkableNodes());
+        this.numberOfVertices = edgeByNodeId.size();
         final UndirectedGraph.Builder<MazeNode> graphBuilder = new UndirectedGraph.Builder<MazeNode>(this.getNumberOfVertices());
-        for (final Entry<Integer, List<WeightedEdge<MazeNode>>> entry : this.edgeByMazeNodeId.entrySet())
+        for (final Entry<Integer, List<WeightedEdge<MazeNode>>> entry : edgeByNodeId.entrySet())
             for (final WeightedEdge<MazeNode> edge : entry.getValue())
                 if (!graphBuilder.contains(edge)) graphBuilder.addEdge(edge);
         this.graph = graphBuilder.build();

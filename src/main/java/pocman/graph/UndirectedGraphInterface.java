@@ -17,28 +17,17 @@
 
 package pocman.graph;
 
-import java.util.List;
 import java.util.Set;
 
 public interface UndirectedGraphInterface<T> extends Iterable<T> { // TODO à revoir
 
-    /*
-    boolean addMazeNode(final T MazeNode);
+    boolean contains(final T one, final T two);
 
-    void addEdge(final T one, final T two);
+    Set<T> getEndPoints(final T MazeNode);
 
-    void removeEdge(final T one, final T two);
-    */
+    Set<WeightedEdge<T>> getEdges(final T MazeNode);
 
-    boolean hasEdge(final T one, final T two);
-
-    Set<T> getConnectedVerticeSet(final T MazeNode);
-
-    List<WeightedEdge<T>> getEdges(final T MazeNode);
-
-    boolean isEmpty();
-
-    boolean hasMazeNode(T endpoint);
+    boolean contains(T endpoint);
 
     int getOrder();
 

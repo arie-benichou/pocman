@@ -60,7 +60,7 @@ public final class NodeOfDegree1Pruning<T> {
             final Map<T, Integer> nodesWithDegree1 = this.getNodeDegreeVisitor().getNodesWithDegree(1);
             final List<T> nodes = Lists.newArrayList(nodesWithDegree1.keySet());
             for (final T node : nodes) {
-                final WeightedEdge<T> edge = this.getNodeDegreeVisitor().getGraph().getEdges(node).get(0);
+                final WeightedEdge<T> edge = this.getNodeDegreeVisitor().getGraph().getEdges(node).iterator().next();
                 Integer integer1 = deltas.get(edge.getEndPoint1());
                 if (integer1 == null) integer1 = 0;
                 deltas.put(edge.getEndPoint1(), integer1 + 1);

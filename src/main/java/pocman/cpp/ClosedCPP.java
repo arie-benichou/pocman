@@ -142,7 +142,7 @@ public final class ClosedCPP<T> {
         if (remainingOddVertices.isEmpty()) {
             eulerization = Maps.newHashMap();
             for (final T endPoint1 : graph)
-                for (final T endPoint2 : graph.getConnectedVerticeSet(endPoint1))
+                for (final T endPoint2 : graph.getEndPoints(endPoint1))
                     eulerization.put(graph.getEdge(endPoint1, endPoint2), 1);
         }
         else {
@@ -188,7 +188,7 @@ public final class ClosedCPP<T> {
         this.matchingAlgorithm = matchingAlgorithm;
         double lowerBoundCost = 0;
         for (final T MazeNode : this.graph)
-            for (final T connectedMazeNode : this.graph.getConnectedVerticeSet(MazeNode))
+            for (final T connectedMazeNode : this.graph.getEndPoints(MazeNode))
                 lowerBoundCost += this.graph.getEdge(MazeNode, connectedMazeNode).getWeight();
         this.lowerBoundCost = lowerBoundCost / 2; // TODO exposer un set of edges immutable depuis le graphe
 

@@ -35,7 +35,7 @@ public final class EdmondsAlgorithm {
 
     private static <T> void updateMatching(final List<T> path, final MutableUndirectedGraph<T> m) {
         for (int i = 0; i < path.size() - 1; ++i) {
-            if (m.hasEdge(path.get(i), path.get(i + 1))) m.removeEdge(path.get(i), path.get(i + 1));
+            if (m.contains(path.get(i), path.get(i + 1))) m.removeEdge(path.get(i), path.get(i + 1));
             else m.addEdge(path.get(i), path.get(i + 1));
         }
     }
@@ -82,15 +82,15 @@ public final class EdmondsAlgorithm {
         final Map<T, NodeInformation<T>> forest = new HashMap<T, NodeInformation<T>>();
         final Queue<Edge<T>> worklist = new LinkedList<Edge<T>>();
         for (final T node : g) {
-            if (!m.getConnectedVerticeSet(node).isEmpty())
+            if (!m.getEndPoints(node).isEmpty())
                 continue;
             forest.put(node, new NodeInformation<T>(null, node, true));
-            for (final T endpoint : g.getConnectedVerticeSet(node))
+            for (final T endpoint : g.getEndPoints(node))
                 worklist.add(new Edge<T>(node, endpoint));
         }
         while (!worklist.isEmpty()) {
             final Edge<T> curr = worklist.remove();
-            if (m.hasEdge(curr.start, curr.end))
+            if (m.contains(curr.start, curr.end))
                 continue;
             final NodeInformation<T> startInfo = forest.get(curr.start);
             final NodeInformation<T> endInfo = forest.get(curr.end);
@@ -116,11 +116,11 @@ public final class EdmondsAlgorithm {
                 forest.put(curr.end, new NodeInformation<T>(curr.start,
                         startInfo.treeRoot,
                         false));
-                final T endpoint = m.getConnectedVerticeSet(curr.end).iterator().next();
+                final T endpoint = m.getEndPoints(curr.end).iterator().next();
                 forest.put(endpoint, new NodeInformation<T>(curr.end,
                         startInfo.treeRoot,
                         true));
-                for (final T fringeNode : g.getConnectedVerticeSet(endpoint))
+                for (final T fringeNode : g.getEndPoints(endpoint))
                     worklist.add(new Edge<T>(endpoint, fringeNode));
             }
         }
@@ -157,7 +157,7 @@ public final class EdmondsAlgorithm {
         result.addMazeNode(blossom.root);
         for (final T node : g) {
             if (blossom.nodes.contains(node)) continue;
-            for (T endpoint : g.getConnectedVerticeSet(node)) {
+            for (T endpoint : g.getEndPoints(node)) {
                 if (blossom.nodes.contains(endpoint))
                     endpoint = blossom.root;
                 result.addEdge(node, endpoint);
@@ -210,7 +210,7 @@ public final class EdmondsAlgorithm {
             final Blossom<T> blossom,
             final T node) {
         for (final T cycleNode : blossom.nodes)
-            if (g.hasEdge(cycleNode, node))
+            if (g.contains(cycleNode, node))
                 return cycleNode;
         throw new AssertionError("Could not find an edge out of the blossom.");
     }
@@ -259,7 +259,7 @@ public final class EdmondsAlgorithm {
 
         for (final String string : graph) {
             System.out.print(string + ": ");
-            System.out.println(graph.getConnectedVerticeSet(string));
+            System.out.println(graph.getEndPoints(string));
         }
 
         System.out.println();
@@ -268,7 +268,7 @@ public final class EdmondsAlgorithm {
 
         for (final String string : maximumMatching) {
             System.out.print(string + ": ");
-            System.out.println(maximumMatching.getConnectedVerticeSet(string));
+            System.out.println(maximumMatching.getEndPoints(string));
         }
     }
 
@@ -287,7 +287,7 @@ public final class EdmondsAlgorithm {
 
         for (final String string : graph) {
             System.out.print(string + ": ");
-            System.out.println(graph.getConnectedVerticeSet(string));
+            System.out.println(graph.getEndPoints(string));
         }
 
         System.out.println();
@@ -296,7 +296,7 @@ public final class EdmondsAlgorithm {
 
         for (final String string : maximumMatching) {
             System.out.print(string + ": ");
-            System.out.println(maximumMatching.getConnectedVerticeSet(string));
+            System.out.println(maximumMatching.getEndPoints(string));
         }
 
     }
@@ -327,7 +327,7 @@ public final class EdmondsAlgorithm {
 
         for (final String string : graph) {
             System.out.print(string + ": ");
-            System.out.println(graph.getConnectedVerticeSet(string));
+            System.out.println(graph.getEndPoints(string));
         }
 
         System.out.println();
@@ -336,7 +336,7 @@ public final class EdmondsAlgorithm {
 
         for (final String string : maximumMatching) {
             System.out.print(string + ": ");
-            System.out.println(maximumMatching.getConnectedVerticeSet(string));
+            System.out.println(maximumMatching.getEndPoints(string));
         }
     }
 

@@ -34,10 +34,11 @@ import com.google.common.base.Stopwatch;
 
 public class OpenChinesePostmanProblem {
 
-    //public final static String MAZE = Mazes.DEBUG11333;
+    public final static String MAZE = Mazes.DEBUG11333;
+
     //public final static String MAZE = Mazes.DEBUG14;
     //public final static String MAZE = Mazes.DEBUG15;
-    public final static String MAZE = Mazes.LEVEL155;
+    //public final static String MAZE = Mazes.LEVEL155;
 
     public static List<MazeNode> computeOptimalPath(final Maze maze, final int pocManPosition, final MatchingAlgorithm matchingAlgorithm) {
         final OpenCPP<MazeNode> openCPP = OpenCPP.from(maze, matchingAlgorithm);

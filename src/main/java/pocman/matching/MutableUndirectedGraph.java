@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -43,14 +42,14 @@ public final class MutableUndirectedGraph<T> implements UndirectedGraphInterface
     }
 
     @Override
-    public boolean hasEdge(final T one, final T two) {
+    public boolean contains(final T one, final T two) {
         if (!this.mGraph.containsKey(one) || !this.mGraph.containsKey(two))
             throw new NoSuchElementException("Both nodes must be in the graph.");
         return this.mGraph.get(one).contains(two);
     }
 
     @Override
-    public Set<T> getConnectedVerticeSet(final T node) {
+    public Set<T> getEndPoints(final T node) {
         final Set<T> arcs = this.mGraph.get(node);
         if (arcs == null)
             throw new NoSuchElementException("Source node does not exist.");
@@ -62,14 +61,8 @@ public final class MutableUndirectedGraph<T> implements UndirectedGraphInterface
         return this.mGraph.keySet().iterator();
     }
 
-    @Override
     public boolean isEmpty() {
         return this.mGraph.isEmpty();
-    }
-
-    @Override
-    public List<WeightedEdge<T>> getEdges(final T MazeNode) {
-        return null; // TODO
     }
 
     @Override
@@ -87,14 +80,20 @@ public final class MutableUndirectedGraph<T> implements UndirectedGraphInterface
     }
 
     @Override
-    public boolean hasMazeNode(final T endpoint) {
+    public int getOrder() {
+        return this.mGraph.size();
+    }
+
+    @Override
+    public boolean contains(final T endpoint) {
         // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public int getOrder() {
-        return this.mGraph.size();
+    public Set<WeightedEdge<T>> getEdges(final T MazeNode) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

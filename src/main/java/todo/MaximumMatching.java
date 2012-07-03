@@ -97,14 +97,14 @@ public final class MaximumMatching {
         contractedGraph.addMazeNode(blossom.root);
         for (final T MazeNode : graph)
             if (!blossom.vertices.contains(MazeNode))
-                for (final T endpoint : graph.getConnectedVerticeSet(MazeNode))
+                for (final T endpoint : graph.getEndPoints(MazeNode))
                     contractedGraph.addEdge(MazeNode, blossom.vertices.contains(endpoint) ? blossom.root : endpoint);
         return contractedGraph;
     }
 
     private static <T> T findNodeLeavingCycle(final MutableUndirectedGraph<T> g, final Blossom<T> blossom, final T MazeNode) {
         for (final T cycleNode : blossom.vertices)
-            if (g.hasEdge(cycleNode, MazeNode)) return cycleNode;
+            if (g.contains(cycleNode, MazeNode)) return cycleNode;
         throw new AssertionError("Could not find an edge out of the blossom.");
     }
 
@@ -139,9 +139,9 @@ public final class MaximumMatching {
             final MazeNode<T> startInfo
             ) {
         forest.put(current.end, new MazeNode<T>(current.start, startInfo.root, false));
-        final T endpoint = resultingGraph.getConnectedVerticeSet(current.end).iterator().next();
+        final T endpoint = resultingGraph.getEndPoints(current.end).iterator().next();
         forest.put(endpoint, new MazeNode<T>(current.end, startInfo.root, true));
-        for (final T fringeNode : originalGraph.getConnectedVerticeSet(endpoint))
+        for (final T fringeNode : originalGraph.getEndPoints(endpoint))
             worklist.add(new Edge<T>(endpoint, fringeNode));
     }
 
@@ -168,15 +168,15 @@ public final class MaximumMatching {
         final Map<T, MazeNode<T>> forest = Maps.newHashMap();
         final Queue<Edge<T>> worklist = Lists.newLinkedList();
         for (final T node : originalGraph) {
-            if (resultingGraph.getConnectedVerticeSet(node).isEmpty()) {
+            if (resultingGraph.getEndPoints(node).isEmpty()) {
                 forest.put(node, new MazeNode<T>(node, true));
-                for (final T endpoint : originalGraph.getConnectedVerticeSet(node))
+                for (final T endpoint : originalGraph.getEndPoints(node))
                     worklist.add(new Edge<T>(node, endpoint));
             }
         }
         while (!worklist.isEmpty()) {
             final Edge<T> current = worklist.remove();
-            if (!resultingGraph.hasEdge(current.start, current.end)) {
+            if (!resultingGraph.contains(current.start, current.end)) {
                 final MazeNode<T> startInfo = forest.get(current.start);
                 final MazeNode<T> endInfo = forest.get(current.end);
                 if (endInfo == null) endInfoIsNull(originalGraph, resultingGraph, forest, worklist, current, startInfo);
@@ -195,7 +195,7 @@ public final class MaximumMatching {
         for (int i = 0; i < n; ++i) {
             final T MazeNode1 = path.get(i);
             final T MazeNode2 = path.get(i + 1);
-            if (resultingGraph.hasEdge(MazeNode1, MazeNode2)) resultingGraph.removeEdge(MazeNode1, MazeNode2);
+            if (resultingGraph.contains(MazeNode1, MazeNode2)) resultingGraph.removeEdge(MazeNode1, MazeNode2);
             else resultingGraph.addEdge(MazeNode1, MazeNode2);
         }
         return true;

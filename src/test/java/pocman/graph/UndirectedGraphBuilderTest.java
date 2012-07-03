@@ -49,9 +49,9 @@ public class UndirectedGraphBuilderTest {
     }
 
     @Test
-    public void testGetNumberOfVertices() {
+    public void testGetOrder() {
         final Builder<String> builder = new UndirectedGraph.Builder<String>(2);
-        assertTrue(builder.getNumberOfVertices() == 2);
+        assertTrue(builder.getOrder() == 2);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -91,7 +91,7 @@ public class UndirectedGraphBuilderTest {
     @Test
     public void testAddEdgeTTDouble4() {
         final Builder<String> builder = new UndirectedGraph.Builder<String>(3);
-        assertTrue(builder.getNumberOfVertices() == 3);
+        assertTrue(builder.getOrder() == 3);
         assertTrue(builder.addEdge("A", "B", 1.0) == builder);
         assertTrue(builder.addEdge("A", "C", 1.0) == builder);
     }

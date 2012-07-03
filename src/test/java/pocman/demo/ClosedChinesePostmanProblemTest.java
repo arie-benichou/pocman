@@ -17,11 +17,10 @@
 
 package pocman.demo;
 
-import org.junit.Test;
 
 public class ClosedChinesePostmanProblemTest {
 
-    @Test
+    //@Test
     public void testMain() throws InterruptedException {
         ClosedChinesePostmanProblem.main(null);
     }
