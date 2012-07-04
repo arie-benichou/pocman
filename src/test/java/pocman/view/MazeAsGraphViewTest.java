@@ -25,7 +25,7 @@ import pocman.maze.Maze;
 
 public class MazeAsGraphViewTest { // TODO à compléter
 
-    private final static Maze MAZE = new Maze("" +
+    private final static Maze MAZE = Maze.from("" +
             "┃⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃" +
             "┃∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙┃" +
             "┃⬛⬛⬛⬛⬛∙⬛⬛⬛⬛⬛∙┃∙⬛⬛⬛⬛⬛∙⬛⬛⬛⬛⬛┃" +

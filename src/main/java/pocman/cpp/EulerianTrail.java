@@ -52,12 +52,12 @@ public final class EulerianTrail {
         return trailBuilder.build();
     }
 
-    public static <T> List<T> from(final UndirectedGraph<T> graph, final Map<WeightedEdge<T>, Integer> traversalByEdge, final T startingMazeNode) {
-        return from(startingMazeNode, Maps.newHashMap(traversalByEdge), graph);
+    public static <T> List<T> from(final UndirectedGraph<T> graph, final Map<WeightedEdge<T>, Integer> traversalByEdge, final T startingNode) {
+        return from(startingNode, Maps.newHashMap(traversalByEdge), graph);
     }
 
-    public static <T> List<T> from(final Supplier<UndirectedGraph<T>> graphSupplier, final Map<WeightedEdge<T>, Integer> traversalByEdge, final T startingMazeNode) {
-        return from(graphSupplier.get(), traversalByEdge, startingMazeNode);
+    public static <T> List<T> from(final Supplier<UndirectedGraph<T>> graphSupplier, final Map<WeightedEdge<T>, Integer> traversalByEdge, final T startingNode) {
+        return from(graphSupplier.get(), traversalByEdge, startingNode);
     }
 
     private EulerianTrail() {}

@@ -37,7 +37,7 @@ public class EulerianTrailTest {
                 .addEdge("A", "B", 1.0)
                 .build();
         final List<String> expectedTrail = Lists.newArrayList("A", "B", "A");
-        final Solution<String> solution = ClosedCPP.from(input).solve();
+        final ClosedCPPSolution<String> solution = ClosedCPP.from(input).solve();
         final List<String> actualTrail = EulerianTrail.from(input, solution.getTraversalByEdge(), "A");
         assertTrue(actualTrail.equals(expectedTrail));
     }
@@ -52,7 +52,7 @@ public class EulerianTrailTest {
         final HashSet<List<String>> expected = Sets.newHashSet();
         expected.add(Lists.newArrayList("A", "B", "C", "A"));
         expected.add(Lists.newArrayList("A", "C", "B", "A"));
-        final Solution<String> solution = ClosedCPP.from(input).solve();
+        final ClosedCPPSolution<String> solution = ClosedCPP.from(input).solve();
         final List<String> actualTrail = EulerianTrail.from(input, solution.getTraversalByEdge(), "A");
         assertTrue(expected.contains(actualTrail));
     }

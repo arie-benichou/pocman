@@ -29,16 +29,15 @@ public class OpenCPPTest {
     @Test
     public void testFromClosedCPP() {
         final UndirectedGraph<String> input = new UndirectedGraph.Builder<String>(2).addEdge("A", "B", 1.0).build();
-        final ClosedCPP<String> closedCPP = ClosedCPP.from(input);
-        assertNotNull(OpenCPP.from(closedCPP));
+        final ClosedCPPSolution<String> closedCPPSolution = ClosedCPP.from(input).solve();
+        assertNotNull(OpenCPP.from(closedCPPSolution));
     }
 
     @Test
     public void testGetClosedCPP() {
         final UndirectedGraph<String> input = new UndirectedGraph.Builder<String>(2).addEdge("A", "B", 1.0).build();
-        final ClosedCPP<String> closedCPP = ClosedCPP.from(input);
-        final OpenCPP<String> openCPP = OpenCPP.from(closedCPP);
-        assertTrue(openCPP.getClosedCPP().equals(closedCPP)); // TODO ?
+        final ClosedCPPSolution<String> closedCPPSolution = ClosedCPP.from(input).solve();
+        final OpenCPP<String> openCPP = OpenCPP.from(closedCPPSolution);
+        assertTrue(openCPP.getClosedCPPSolution().equals(closedCPPSolution)); // TODO ?
     }
-
 }

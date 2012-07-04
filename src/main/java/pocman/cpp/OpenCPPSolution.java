@@ -25,7 +25,7 @@ import pocman.graph.WeightedEdge;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 
-public final class Solution<T> {
+public final class OpenCPPSolution<T> {
 
     private final Double lowerBoundCost;
 
@@ -68,14 +68,14 @@ public final class Solution<T> {
     public boolean equals(final Object object) {
         if (object == null) return false;
         if (object == this) return true;
-        if (!(object instanceof Solution)) return false;
-        final Solution<?> that = (Solution<?>) object;
+        if (!(object instanceof OpenCPPSolution)) return false;
+        final OpenCPPSolution<?> that = (OpenCPPSolution<?>) object;
         if (!that.getLowerBoundCost().equals(this.getLowerBoundCost())) return false;
         if (!that.getUpperBoundCost().equals(this.getUpperBoundCost())) return false;
         return that.getTraversalByEdge().equals(this.getTraversalByEdge()); // TODO ? comparer uniquement la taille des maps
     }
 
-    public Solution(
+    public OpenCPPSolution(
             final T node,
             final UndirectedGraph<T> graph,
             final Map<WeightedEdge<T>, Integer> traversalByEdge,
@@ -93,7 +93,7 @@ public final class Solution<T> {
         //Preconditions.checkState(this.upperBoundCost >= this.lowerBoundCost, "Cost upper-bound must be greater than lower-bound.");
     }
 
-    public Solution(
+    public OpenCPPSolution(
             final Map<WeightedEdge<T>, Integer> traversalByEdge,
             final Double lowerBoundCost,
             final Double upperBoundCost) {
@@ -115,8 +115,8 @@ public final class Solution<T> {
                 .add("MazeNode", this.getEndPoint())
                 .add("Lower-Bound Cost", this.lowerBoundCost)
                 .add("Upper-Bound Cost", this.upperBoundCost)
-                .add("Extra Cost", this.upperBoundCost - this.lowerBoundCost)
-                .add("Traversal By Edge", this.traversalByEdge)
+                //.add("Extra Cost", this.upperBoundCost - this.lowerBoundCost)
+                //.add("Traversal By Edge", this.traversalByEdge)
                 .toString();
     }
 

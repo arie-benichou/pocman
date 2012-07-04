@@ -22,13 +22,25 @@ import pocman.graph.UndirectedGraph;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 
-public class Maze implements Supplier<UndirectedGraph<MazeNode>> {
+public final class Maze implements Supplier<UndirectedGraph<MazeNode>> {
 
     private final MazeAsGraph mazeAsGraph;
 
-    public Maze(final String data) {
-        this.mazeAsGraph = MazeAsGraph.from(MazeAsBoard.from(data));
-        Preconditions.checkState(this.mazeAsGraph.hasIsland(), "Maze must not contain island");
+    private static Maze from(final MazeAsGraph mazeAsGraph) {
+        Preconditions.checkState(!mazeAsGraph.hasIsland(), "Maze must not contain island.");
+        return new Maze(mazeAsGraph);
+    }
+
+    public static Maze from(final String data) {
+        return from(MazeAsGraph.from(MazeAsBoard.from(data)));
+    }
+
+    public static Maze from(final char[] data) {
+        return from(MazeAsGraph.from(MazeAsBoard.from(data)));
+    }
+
+    private Maze(final MazeAsGraph mazeAsGraph) {
+        this.mazeAsGraph = mazeAsGraph;
     }
 
     public char[] toCharArray() {

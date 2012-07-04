@@ -26,6 +26,8 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import pocman.graph.functions.NodeDegreeFunctions;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -127,6 +129,7 @@ public final class UndirectedGraph<T> implements Iterable<T> {
 
     private Boolean isConnected;
     private Boolean isEulerian;
+    private NodeDegreeFunctions<T> nodeDegreeFunctions;
 
     @SuppressWarnings("unchecked")
     private Path<T>[][] buildPathMatrix() {
@@ -271,6 +274,15 @@ public final class UndirectedGraph<T> implements Iterable<T> {
 
     public int getOrder() {
         return this.order;
+    }
+
+    private NodeDegreeFunctions<T> getNodeDegreeFunctions() {
+        if (this.nodeDegreeFunctions == null) this.nodeDegreeFunctions = NodeDegreeFunctions.from(this);
+        return this.nodeDegreeFunctions;
+    }
+
+    public Map<T, Integer> getNodesWithOddDegree() {
+        return this.getNodeDegreeFunctions().getNodesWithOddDegree();
     }
 
     /*

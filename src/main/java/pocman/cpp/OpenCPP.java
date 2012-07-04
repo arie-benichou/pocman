@@ -33,6 +33,8 @@ import com.google.common.collect.Maps;
 
 public final class OpenCPP<T> {
 
+    public final static MatchingAlgorithm DEFAULT_MATCHING_ALGORITHM = ClosedCPP.DEFAULT_MATCHING_ALGORITHM;
+
     private static class Box<T> {
 
         private final T data;
@@ -76,15 +78,14 @@ public final class OpenCPP<T> {
         return this.graph;
     }
 
-    private ClosedCPP<T> closedCPP = null;
-
-    public ClosedCPP<T> getClosedCPP() {
-        if (this.closedCPP == null) this.closedCPP = ClosedCPP.from(this.getGraph(), this.matchingAlgorithm);
-        return this.closedCPP;
+    public ClosedCPPSolution<T> getClosedCPPSolution() {
+        if (this.closedCPPSolution == null) this.closedCPPSolution = ClosedCPP.from(this.getGraph(), this.matchingAlgorithm).solve();
+        return this.closedCPPSolution;
     }
 
     private UndirectedGraph<Box<T>> boxedGraph;
     private final MatchingAlgorithm matchingAlgorithm;
+    private ClosedCPPSolution<T> closedCPPSolution;
 
     public static <T> OpenCPP<T> from(final UndirectedGraph<T> graph, final MatchingAlgorithm matchingAlgorithm) {
         Preconditions.checkArgument(graph != null);
@@ -106,9 +107,9 @@ public final class OpenCPP<T> {
         return OpenCPP.from(graphSupplier, ClosedCPP.DEFAULT_MATCHING_ALGORITHM);
     }
 
-    public static <T> OpenCPP<T> from(final ClosedCPP<T> closedCPP) {
-        Preconditions.checkArgument(closedCPP != null);
-        return new OpenCPP<T>(closedCPP);
+    public static <T> OpenCPP<T> from(final ClosedCPPSolution<T> closedCPPSolution) {
+        Preconditions.checkArgument(closedCPPSolution != null);
+        return new OpenCPP<T>(closedCPPSolution);
     }
 
     private UndirectedGraph<Box<T>> getBoxedGraph() {
@@ -134,13 +135,13 @@ public final class OpenCPP<T> {
         this.matchingAlgorithm = matchingAlgorithm;
     }
 
-    private OpenCPP(final ClosedCPP<T> closedCPP) {
-        this(closedCPP.getGraph(), closedCPP.getMatchingAlgorithm());
-        this.closedCPP = closedCPP;
+    public OpenCPP(final ClosedCPPSolution<T> closedCPPSolution) {
+        this(closedCPPSolution.getGraph(), closedCPPSolution.getMatchingAlgorithm());
+        this.closedCPPSolution = closedCPPSolution;
     }
 
     public Double getLowerBoundCost() {
-        return this.getClosedCPP().getLowerBoundCost();
+        return this.getClosedCPPSolution().getLowerBoundCost();
     }
 
     // TODO optimisation possible
@@ -160,12 +161,12 @@ public final class OpenCPP<T> {
         return builder.build();
     }
 
-    public Solution<T> solveFrom(final T startingMazeNode) {
+    public OpenCPPSolution<T> solveFrom(final T startingMazeNode) {
 
         Preconditions.checkArgument(startingMazeNode != null);
         Preconditions.checkState(this.getGraph().contains(startingMazeNode));
 
-        final Solution<Box<T>> bestSolution = this.bestSolution(this.getBoxedGraph(), startingMazeNode);
+        final OpenCPPSolution<Box<T>> bestSolution = this.bestSolution(this.getBoxedGraph(), startingMazeNode);
 
         final Map<WeightedEdge<T>, Integer> traversalByEdge = Maps.newHashMap();
         final Map<WeightedEdge<Box<T>>, Integer> boxedTraversalByEdge = bestSolution.getTraversalByEdge();
@@ -179,7 +180,7 @@ public final class OpenCPP<T> {
             if (data1 == null || data2 == null) continue;
             traversalByEdge.put(this.getGraph().getEdge(data1, data2), entry.getValue());
         }
-        final Solution<T> unboxedSolution = new Solution<T>(
+        final OpenCPPSolution<T> unboxedSolution = new OpenCPPSolution<T>(
                 bestSolution.getEndPoint().getData(),
                 this.getGraph(),
                 traversalByEdge,
@@ -190,20 +191,19 @@ public final class OpenCPP<T> {
     }
 
     // TODO vérifier qu'il suffit d'itérer sur les noeuds de degré impair
-    // TODO vérifier s'il suffirait d'itérer uniquement sur les noeuds de degré 1
-    private Solution<Box<T>> bestSolution(final UndirectedGraph<Box<T>> boxedGraph, final T startingMazeNode) {
+    private OpenCPPSolution<Box<T>> bestSolution(final UndirectedGraph<Box<T>> boxedGraph, final T startingMazeNode) {
 
-        Solution<Box<T>> bestSolution = new Solution<Box<T>>(null, null, null, null, 2 * this.getLowerBoundCost() * 2);
+        OpenCPPSolution<Box<T>> bestSolution = new OpenCPPSolution<Box<T>>(null, null, null, null, 2 * this.getLowerBoundCost() * 2);
 
         final Stopwatch stopwatch = new Stopwatch();
 
         //final int i = 0;
-        for (final T oddVertice : this.getClosedCPP().getNodesWithOddDegree().keySet()) {
+        for (final T oddVertice : this.getGraph().getNodesWithOddDegree().keySet()) {
             stopwatch.start();
             final UndirectedGraph<Box<T>> virtualGraph = this.buildVirtualGraph(boxedGraph, startingMazeNode, oddVertice);
             final ClosedCPP<Box<T>> cppSolver = ClosedCPP.from(virtualGraph);
             if (cppSolver.getUpperBoundCost() < bestSolution.getUpperBoundCost()) {
-                bestSolution = new Solution<Box<T>>(new Box<T>(oddVertice), virtualGraph, cppSolver.getTraversalByEdge(),
+                bestSolution = new OpenCPPSolution<Box<T>>(new Box<T>(oddVertice), virtualGraph, cppSolver.getTraversalByEdge(),
                         cppSolver.getLowerBoundCost(), cppSolver.getUpperBoundCost());
             }
             /*

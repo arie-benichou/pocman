@@ -61,6 +61,10 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
         return new MazeAsGraph(board);
     }
 
+    public static MazeAsGraph from(final String data) {
+        return from(MazeAsBoard.from(data));
+    }
+
     private Map<Integer, MazeNode> buildVertices(final MazeAsBoard board) {
         final Builder<Integer, MazeNode> builder = new ImmutableSortedMap.Builder<Integer, MazeNode>(Ordering.natural());
         for (int i = 0; i < MazeAsBoard.SIZE; ++i) {
@@ -110,7 +114,7 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
     }
 
     public boolean hasIsland() {
-        return this.graph.isConnected();
+        return !this.graph.isConnected();
     }
 
     public MazeNode getNodeById(final int nodeId) {

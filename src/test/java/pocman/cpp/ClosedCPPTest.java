@@ -85,8 +85,8 @@ public class ClosedCPPTest {
         final UndirectedGraph<String> input = new UndirectedGraph.Builder<String>(2).addEdge("A", "B", 1.0).build();
         final Map<WeightedEdge<String>, Integer> expectedTraversalByEdge = Maps.newHashMap();
         expectedTraversalByEdge.put(input.getEdge("A", "B"), 2);
-        final Solution<String> expectedSolution = new Solution<String>(expectedTraversalByEdge, 1.0, 2.0);
-        final Solution<String> solution = ClosedCPP.from(input).solve();
+        final OpenCPPSolution<String> expectedSolution = new OpenCPPSolution<String>(expectedTraversalByEdge, 1.0, 2.0);
+        final ClosedCPPSolution<String> solution = ClosedCPP.from(input).solve();
         assertTrue(solution.equals(expectedSolution));
     }
 
@@ -102,8 +102,8 @@ public class ClosedCPPTest {
         expectedTraversalByEdge.put(input.getEdge("A", "B"), 1);
         expectedTraversalByEdge.put(input.getEdge("B", "C"), 1);
         expectedTraversalByEdge.put(input.getEdge("C", "A"), 1);
-        final Solution<String> expectedSolution = new Solution<String>(expectedTraversalByEdge, 3.0, 3.0);
-        final Solution<String> solution = ClosedCPP.from(input).solve();
+        final OpenCPPSolution<String> expectedSolution = new OpenCPPSolution<String>(expectedTraversalByEdge, 3.0, 3.0);
+        final ClosedCPPSolution<String> solution = ClosedCPP.from(input).solve();
         assertTrue(solution.equals(expectedSolution));
     }
 

@@ -32,7 +32,7 @@ import com.google.common.collect.ImmutableMap;
 public class SolutionTest {
 
     private final static Map<WeightedEdge<String>, Integer> TRAVERSAL_BY_EDGE = ImmutableMap.copyOf(new HashMap<WeightedEdge<String>, Integer>());
-    private final static Solution<String> SOLUTION = new Solution<String>(TRAVERSAL_BY_EDGE, 1.0, 2.0);
+    private final static OpenCPPSolution<String> SOLUTION = new OpenCPPSolution<String>(TRAVERSAL_BY_EDGE, 1.0, 2.0);
 
     /*
     //@Test(expected = IllegalArgumentException.class)
@@ -71,12 +71,12 @@ public class SolutionTest {
         assertFalse(SOLUTION.equals(null));
         assertTrue(SOLUTION.equals(SOLUTION));
         assertFalse(SOLUTION.equals(new Object()));
-        Solution<String> differentSolution;
-        differentSolution = new Solution<String>(TRAVERSAL_BY_EDGE, 0.0, 2.0);
+        OpenCPPSolution<String> differentSolution;
+        differentSolution = new OpenCPPSolution<String>(TRAVERSAL_BY_EDGE, 0.0, 2.0);
         assertFalse(SOLUTION.equals(differentSolution));
-        differentSolution = new Solution<String>(TRAVERSAL_BY_EDGE, 1.0, 3.0);
+        differentSolution = new OpenCPPSolution<String>(TRAVERSAL_BY_EDGE, 1.0, 3.0);
         assertFalse(SOLUTION.equals(differentSolution));
-        final Solution<String> sameSolution = new Solution<String>(TRAVERSAL_BY_EDGE, 1.0, 2.0);
+        final OpenCPPSolution<String> sameSolution = new OpenCPPSolution<String>(TRAVERSAL_BY_EDGE, 1.0, 2.0);
         assertTrue(SOLUTION.equals(sameSolution));
     }
 

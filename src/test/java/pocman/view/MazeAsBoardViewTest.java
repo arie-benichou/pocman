@@ -27,7 +27,7 @@ import pocman.maze.MazeAsBoard;
 
 public class MazeAsBoardViewTest {
 
-    private final static Maze MAZE = new Maze("" +
+    private final static Maze MAZE = Maze.from("" +
             "┃⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃" +
             "┃∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙┃" +
             "┃⬛⬛⬛⬛⬛∙⬛⬛⬛⬛⬛∙┃∙⬛⬛⬛⬛⬛∙⬛⬛⬛⬛⬛┃" +

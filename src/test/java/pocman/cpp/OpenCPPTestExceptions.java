@@ -31,22 +31,22 @@ public class OpenCPPTestExceptions {
 
     @Test(expected = IllegalArgumentException.class)
     public void testFromNullReference2() {
-        final ClosedCPP<?> closedCPP = null;
-        OpenCPP.from(closedCPP);
+        final ClosedCPPSolution<?> ClosedCPPSolution = null;
+        OpenCPP.from(ClosedCPPSolution);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSolveFromNullReference() {
         final UndirectedGraph<String> input = new UndirectedGraph.Builder<String>(2).addEdge("A", "B", 1.0).build();
-        final ClosedCPP<String> closedCPP = ClosedCPP.from(input);
-        OpenCPP.from(closedCPP).solveFrom(null);
+        final ClosedCPPSolution<String> ClosedCPPSolution = ClosedCPP.from(input).solve();
+        OpenCPP.from(ClosedCPPSolution).solveFrom(null);
     }
 
     @Test(expected = IllegalStateException.class)
     public void testSolveFromUnknownMazeNode() {
         final UndirectedGraph<String> input = new UndirectedGraph.Builder<String>(2).addEdge("A", "B", 1.0).build();
-        final ClosedCPP<String> closedCPP = ClosedCPP.from(input);
-        OpenCPP.from(closedCPP).solveFrom("C");
+        final ClosedCPPSolution<String> ClosedCPPSolution = ClosedCPP.from(input).solve();
+        OpenCPP.from(ClosedCPPSolution).solveFrom("C");
     }
 
 }
