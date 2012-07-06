@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package pocman.graph.functions;
+package pocman.cpp;
 
 import java.util.List;
 import java.util.Map;
@@ -32,72 +32,78 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-// TODO move to package cpp
 public final class NodeOfDegree1Pruning<T> {
 
-    private final NodeDegreeFunctions<T> nodeDegreeVisitor;
-
-    private Map<T, Integer> data = null;
     private Set<T> remainingOddVertices;
-
     private Set<WeightedEdge<T>> doubledEdges;
 
-    public static <T> NodeOfDegree1Pruning<T> from(final NodeDegreeFunctions<T> nodeDegreeVisitor) {
-        return new NodeOfDegree1Pruning<T>(nodeDegreeVisitor);
+    private final UndirectedGraph<T> graph;
+
+    public UndirectedGraph<T> getGraph() {
+        return this.graph;
     }
 
-    private NodeOfDegree1Pruning(final NodeDegreeFunctions<T> nodeDegreeVisitor) {
-        this.nodeDegreeVisitor = nodeDegreeVisitor;
+    public static <T> NodeOfDegree1Pruning<T> from(final UndirectedGraph<T> graph) {
+        return new NodeOfDegree1Pruning<T>(graph);
     }
 
-    public NodeDegreeFunctions<T> getNodeDegreeVisitor() {
-        return this.nodeDegreeVisitor;
+    private NodeOfDegree1Pruning(final UndirectedGraph<T> graph) {
+        this.graph = graph;
     }
 
-    public void apply() {
-        if (this.data == null) {
-            final Map<T, Integer> deltas = Maps.newHashMap();
-            final ImmutableSet.Builder<WeightedEdge<T>> doubledEdgesbuilder = new ImmutableSet.Builder<WeightedEdge<T>>();
-            final Map<T, Integer> nodesWithDegree1 = this.getNodeDegreeVisitor().getNodesWithDegree(1);
-            final List<T> nodes = Lists.newArrayList(nodesWithDegree1.keySet());
-            for (final T node : nodes) {
-                final WeightedEdge<T> edge = this.getNodeDegreeVisitor().getGraph().getEdges(node).iterator().next();
-                Integer integer1 = deltas.get(edge.getEndPoint1());
-                if (integer1 == null) integer1 = 0;
-                deltas.put(edge.getEndPoint1(), integer1 + 1);
-                Integer integer2 = deltas.get(edge.getEndPoint2());
-                if (integer2 == null) integer2 = 0;
-                deltas.put(edge.getEndPoint2(), integer2 + 1);
-                doubledEdgesbuilder.add(edge);
-            }
-            final Builder<T, Integer> remainingOddVerticesBuilder = new ImmutableMap.Builder<T, Integer>();
-            final Set<T> remainingOddVertices = Sets.newHashSet();
-            for (final Entry<T, Integer> entry : this.getNodeDegreeVisitor().getData().entrySet()) {
-                final T node = entry.getKey();
-                final Integer degree = entry.getValue();
-                Integer delta = deltas.get(node);
-                if (delta == null) delta = 0;
-                remainingOddVerticesBuilder.put(node, degree + delta);
-                if ((degree + delta) % 2 == 1) remainingOddVertices.add(node);
-            }
-            this.data = remainingOddVerticesBuilder.build();
-            this.doubledEdges = doubledEdgesbuilder.build();
-            this.remainingOddVertices = remainingOddVertices;
+    private volatile Map<T, Integer> data = null;
+
+    private Map<T, Integer> computeData(final UndirectedGraph<T> graph) {
+
+        final Map<T, Integer> deltas = Maps.newHashMap();
+
+        final ImmutableSet.Builder<WeightedEdge<T>> doubledEdgesbuilder = new ImmutableSet.Builder<WeightedEdge<T>>();
+        final Map<T, Integer> nodesWithDegree1 = graph.getNodesWithDegree(1);
+        final List<T> nodes = Lists.newArrayList(nodesWithDegree1.keySet());
+        for (final T node : nodes) {
+            final WeightedEdge<T> edge = graph.getEdges(node).iterator().next();
+            Integer integer1 = deltas.get(edge.getEndPoint1());
+            if (integer1 == null) integer1 = 0;
+            deltas.put(edge.getEndPoint1(), integer1 + 1);
+            Integer integer2 = deltas.get(edge.getEndPoint2());
+            if (integer2 == null) integer2 = 0;
+            deltas.put(edge.getEndPoint2(), integer2 + 1);
+            doubledEdgesbuilder.add(edge);
         }
+        this.doubledEdges = doubledEdgesbuilder.build();
+
+        final Builder<T, Integer> remainingOddVerticesBuilder = new ImmutableMap.Builder<T, Integer>();
+        final Set<T> remainingOddVertices = Sets.newHashSet();
+        for (final Entry<T, Integer> entry : graph.getDegreeByNode().entrySet()) {
+            final T node = entry.getKey();
+            final Integer degree = entry.getValue();
+            Integer delta = deltas.get(node);
+            if (delta == null) delta = 0;
+            remainingOddVerticesBuilder.put(node, degree + delta);
+            if ((degree + delta) % 2 == 1) remainingOddVertices.add(node);
+        }
+        this.remainingOddVertices = remainingOddVertices;
+
+        return remainingOddVerticesBuilder.build();
     }
 
     public Map<T, Integer> getData() {
-        this.apply();
-        return this.data;
+        Map<T, Integer> value = this.data;
+        if (value == null) {
+            synchronized (this) {
+                if ((value = this.data) == null) this.data = value = this.computeData(this.graph);
+            }
+        }
+        return value;
     }
 
     public Set<T> getRemainingOddVertices() {
-        this.apply();
+        this.getData();
         return this.remainingOddVertices;
     }
 
     public Set<WeightedEdge<T>> getDoubledEdges() {
-        this.apply();
+        this.getData();
         return this.doubledEdges;
     }
 
@@ -123,6 +129,7 @@ public final class NodeOfDegree1Pruning<T> {
                 .addEdge("A", "E", 1.0)
                 .build();
         */
+        /*
         final NodeDegreeFunctions<String> nodeDegreeVisitor = NodeDegreeFunctions.from(graph);
 
         {
@@ -132,9 +139,10 @@ public final class NodeOfDegree1Pruning<T> {
         }
 
         System.out.println();
+        */
 
         {
-            final NodeOfDegree1Pruning<String> nodeOfDegree1Pruning = NodeOfDegree1Pruning.from(nodeDegreeVisitor);
+            final NodeOfDegree1Pruning<String> nodeOfDegree1Pruning = NodeOfDegree1Pruning.from(graph);
             final Map<String, Integer> data = nodeOfDegree1Pruning.getData();
             for (final Entry<String, Integer> entry : data.entrySet())
                 System.out.println(entry);

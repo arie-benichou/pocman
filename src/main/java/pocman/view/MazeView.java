@@ -38,15 +38,17 @@ public class MazeView {
         return sb.toString();
     }
 
-    public String renderAsBoard(final Maze maze, final int nodeId) {
+    /*
+    public String renderAsBoard(final Maze maze, final MazeNode mazeNode) {
         final StringBuilder sb = new StringBuilder();
-        sb.append(this.mazeAsBoardView.render(maze, nodeId));
+        sb.append(this.mazeAsBoardView.render(maze, mazeNode));
         return sb.toString();
     }
+    */
 
-    public String renderAsGraph(final Maze maze, final MazeNode MazeNode) {
+    public String renderAsGraph(final Maze maze, final MazeNode mazeNode) {
         final StringBuilder sb = new StringBuilder();
-        sb.append(this.mazeAsGraphView.render(maze, MazeNode));
+        sb.append(this.mazeAsGraphView.render(maze, mazeNode));
         return sb.toString();
     }
 

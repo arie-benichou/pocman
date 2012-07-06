@@ -68,4 +68,8 @@ public final class Maze implements Supplier<UndirectedGraph<MazeNode>> {
         return this.mazeAsGraph.get();
     }
 
+    public MazeAsBoard getBoard() {
+        return this.mazeAsGraph.getBoard();
+    }
+
 }

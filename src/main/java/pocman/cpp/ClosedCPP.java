@@ -17,25 +17,30 @@
 
 package pocman.cpp;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.annotation.concurrent.ThreadSafe;
+
 import pocman.graph.Path;
 import pocman.graph.UndirectedGraph;
 import pocman.graph.WeightedEdge;
-import pocman.graph.functions.NodeDegreeFunctions;
-import pocman.graph.functions.NodeOfDegree1Pruning;
-import pocman.matching.Match;
+import pocman.matching.Matches;
 import pocman.matching.MatchingAlgorithm;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+// TODO ? réduire les noeuds de type corner
+@ThreadSafe
 public final class ClosedCPP<T> {
 
     public final static MatchingAlgorithm DEFAULT_MATCHING_ALGORITHM = new pocman.matching.edmonds1.Matching();
@@ -68,7 +73,7 @@ public final class ClosedCPP<T> {
 
     private final Double lowerBoundCost;
 
-    public Double getLowerBoundCost() {
+    private Double getLowerBoundCost() {
         return this.lowerBoundCost;
     }
 
@@ -82,27 +87,23 @@ public final class ClosedCPP<T> {
         return cost;
     }
 
-    private Double upperBoundCost = null;
-
-    public Double getUpperBoundCost() {
-        if (this.upperBoundCost == null)
-            this.upperBoundCost = computeCost(this.getTraversalByEdge());
-        return this.upperBoundCost;
-    }
-
-    public Double getExtraCost() {
-        return this.getUpperBoundCost() - this.getLowerBoundCost();
-    }
-
     private static <T> UndirectedGraph<T> buildResidualGraph(final UndirectedGraph<T> originalGraph, final Set<T> oddVertices) {
         final UndirectedGraph.Builder<T> residualGraphBuilder = new UndirectedGraph.Builder<T>(oddVertices.size());
+        final Set<WeightedEdge<T>> edges = Sets.newHashSet();
         for (final T endPoint1 : oddVertices)
             for (final T endPoint2 : oddVertices)
                 if (!endPoint1.equals(endPoint2)) { // TODO contains(u, v, w)
                     final Path<T> shortestPath = originalGraph.getShortestPathBetween(endPoint1, endPoint2);
                     final WeightedEdge<T> edge = WeightedEdge.from(endPoint1, endPoint2, shortestPath.getWeight());
-                    if (!residualGraphBuilder.contains(edge)) residualGraphBuilder.addEdge(edge);
+                    //if (!residualGraphBuilder.contains(edge)) residualGraphBuilder.addEdge(edge);
+                    if (!edges.contains(edges)) edges.add(edge);
                 }
+
+        final List<WeightedEdge<T>> sortedEdges = Lists.newArrayList(edges);
+        Collections.sort(sortedEdges);
+        for (final WeightedEdge<T> weightedEdge : sortedEdges)
+            residualGraphBuilder.addEdge(weightedEdge);
+
         return residualGraphBuilder.build();
     }
 
@@ -124,13 +125,14 @@ public final class ClosedCPP<T> {
         return map;
     }
 
-    private Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final UndirectedGraph<T> graph) { // TODO ? réduire les noeuds de type corner
+    private static <T> Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final MatchingAlgorithm matchingAlgorithm, final UndirectedGraph<T> graph) {
 
         final Map<T, Integer> nodesWithOddDegree = graph.getNodesWithOddDegree();
         Preconditions.checkState(nodesWithOddDegree.size() % 2 == 0, "Number of odd vertices should be even.");
 
-        final NodeOfDegree1Pruning<T> nodeOfDegree1Pruning = NodeOfDegree1Pruning.from(this.nodeDegreeFunctions);
+        final NodeOfDegree1Pruning<T> nodeOfDegree1Pruning = NodeOfDegree1Pruning.from(graph);
         final Set<T> remainingOddVertices = nodeOfDegree1Pruning.getRemainingOddVertices();
+
         Preconditions.checkState(remainingOddVertices.size() % 2 == 0, "Number of remaining odd vertices should be even.");
 
         final Map<WeightedEdge<T>, Integer> eulerization;
@@ -142,8 +144,9 @@ public final class ClosedCPP<T> {
                     eulerization.put(graph.getEdge(endPoint1, endPoint2), 1);
         }
         else {
-            final Match<T> matching = this.matchingAlgorithm.from(buildResidualGraph(graph, remainingOddVertices));
-            eulerization = computeTraversalByEdge(graph, matching.getMatches());
+            matchingAlgorithm.setOriginalGraph(graph); // TODO !! virer ce  quick & dirty fix
+            final Matches<T> matches = matchingAlgorithm.from(buildResidualGraph(graph, remainingOddVertices));
+            eulerization = computeTraversalByEdge(graph, matches.get());
         }
 
         final Builder<WeightedEdge<T>, Integer> builder = new ImmutableMap.Builder<WeightedEdge<T>, Integer>();
@@ -157,11 +160,66 @@ public final class ClosedCPP<T> {
         return builder.build();
     }
 
-    private Map<WeightedEdge<T>, Integer> traversalByEdge = null;
+    /*
+    private Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final UndirectedGraph<T> graph) { // TODO ? réduire les noeuds de type corner
 
-    public Map<WeightedEdge<T>, Integer> getTraversalByEdge() {
-        if (this.traversalByEdge == null) this.traversalByEdge = this.computeOptimalEulerization(this.getGraph());
-        return this.traversalByEdge;
+        final Map<T, Integer> nodesWithOddDegree = graph.getNodesWithOddDegree();
+        Preconditions.checkState(nodesWithOddDegree.size() % 2 == 0, "Number of odd vertices should be even.");
+
+        final NodeOfDegree1Pruning<T> nodeOfDegree1Pruning = NodeOfDegree1Pruning.from(this.nodeDegreeFunctions);
+        final Set<T> remainingOddVertices = nodeOfDegree1Pruning.getRemainingOddVertices();
+        //final Set<T> remainingOddVertices = nodesWithOddDegree.keySet();
+
+        //System.out.println(nodesWithOddDegree.keySet());
+        //System.out.println(nodeOfDegree1Pruning.getRemainingOddVertices());
+
+        Preconditions.checkState(remainingOddVertices.size() % 2 == 0, "Number of remaining odd vertices should be even.");
+
+        //System.out.println(this.lowerBoundCost);
+        //System.out.println(remainingOddVertices);
+
+        final Map<WeightedEdge<T>, Integer> eulerization;
+
+        if (remainingOddVertices.isEmpty()) {
+            eulerization = Maps.newHashMap();
+            for (final T endPoint1 : graph)
+                for (final T endPoint2 : graph.getEndPoints(endPoint1))
+                    eulerization.put(graph.getEdge(endPoint1, endPoint2), 1);
+        }
+        else {
+            //this.matchingAlgorithm.setOriginalGraph(graph);
+            final Matches<T> matches = this.matchingAlgorithm.from(buildResidualGraph(graph, remainingOddVertices));
+            for (final Entry<T, T> entry : matches) {
+                //System.out.println(entry);
+            }
+            eulerization = computeTraversalByEdge(graph, matches.get());
+        }
+
+        final Builder<WeightedEdge<T>, Integer> builder = new ImmutableMap.Builder<WeightedEdge<T>, Integer>();
+        final Set<WeightedEdge<T>> doubledEdges = nodeOfDegree1Pruning.getDoubledEdges();
+        for (final Entry<WeightedEdge<T>, Integer> entry : eulerization.entrySet()) {
+            final WeightedEdge<T> edge = entry.getKey();
+            if (doubledEdges.contains(edge)) builder.put(edge, 2);
+            else builder.put(entry);
+        }
+
+        //builder.putAll(eulerization);
+
+        return builder.build();
+    }
+    */
+
+    private volatile Map<WeightedEdge<T>, Integer> traversalByEdge = null;
+
+    private Map<WeightedEdge<T>, Integer> getTraversalByEdge() {
+        Map<WeightedEdge<T>, Integer> value = this.traversalByEdge;
+        if (value == null) {
+            synchronized (this) {
+                if ((value = this.traversalByEdge) == null)
+                    this.traversalByEdge = value = computeOptimalEulerization(this.getMatchingAlgorithm(), this.getGraph());
+            }
+        }
+        return value;
     }
 
     private final MatchingAlgorithm matchingAlgorithm;
@@ -170,25 +228,20 @@ public final class ClosedCPP<T> {
         return this.matchingAlgorithm;
     }
 
-    private final NodeDegreeFunctions<T> nodeDegreeFunctions;
-
-    private ClosedCPPSolution<T> solution = null;
-
     private ClosedCPP(final UndirectedGraph<T> graph, final MatchingAlgorithm matchingAlgorithm) {
         this.graph = graph;
         this.matchingAlgorithm = matchingAlgorithm;
-        double lowerBoundCost = 0;
-        for (final T MazeNode : this.graph)
-            for (final T connectedMazeNode : this.graph.getEndPoints(MazeNode))
-                lowerBoundCost += this.graph.getEdge(MazeNode, connectedMazeNode).getWeight();
-        this.lowerBoundCost = lowerBoundCost / 2; // TODO exposer un set of edges immutable depuis le graphe
 
-        this.nodeDegreeFunctions = NodeDegreeFunctions.from(this.getGraph()); // TODO à revoir
+        // TODO à revoir
+        double lowerBoundCost = 0;
+        for (final WeightedEdge<T> edge : this.graph.getSetOfEdges())
+            lowerBoundCost += edge.getWeight();
+        this.lowerBoundCost = lowerBoundCost;
     }
 
     public ClosedCPPSolution<T> solve() {
-        if (this.solution == null) this.solution = ClosedCPPSolution.from(this);
-        return this.solution;
+        final Map<WeightedEdge<T>, Integer> traversalByEdge = this.getTraversalByEdge();
+        return new ClosedCPPSolution<T>(this.matchingAlgorithm, this.graph, traversalByEdge, this.getLowerBoundCost(), computeCost(traversalByEdge)); // TODO à revoir
     }
 
 }

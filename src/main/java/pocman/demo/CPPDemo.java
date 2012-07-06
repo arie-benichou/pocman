@@ -18,18 +18,18 @@
 package pocman.demo;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import pocman.cpp.ClosedCPP;
 import pocman.cpp.ClosedCPPSolution;
 import pocman.cpp.EulerianTrail;
 import pocman.cpp.OpenCPP;
 import pocman.cpp.OpenCPPSolution;
+import pocman.game.Move;
 import pocman.matching.MatchingAlgorithm;
 import pocman.maze.Maze;
 import pocman.maze.MazeNode;
 import pocman.maze.Tile;
-import pocman.view.MazeView;
+import pocman.view.MazeAsBoardView;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
@@ -46,25 +46,55 @@ public class CPPDemo {
         this.matchingAlgorithm = matchingAlgorithm;
     }
 
-    private OpenCPPSolution<MazeNode> solve(final ClosedCPPSolution<MazeNode> closedCPPSolution, final MazeNode node) {
-        return OpenCPP.from(closedCPPSolution).solveFrom(node);
-    }
-
-    public OpenCPPSolution<MazeNode> solve(final Maze maze, final int pocManPosition) {
-        return OpenCPP.from(maze, this.matchingAlgorithm).solveFrom(maze.getNode(pocManPosition));
+    public OpenCPPSolution<MazeNode> solve(final ClosedCPPSolution<MazeNode> closedCPPSolution, final MazeNode mazeNode) {
+        //return OpenCPP.from(maze, this.matchingAlgorithm).solveFrom(maze.getNode(pocManPosition));
+        final OpenCPP<MazeNode> openCPP = OpenCPP.from(closedCPPSolution);
+        final OpenCPPSolution<MazeNode> openCPPSolution = openCPP.solveFrom(mazeNode);
+        return openCPPSolution;
     }
 
     public ClosedCPPSolution<MazeNode> solve(final Maze maze) {
-        return ClosedCPP.from(maze, this.matchingAlgorithm).solve();
+        final ClosedCPP<MazeNode> closedCPP = ClosedCPP.from(maze, this.matchingAlgorithm);
+        final ClosedCPPSolution<MazeNode> closedCPPSolution = closedCPP.solve();
+        //final double upperBoundCost = closedCPPSolution.getUpperBoundCost();
+        return closedCPPSolution;
+    }
+
+    private Move findMove(final MazeNode endPoint1, final MazeNode endPoint2) {
+        final int kDelta = endPoint2.getId() - endPoint1.getId();
+        if (Math.abs(kDelta) % Move.GO_UP.getDelta() == 0) return kDelta < 0 ? Move.GO_UP : Move.GO_DOWN;
+        return kDelta < 0 ? Move.GO_LEFT : Move.GO_RIGHT;
     }
 
     // TODO pouvoir afficher les traces
     private void debug(final Maze maze, final List<MazeNode> trail, final long laps) throws InterruptedException {
-        final MazeView view = new MazeView();
-        for (final MazeNode MazeNode : trail) {
-            System.out.println(view.renderAsBoard(maze, MazeNode.getId()));
-            Thread.sleep(laps);
+
+        final char[] board = maze.getBoard().toCharArray();
+        final MazeAsBoardView view = new MazeAsBoardView();
+
+        MazeNode parentNode = trail.get(0);
+        board[parentNode.getId()] = Tile.POCMAN.toCharacter();
+
+        System.out.println(Move.GO_NOWHERE);
+        System.out.println(view.render(board));
+
+        final int n = trail.size();
+        for (int i = 1; i < n; ++i) {
+            final MazeNode childNode = trail.get(i);
+            final Move move = this.findMove(parentNode, childNode);
+            MazeNode node = parentNode;
+            while (!node.equals(childNode)) {
+                node = maze.getNode(node.getId() + move.getDelta());
+                board[node.getId() + move.getOpposite().getDelta()] = move.toString().charAt(0);
+                board[node.getId()] = Tile.POCMAN.toCharacter();
+                //board[node.getId()] = move.toString().charAt(0);
+                //System.out.println(move);
+                System.out.println(view.render(board));
+                Thread.sleep(laps);
+            }
+            parentNode = childNode;
         }
+
     }
 
     public static void main(final String[] args) throws InterruptedException {
@@ -73,8 +103,8 @@ public class CPPDemo {
 
         final CPPDemo that = new CPPDemo(MATCHING_ALGORITHM_1);
 
-        for (final String level : Mazes.LEVELS) {
-
+        for (String level : Mazes.LEVELS) {
+            level = Mazes.LEVELS[3];
             final int pocManPosition = level.indexOf(Tile.POCMAN.toCharacter());
             Preconditions.checkState(pocManPosition > -1, "POCMAN POSITION NOT FOUND !");
             final char[] data = level.toCharArray();
@@ -93,8 +123,9 @@ public class CPPDemo {
 
             that.debug(maze, closedTrail, 160);
             System.out.println(closedCPPSolution);
-            Thread.sleep(1000);
+            Thread.sleep(2000);
 
+            /*
             stopwatch.start();
             final OpenCPPSolution<MazeNode> openCPPSolution = that.solve(closedCPPSolution, maze.getNode(pocManPosition));
             stopwatch.stop();
@@ -104,12 +135,29 @@ public class CPPDemo {
                     openCPPSolution.getTraversalByEdge(),
                     openCPPSolution.getEndPoint());
 
-            that.debug(maze, trail, 320);
-            System.out.println(openCPPSolution);
-            Thread.sleep(1000);
+            that.debug(maze, trail, 160);
+            */
 
+            break;
         }
 
-        System.out.println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS.toString());
+        /*
+        stopwatch.start();
+        final OpenCPPSolution<MazeNode> openCPPSolution = that.solve(closedCPPSolution, maze.getNode(pocManPosition));
+        stopwatch.stop();
+
+        final List<MazeNode> trail = EulerianTrail.from(
+                openCPPSolution.getGraph(),
+                openCPPSolution.getTraversalByEdge(),
+                openCPPSolution.getEndPoint());
+
+        that.debug(maze, trail, 320);
+        System.out.println(openCPPSolution);
+        Thread.sleep(1000);
+        */
+
+        //}
+
+        //System.out.println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS.toString());
     }
 }

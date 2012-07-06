@@ -22,12 +22,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import pocman.graph.Path;
 import pocman.graph.UndirectedGraph;
-import pocman.matching.Match;
+import pocman.graph.WeightedEdge;
+import pocman.graph.functions.NodeDegreeFunctions;
+import pocman.matching.Matches;
 import pocman.matching.MatchingAlgorithm;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 /**
@@ -63,26 +67,112 @@ public final class Matching implements MatchingAlgorithm {
         return true;
     }
 
+    private UndirectedGraph<?> originalGraph;
+
+    private static <T> Map<WeightedEdge<T>, Integer> buildMap(final UndirectedGraph<T> originalGraph) {
+
+        final Set<WeightedEdge<T>> edges = Sets.newHashSet();
+        for (final T vertex : originalGraph)
+            edges.addAll(originalGraph.getEdges(vertex));
+
+        final Map<WeightedEdge<T>, Integer> map = Maps.newHashMap();
+        for (final WeightedEdge<T> edge : edges)
+            map.put(edge, 1);
+
+        final NodeDegreeFunctions<T> nodeDegreeFunctions = NodeDegreeFunctions.from(originalGraph); // TODO
+        final Set<T> nodesWithDegree1 = nodeDegreeFunctions.getNodesWithDegree(1).keySet();
+
+        for (final T t : nodesWithDegree1) {
+            final WeightedEdge<T> endWayEdge = originalGraph.getEdges(t).iterator().next();
+            map.put(endWayEdge, 2);
+        }
+
+        return map;
+    }
+
+    private static <T> Map<WeightedEdge<T>, Integer> eulerize(final UndirectedGraph<T> originalGraph, final Map<T, T> matching) {
+
+        final Map<WeightedEdge<T>, Integer> map = buildMap(originalGraph);
+
+        /*
+        for (final Entry<WeightedEdge<T>, Integer> t : map.entrySet()) {
+            System.out.println(t);
+        }
+        */
+
+        for (final Entry<T, T> entry : matching.entrySet()) {
+            final T endPoint1 = entry.getKey();
+            final T endPoint2 = entry.getValue();
+            final Path<T> path = originalGraph.getShortestPathBetween(endPoint1, endPoint2);
+            for (final WeightedEdge<T> edge : path.getEdges()) {
+                map.put(edge, (map.get(edge) + 1) % 2 == 0 ? 2 : 1);
+                //map.put(edge, 2);
+            }
+        }
+        return map;
+    }
+
+    private static <T> double computeCost(final Map<WeightedEdge<T>, Integer> edgeInstances) {
+        double cost = 0;
+        for (final Entry<WeightedEdge<T>, Integer> entry : edgeInstances.entrySet()) {
+            final WeightedEdge<T> edge = entry.getKey();
+            final Integer k = entry.getValue();
+            cost += k * edge.getWeight();
+        }
+        return cost;
+    }
+
+    // TODO ? pouvoir donner un traversal by edge en option
     @Override
-    //public <T> Match<T> from(final UndirectedGraph<T> originalGraph, final MutableUndirectedGraph<T> residualGraph) {
-    public <T> Match<T> from(final UndirectedGraph<T> residualGraph) {
+    public <T> Matches<T> from(final UndirectedGraph<T> residualGraph) {
+
         final MutableUndirectedGraph<T> mutableResidualGraph = new MutableUndirectedGraph<T>();
+
         for (final T endPoint : residualGraph)
             mutableResidualGraph.addEndPoint(endPoint);
+
         for (final T endPoint1 : residualGraph)
             for (final T endPoint2 : residualGraph.getEndPoints(endPoint1))
                 mutableResidualGraph.addEdge(endPoint1, endPoint2);
-        MutableUndirectedGraph<T> maximumMatching = new MutableUndirectedGraph<T>();
-        Match<T> bestMatch = new Match<T>(new HashMap<T, T>(), Double.POSITIVE_INFINITY);
-        do {
-            final Map<T, T> matching = buildMatchingMap(maximumMatching);
-            final double cost = computeCost(residualGraph, matching);
-            if (Double.compare(cost, bestMatch.getCost()) == -1) bestMatch = new Match<T>(matching, cost);
-            for (final Entry<T, T> entry : matching.entrySet())
-                mutableResidualGraph.removeEdge(entry.getKey(), entry.getValue());
-            maximumMatching = EdmondsAlgorithm.maximumMatching(mutableResidualGraph);
+
+        return this.bestMatching(residualGraph, mutableResidualGraph, new Matches<T>(new HashMap<T, T>(), Double.POSITIVE_INFINITY), 0);
+    }
+
+    private <T> Matches<T> bestMatching( // TODO à revoir...
+            final UndirectedGraph<T> residualGraph,
+            final MutableUndirectedGraph<T> mutableResidualGraph,
+            Matches<T> bestMatch,
+            final int level) {
+
+        //System.out.println(level);
+
+        final MutableUndirectedGraph<T> maximumMatching = EdmondsAlgorithm.maximumMatching(mutableResidualGraph);
+
+        if (!isPerfect(maximumMatching)) return bestMatch;
+
+        final Map<T, T> matching = buildMatchingMap(maximumMatching);
+
+        //final double cost = computeCost(residualGraph, matching);
+        final double cost = computeCost(eulerize((UndirectedGraph<T>) this.originalGraph, matching));
+
+        System.err.println(cost + " | " + bestMatch.getCost());
+        if (Double.compare(cost, bestMatch.getCost()) == -1) bestMatch = new Matches<T>(matching, cost);
+
+        for (final Entry<T, T> entry : matching.entrySet()) {
+
+            final MutableUndirectedGraph<T> nextMutableResidualGraph = new MutableUndirectedGraph<T>(mutableResidualGraph);
+            nextMutableResidualGraph.removeEdge(entry.getKey(), entry.getValue());
+
+            //System.out.println(entry.getKey() + "-" + entry.getValue());
+
+            bestMatch = this.bestMatching(residualGraph, nextMutableResidualGraph, bestMatch, level + 1);
         }
-        while (isPerfect(maximumMatching));
+
         return bestMatch;
+    }
+
+    @Override
+    public <T> void setOriginalGraph(final UndirectedGraph<T> graph) {
+        this.originalGraph = graph;
     }
 }

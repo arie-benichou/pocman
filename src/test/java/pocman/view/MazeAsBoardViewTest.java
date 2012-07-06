@@ -17,13 +17,10 @@
 
 package pocman.view;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Assert;
 import org.junit.Test;
 
 import pocman.maze.Maze;
-import pocman.maze.MazeAsBoard;
 
 public class MazeAsBoardViewTest {
 
@@ -54,6 +51,7 @@ public class MazeAsBoardViewTest {
         new MazeAsBoardView().render(maze);
     }
 
+    /*
     @Test(expected = IllegalArgumentException.class)
     public void testRenderMazeAsBoardIntWithNullReference() {
         new MazeAsBoardView().render(null, 1);
@@ -70,6 +68,7 @@ public class MazeAsBoardViewTest {
         final int nodeId = MazeAsBoard.SIZE;
         new MazeAsBoardView().render(MAZE, nodeId);
     }
+    */
 
     @Test
     public void testRender() {
@@ -78,6 +77,7 @@ public class MazeAsBoardViewTest {
         Assert.assertTrue(new String(MAZE.toCharArray()).equals(rendering.replaceAll("\n", "")));
     }
 
+    /*
     @Test
     public void testRenderMazeAsBoardInt() {
         final int nodeId = MazeAsBoard.SIZE - 1;
@@ -87,5 +87,6 @@ public class MazeAsBoardViewTest {
         charArray[nodeId] = MazeAsBoardView.YOUR_ARE_HERE;
         assertTrue((nodeId + new String(charArray)).equals(rendering.replaceAll("\n", "")));
     }
+    */
 
 }

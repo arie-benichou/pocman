@@ -34,7 +34,7 @@ public final class Matching implements MatchingAlgorithm {
 
     @Override
     //public <T> pocman.matching.Match<T> from(final UndirectedGraph<T> originalGraph, final MutableUndirectedGraph<T> residualGraph) {
-    public <T> pocman.matching.Match<T> from(final UndirectedGraph<T> residualGraph) {
+    public <T> pocman.matching.Matches<T> from(final UndirectedGraph<T> residualGraph) {
 
         final int order = residualGraph.getOrder();
 
@@ -68,7 +68,7 @@ public final class Matching implements MatchingAlgorithm {
             cost += matrix[i][j];
         }
 
-        return new pocman.matching.Match<T>(matches, cost);
+        return new pocman.matching.Matches<T>(matches, cost);
     }
 
 }

@@ -26,7 +26,7 @@ public class MazeAsBoardView {
 
     public static final char YOUR_ARE_HERE = '⬤';
 
-    String render(final char[] charArray) {
+    public String render(final char[] charArray) {
         final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < MazeAsBoard.HEIGHT; ++i) {
             for (int j = 0; j < MazeAsBoard.WIDTH; ++j)
@@ -42,22 +42,19 @@ public class MazeAsBoardView {
     }
 
     /*
-    public String render(final Maze maze, final MazeNode MazeNode) {
+    public String render(final Maze maze, final MazeNode mazeNode) {
         Preconditions.checkArgument(maze != null);
-        final int nodeId = MazeNode.getId();
-        Preconditions.checkArgument(nodeId >= 0 && nodeId < maze.size());
+        Preconditions.checkArgument(mazeNode != null);
+        Preconditions.checkArgument(mazeNode.getId() >= 0 && mazeNode.getId() < maze.size());
         final char[] charArray = maze.toCharArray();
-        charArray[nodeId] = YOUR_ARE_HERE;
-        return nodeId + "\n" + this.render(charArray);
+        charArray[mazeNode.getId()] = YOUR_ARE_HERE;
+        return mazeNode + "\n" + this.render(charArray);
     }
     */
 
-    public String render(final Maze maze, final int nodeId) {
-        Preconditions.checkArgument(maze != null);
-        Preconditions.checkArgument(nodeId >= 0 && nodeId < maze.size());
-        final char[] charArray = maze.toCharArray();
-        charArray[nodeId] = YOUR_ARE_HERE;
-        return nodeId + "\n" + this.render(charArray);
+    public String render(final MazeAsBoard mazeAsBoard) {
+        Preconditions.checkArgument(mazeAsBoard != null);
+        return this.render(mazeAsBoard.toCharArray());
     }
 
 }

@@ -33,11 +33,11 @@ public final class ClosedCPPSolution<T> {
     private final Double upperBoundCost;
     private final MatchingAlgorithm matchingAlgorithm;
 
-    public Double getLowerBoundCost() {
+    public double getLowerBoundCost() {
         return this.lowerBoundCost;
     }
 
-    public Double getUpperBoundCost() {
+    public double getUpperBoundCost() {
         return this.upperBoundCost;
     }
 
@@ -54,13 +54,13 @@ public final class ClosedCPPSolution<T> {
     }
 
     @Override
-    public int hashCode() { // TODO définir à la construction
+    public int hashCode() { // TODO définir à la construction + à revoir
         int hashcode = 17;
         hashcode += this.getTraversalByEdge().hashCode(); // TODO ? sortedMap
         hashcode *= 31;
-        hashcode += this.getUpperBoundCost().hashCode();
+        hashcode += this.getUpperBoundCost();
         hashcode *= 31;
-        hashcode += this.getLowerBoundCost().hashCode();
+        hashcode += this.getLowerBoundCost();
         hashcode *= 31;
         return hashcode;
     }
@@ -76,21 +76,28 @@ public final class ClosedCPPSolution<T> {
         return that.getTraversalByEdge().equals(this.getTraversalByEdge()); // TODO ? comparer uniquement la taille des maps
     }
 
+    /*
     public static <T> ClosedCPPSolution<T> from(final ClosedCPP<T> closedCPP) {
+        final Map<WeightedEdge<T>, Integer> traversalByEdge = closedCPP.getTraversalByEdge();
         return new ClosedCPPSolution<T>(
                 closedCPP.getMatchingAlgorithm(),
                 closedCPP.getGraph(),
-                closedCPP.getTraversalByEdge(),
+                traversalByEdge,
                 closedCPP.getLowerBoundCost(),
                 closedCPP.getUpperBoundCost());
     }
+    */
 
-    private ClosedCPPSolution(final MatchingAlgorithm matchingAlgorithm, final UndirectedGraph<T> graph, final Map<WeightedEdge<T>, Integer> traversalByEdge,
+    public ClosedCPPSolution(
+            final MatchingAlgorithm matchingAlgorithm,
+            final UndirectedGraph<T> graph,
+            final Map<WeightedEdge<T>, Integer> traversalByEdge,
             final Double lowerBoundCost,
             final Double upperBoundCost) {
         this.matchingAlgorithm = matchingAlgorithm;
         this.graph = graph;
         this.traversalByEdge = traversalByEdge;
+        // TODO objet Bound
         this.lowerBoundCost = lowerBoundCost;
         this.upperBoundCost = upperBoundCost;
     }

@@ -112,9 +112,9 @@ public final class OpenCPPSolution<T> {
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
-                .add("MazeNode", this.getEndPoint())
-                .add("Lower-Bound Cost", this.lowerBoundCost)
-                .add("Upper-Bound Cost", this.upperBoundCost)
+                .addValue(this.getEndPoint())
+                .addValue(this.lowerBoundCost)
+                .addValue(this.upperBoundCost)
                 //.add("Extra Cost", this.upperBoundCost - this.lowerBoundCost)
                 //.add("Traversal By Edge", this.traversalByEdge)
                 .toString();

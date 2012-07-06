@@ -17,7 +17,6 @@
 
 package pocman.cpp;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -55,6 +54,7 @@ public class ClosedCPPTest {
         assertTrue(solver instanceof ClosedCPP);
     }
 
+    /*
     @Test
     public void testGetLowerBoundCost1() {
         final UndirectedGraph<String> input = new UndirectedGraph.Builder<String>(2).addEdge("A", "B", 1.0).build();
@@ -79,6 +79,7 @@ public class ClosedCPPTest {
         final ClosedCPP<String> solver = ClosedCPP.from(input);
         assertEquals(2.0, solver.getUpperBoundCost(), 0.1);
     }
+    */
 
     @Test
     public void testSolveNonEulerianGraph() {

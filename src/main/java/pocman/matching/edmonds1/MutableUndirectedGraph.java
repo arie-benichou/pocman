@@ -9,21 +9,34 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import com.google.common.collect.Maps;
+
 /**
  * Ripped from Keith Schwarz (htiek@cs.stanford.edu)
  * http://www.keithschwarz.com/interesting/code/?dir=edmonds-matching
  */
 public final class MutableUndirectedGraph<T> implements Iterable<T> {
 
-    private final Map<T, Set<T>> mGraph = new HashMap<T, Set<T>>();
+    private final Map<T, Set<T>> mGraph;
+
+    public MutableUndirectedGraph() {
+        this.mGraph = new HashMap<T, Set<T>>();
+    }
+
+    public MutableUndirectedGraph(final Map<T, Set<T>> mGraph) {
+        this.mGraph = Maps.newHashMap(mGraph);
+    }
+
+    public MutableUndirectedGraph(final MutableUndirectedGraph<T> mutableResidualGraph) {
+        this(mutableResidualGraph.mGraph);
+    }
 
     public boolean isEmpty() {
         return this.mGraph.isEmpty();
     }
 
     public boolean addEndPoint(final T node) {
-        if (this.mGraph.containsKey(node))
-            return false;
+        if (this.mGraph.containsKey(node)) return false;
         this.mGraph.put(node, new HashSet<T>());
         return true;
     }

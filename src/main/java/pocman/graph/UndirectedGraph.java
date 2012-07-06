@@ -129,7 +129,7 @@ public final class UndirectedGraph<T> implements Iterable<T> {
 
     private Boolean isConnected;
     private Boolean isEulerian;
-    private NodeDegreeFunctions<T> nodeDegreeFunctions;
+    private final Set<WeightedEdge<T>> edgeSet;
 
     @SuppressWarnings("unchecked")
     private Path<T>[][] buildPathMatrix() {
@@ -151,6 +151,7 @@ public final class UndirectedGraph<T> implements Iterable<T> {
 
         this.order = builder.order;
         this.vertices = ImmutableMap.copyOf(builder.vertices);
+        this.edgeSet = ImmutableSet.copyOf(builder.edgeSet);
 
         final ImmutableMap.Builder<T, Set<T>> builder2 = new ImmutableMap.Builder<T, Set<T>>();
         for (final Entry<T, Set<T>> entry : builder.mGraph.entrySet()) {
@@ -234,7 +235,8 @@ public final class UndirectedGraph<T> implements Iterable<T> {
     }
 
     public boolean isConnected() {
-        if (this.isConnected == null) this.isConnected = this.computeIsConnected();
+        //if (this.isConnected == null) // TODO Thread Safe
+        this.isConnected = this.computeIsConnected();
         return this.isConnected;
     }
 
@@ -260,29 +262,42 @@ public final class UndirectedGraph<T> implements Iterable<T> {
         return this.edgesByEndpoint.get(endPoint);
     }
 
-    // TODO : strictly a graph is also eulerian if it has two and only two endpoints having odd degree. 
-    private boolean computeIsEulerian() {
-        for (final T MazeNode : this)
-            if (this.getEndPoints(MazeNode).size() % 2 == 1) return false;
-        return true;
-    }
-
+    // TODO : strictly a graph is ALSO eulerian if it has two and only two endpoints having odd degree.
     public boolean isEulerian() {
-        if (this.isEulerian == null) this.isEulerian = this.computeIsEulerian();
-        return this.isEulerian;
+        final Map<T, Integer> nodesWithOddDegree = this.getNodesWithOddDegree();
+        return nodesWithOddDegree.isEmpty(); // || nodesWithOddDegree.size() == 2;
     }
 
     public int getOrder() {
         return this.order;
     }
 
+    private volatile NodeDegreeFunctions<T> nodeDegreeFunctions = null;
+
     private NodeDegreeFunctions<T> getNodeDegreeFunctions() {
-        if (this.nodeDegreeFunctions == null) this.nodeDegreeFunctions = NodeDegreeFunctions.from(this);
-        return this.nodeDegreeFunctions;
+        NodeDegreeFunctions<T> value = this.nodeDegreeFunctions;
+        if (value == null) {
+            synchronized (this) {
+                if ((value = this.nodeDegreeFunctions) == null) this.nodeDegreeFunctions = value = NodeDegreeFunctions.from(this);
+            }
+        }
+        return value;
     }
 
     public Map<T, Integer> getNodesWithOddDegree() {
         return this.getNodeDegreeFunctions().getNodesWithOddDegree();
+    }
+
+    public Set<WeightedEdge<T>> getSetOfEdges() {
+        return this.edgeSet;
+    }
+
+    public Map<T, Integer> getNodesWithDegree(final int degree) {
+        return this.getNodeDegreeFunctions().getNodesWithDegree(degree);
+    }
+
+    public Map<T, Integer> getDegreeByNode() {
+        return this.getNodeDegreeFunctions().getData();
     }
 
     /*

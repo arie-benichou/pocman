@@ -17,7 +17,7 @@ public class Matching implements MatchingAlgorithm {
 
     @Override
     //public <T> pocman.matching.Match<T> from(final UndirectedGraph<T> originalGraph, final MutableUndirectedGraph<T> residualGraph) {
-    public <T> pocman.matching.Match<T> from(final UndirectedGraph<T> residualGraph) {
+    public <T> pocman.matching.Matches<T> from(final UndirectedGraph<T> residualGraph) {
 
         final int order = residualGraph.getOrder();
         final Map<T, Integer> indexByVertex = Maps.newHashMap();
@@ -55,7 +55,7 @@ public class Matching implements MatchingAlgorithm {
         for (final Map<T, T> entry : map)
             result.putAll(entry);
 
-        return new pocman.matching.Match<T>(result, match.getCost());
+        return new pocman.matching.Matches<T>(result, match.getCost());
 
     }
 

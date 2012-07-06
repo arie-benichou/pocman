@@ -22,7 +22,7 @@ import com.google.common.base.Preconditions;
 // TODO EdgeInterface
 // TODO WeightedEdgeInterface
 // TODO implémenter WeightedEdgeInterface
-public final class WeightedEdge<T> {
+public final class WeightedEdge<T> implements Comparable<WeightedEdge<T>> {
 
     private final T endPoint1;
     private final T endPoint2;
@@ -98,6 +98,11 @@ public final class WeightedEdge<T> {
         sb.append(this.getEndPoint2());
         sb.append(")");
         return sb.toString();
+    }
+
+    @Override
+    public int compareTo(final WeightedEdge<T> that) {
+        return Double.compare(this.getWeight(), that.getWeight());
     }
 
 }

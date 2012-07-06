@@ -202,9 +202,10 @@ public final class OpenCPP<T> {
             stopwatch.start();
             final UndirectedGraph<Box<T>> virtualGraph = this.buildVirtualGraph(boxedGraph, startingMazeNode, oddVertice);
             final ClosedCPP<Box<T>> cppSolver = ClosedCPP.from(virtualGraph);
-            if (cppSolver.getUpperBoundCost() < bestSolution.getUpperBoundCost()) {
-                bestSolution = new OpenCPPSolution<Box<T>>(new Box<T>(oddVertice), virtualGraph, cppSolver.getTraversalByEdge(),
-                        cppSolver.getLowerBoundCost(), cppSolver.getUpperBoundCost());
+            final ClosedCPPSolution<Box<T>> cppSolution = cppSolver.solve();
+            if (cppSolution.getUpperBoundCost() < bestSolution.getUpperBoundCost()) {
+                bestSolution = new OpenCPPSolution<Box<T>>(new Box<T>(oddVertice), virtualGraph, cppSolution.getTraversalByEdge(),
+                        cppSolution.getLowerBoundCost(), cppSolution.getUpperBoundCost());
             }
             /*
             System.out.println();

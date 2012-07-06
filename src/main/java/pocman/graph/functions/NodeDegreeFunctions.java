@@ -22,49 +22,17 @@ import java.util.Map.Entry;
 
 import pocman.graph.UndirectedGraph;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Maps;
 
-// TODO move to package cpp
 public final class NodeDegreeFunctions<T> {
 
-    // TODO Extract to Integers
-    private final static class isEven implements Predicate<Integer> {
-
-        @Override
-        public boolean apply(final Integer integer) {
-            return integer % 2 == 0;
-
-        }
-    }
-
-    // TODO Extract to Integers
-    private final static class isSame implements Predicate<Integer> {
-
-        private final Integer integer;
-
-        public isSame(final int integer) {
-            this.integer = integer;
-        }
-
-        @Override
-        public boolean apply(final Integer integer) {
-            return this.integer.equals(integer);
-
-        }
-    }
-
-    // TODO Extract to Integers
-    private final static Predicate<Integer> IS_EVEN = new isEven();
-
-    // TODO Extract to Integers
-    private final static Predicate<Integer> IS_ODD = Predicates.not(new isEven());
-
     private final UndirectedGraph<T> graph;
-    private Map<T, Integer> data = null;
+
+    public UndirectedGraph<T> getGraph() {
+        return this.graph;
+    }
 
     public static <T> NodeDegreeFunctions<T> from(final UndirectedGraph<T> graph) {
         return new NodeDegreeFunctions<T>(graph);
@@ -74,34 +42,35 @@ public final class NodeDegreeFunctions<T> {
         this.graph = graph;
     }
 
-    public UndirectedGraph<T> getGraph() {
-        return this.graph;
-    }
+    private volatile Map<T, Integer> data = null;
 
-    public void apply() {
-        if (this.data == null) {
-            final Builder<T, Integer> builder = new ImmutableMap.Builder<T, Integer>();
-            for (final T node : this.getGraph())
-                builder.put(node, this.getGraph().getEndPoints(node).size());
-            this.data = builder.build();
-        }
+    private static <T> Map<T, Integer> computeData(final UndirectedGraph<T> graph) {
+        final Builder<T, Integer> builder = new ImmutableMap.Builder<T, Integer>();
+        for (final T node : graph)
+            builder.put(node, graph.getEndPoints(node).size());
+        return builder.build();
     }
 
     public Map<T, Integer> getData() {
-        this.apply();
-        return this.data;
+        Map<T, Integer> value = this.data;
+        if (value == null) {
+            synchronized (this) {
+                if ((value = this.data) == null) this.data = value = NodeDegreeFunctions.computeData(this.graph);
+            }
+        }
+        return value;
     }
 
     public Map<T, Integer> getNodesWithOddDegree() {
-        return Maps.filterValues(this.getData(), IS_ODD);
+        return Maps.filterValues(this.getData(), Integers.Predicates.isOdd());
     }
 
     public Map<T, Integer> getNodesWithEvenDegree() {
-        return Maps.filterValues(this.getData(), IS_EVEN);
+        return Maps.filterValues(this.getData(), Integers.Predicates.isEven());
     }
 
     public Map<T, Integer> getNodesWithDegree(final int degree) {
-        return Maps.filterValues(this.getData(), new isSame(degree));
+        return Maps.filterValues(this.getData(), Integers.Predicates.isSame(degree));
     }
 
     public static void main(final String[] args) {

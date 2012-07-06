@@ -21,10 +21,9 @@ import java.util.Set;
 
 import pocman.game.Move;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSortedSet;
-
-
 
 public final class MazeNode {
 
@@ -134,14 +133,11 @@ public final class MazeNode {
 
     @Override
     public String toString() {
-        /*
         return Objects.toStringHelper(this)
                 .add("id", this.getId())
-                .add("options", this.getOptions())
                 .add("type", this.getType())
+                .add("options", this.getOptions())
                 .toString();
-        */
-        return this.getId() + "";
     }
 
 }
