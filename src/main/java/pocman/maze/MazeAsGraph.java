@@ -21,17 +21,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import pocman.game.Move;
+import pocman.graph.Path;
 import pocman.graph.UndirectedGraph;
 import pocman.graph.WeightedEdge;
 import pocman.maze.MazeNode.Type;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
@@ -43,15 +48,17 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
         return this.board;
     }
 
-    private final Map<Integer, MazeNode> walkableGameTiles;
+    private final Map<Integer, MazeNode> mazeNodes;
 
     public Map<Integer, MazeNode> getWalkableNodes() {
-        return this.walkableGameTiles;
+        return this.mazeNodes;
     }
 
     private final UndirectedGraph<MazeNode> graph;
 
     private final int numberOfVertices;
+
+    private final SortedMap<Integer, List<WeightedEdge<MazeNode>>> edgeByNodeId;
 
     public int getNumberOfVertices() {
         return this.numberOfVertices;
@@ -65,7 +72,7 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
         return from(MazeAsBoard.from(data));
     }
 
-    private Map<Integer, MazeNode> buildVertices(final MazeAsBoard board) {
+    private Map<Integer, MazeNode> buildMazeNodes(final MazeAsBoard board) {
         final Builder<Integer, MazeNode> builder = new ImmutableSortedMap.Builder<Integer, MazeNode>(Ordering.natural());
         for (int i = 0; i < MazeAsBoard.SIZE; ++i) {
             final HashSet<Move> options = Sets.newHashSet();
@@ -82,9 +89,10 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
         return builder.build();
     }
 
-    private Map<Integer, List<WeightedEdge<MazeNode>>> buildEdges(final Map<Integer, MazeNode> gameTiles) {
-        final Builder<Integer, List<WeightedEdge<MazeNode>>> builder =
-                                                                       new ImmutableSortedMap.Builder<Integer, List<WeightedEdge<MazeNode>>>(Ordering.natural());
+    private SortedMap<Integer, List<WeightedEdge<MazeNode>>> buildEdges(final Map<Integer, MazeNode> gameTiles) {
+        final ImmutableSortedMap.Builder<Integer, List<WeightedEdge<MazeNode>>> builder =
+                                                                                          new ImmutableSortedMap.Builder<Integer, List<WeightedEdge<MazeNode>>>(
+                                                                                                  Ordering.natural());
         for (final MazeNode gameTile : gameTiles.values()) {
             if (!gameTile.is(Type.STREET)) {
                 final List<WeightedEdge<MazeNode>> edges = Lists.newArrayList();
@@ -93,7 +101,7 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
                     MazeNode currentTile = gameTile;
                     while ((currentTile = gameTiles.get(currentTile.getId() + move.getDelta())).is(Type.STREET))
                         betweenTiles.add(currentTile.getId());
-                    edges.add(WeightedEdge.from(gameTile, currentTile, betweenTiles.size()));
+                    edges.add(WeightedEdge.from(gameTile, currentTile, betweenTiles.size() + 1));
                 }
                 builder.put(gameTile.getId(), ImmutableList.copyOf(edges));
             }
@@ -103,11 +111,11 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
 
     private MazeAsGraph(final MazeAsBoard board) {
         this.board = board;
-        this.walkableGameTiles = this.buildVertices(this.getBoard());
-        final Map<Integer, List<WeightedEdge<MazeNode>>> edgeByNodeId = this.buildEdges(this.getWalkableNodes());
-        this.numberOfVertices = edgeByNodeId.size();
+        this.mazeNodes = this.buildMazeNodes(this.getBoard());
+        this.edgeByNodeId = this.buildEdges(this.getWalkableNodes());
+        this.numberOfVertices = this.edgeByNodeId.size();
         final UndirectedGraph.Builder<MazeNode> graphBuilder = new UndirectedGraph.Builder<MazeNode>(this.getNumberOfVertices());
-        for (final Entry<Integer, List<WeightedEdge<MazeNode>>> entry : edgeByNodeId.entrySet())
+        for (final Entry<Integer, List<WeightedEdge<MazeNode>>> entry : this.edgeByNodeId.entrySet())
             for (final WeightedEdge<MazeNode> edge : entry.getValue())
                 if (!graphBuilder.contains(edge)) graphBuilder.addEdge(edge);
         this.graph = graphBuilder.build();
@@ -117,13 +125,74 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
         return !this.graph.isConnected();
     }
 
-    public MazeNode getNodeById(final int nodeId) {
+    public MazeNode getNode(final int nodeId) {
         return this.getWalkableNodes().get(nodeId); // TODO
     }
+
+    public MazeNode getNearestGraphNode(final int mazeNodeId) {
+        Preconditions.checkArgument(this.getBoard().getCell(mazeNodeId).isWalkable(), "Node must be walkable");
+        final Map<Direction, Tile> neighbours = this.board.getNeighbours(mazeNodeId);
+        final List<Move> moves = Lists.newArrayList();
+        for (final Entry<Direction, Tile> entry : neighbours.entrySet())
+            if (entry.getValue().isWalkable()) moves.add(Move.from(entry.getKey()));
+        final TreeMap<Integer, Move> data = Maps.newTreeMap();
+        for (final Move move : moves) {
+            int k = 0;
+            while (this.getNode(mazeNodeId + k * move.getDelta()).is(Type.STREET))
+                ++k;
+            data.put(k, move);
+        }
+        System.out.println(data);
+        final Entry<Integer, Move> firstEntry = data.firstEntry();
+        final MazeNode nearestGraphNode = this.getNode(mazeNodeId + firstEntry.getKey() * firstEntry.getValue().getDelta());
+        return nearestGraphNode;
+    }
+
+    public Map<MazeNode, Entry<Move, Integer>> getGraphNodeRange(final MazeNode mazeNode) {
+        Preconditions.checkArgument(this.getBoard().getCell(mazeNode.getId()).isWalkable(), "Node must be walkable");
+        final Map<Direction, Tile> neighbours = this.board.getNeighbours(mazeNode.getId());
+        final List<Move> moves = Lists.newArrayList();
+        for (final Entry<Direction, Tile> entry : neighbours.entrySet())
+            if (entry.getValue().isWalkable()) moves.add(Move.from(entry.getKey()));
+        final Map<Move, Integer> data = Maps.newHashMap();
+        for (final Move move : moves) {
+            int k = 0;
+            while (this.getNode(mazeNode.getId() + k * move.getDelta()).is(Type.STREET))
+                ++k;
+            data.put(move, k);
+        }
+        System.out.println(data);
+        final Map<MazeNode, Entry<Move, Integer>> range = Maps.newHashMap();
+        for (final Entry<Move, Integer> entry : data.entrySet()) {
+            final Move move = entry.getKey();
+            final Integer distance = entry.getValue();
+            final MazeNode node = this.getNode(mazeNode.getId() + distance * move.getDelta());
+            range.put(node, entry);
+        }
+        return range;
+    }
+
+    /*
+    public MazeNode getNearestNodeBefore(final MazeNode mazeNode) {
+        return this.mazeNodes.get(this.edgeByNodeId.headMap(mazeNode.getId()).lastKey());
+    }
+
+    public MazeNode getNearestNodeAfter(final MazeNode mazeNode) {
+        return this.mazeNodes.get(this.edgeByNodeId.tailMap(mazeNode.getId()).lastKey());
+    }
+    */
 
     @Override
     public UndirectedGraph<MazeNode> get() {
         return this.graph;
+    }
+
+    public Path<MazeNode> getShortestPath(final MazeNode endPoint1, final MazeNode endPoint2) {
+        return this.graph.getShortestPathBetween(endPoint1, endPoint2);
+    }
+
+    public int getNumberOfMazeNodes() {
+        return this.mazeNodes.size();
     }
 
 }

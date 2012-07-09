@@ -17,9 +17,13 @@
 
 package pocman.maze;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
+import pocman.game.Move;
+import pocman.graph.Path;
 import pocman.graph.UndirectedGraph;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 
 public final class Maze implements Supplier<UndirectedGraph<MazeNode>> {
@@ -27,7 +31,7 @@ public final class Maze implements Supplier<UndirectedGraph<MazeNode>> {
     private final MazeAsGraph mazeAsGraph;
 
     private static Maze from(final MazeAsGraph mazeAsGraph) {
-        Preconditions.checkState(!mazeAsGraph.hasIsland(), "Maze must not contain island.");
+        //Preconditions.checkState(!mazeAsGraph.hasIsland(), "Maze must not contain island."); // TODO à faire lors du CPP
         return new Maze(mazeAsGraph);
     }
 
@@ -48,7 +52,7 @@ public final class Maze implements Supplier<UndirectedGraph<MazeNode>> {
     }
 
     public MazeNode getNode(final int nodeId) {
-        return this.mazeAsGraph.getNodeById(nodeId);
+        return this.mazeAsGraph.getNode(nodeId);
     }
 
     public int size() {
@@ -70,6 +74,41 @@ public final class Maze implements Supplier<UndirectedGraph<MazeNode>> {
 
     public MazeAsBoard getBoard() {
         return this.mazeAsGraph.getBoard();
+    }
+
+    // TODO ? retourner un MazePath (liste de vertices)
+    public Path<MazeNode> getShortestPath(final MazeNode endPoint1, final MazeNode endPoint2) {
+        return this.mazeAsGraph.getShortestPath(endPoint1, endPoint2);
+    }
+
+    public MazeNode getNearestGraphNode(final int mazeNodeId) {
+        return this.mazeAsGraph.getNearestGraphNode(mazeNodeId);
+    }
+
+    public MazeNode getNearestGraphNode(final MazeNode mazeNode) {
+        return this.getNearestGraphNode(mazeNode.getId());
+    }
+
+    public MazeNode find(final Tile tile, final MazeNode mazeNode) {
+        final int nodeId = this.getBoard().find(tile, mazeNode.getId() + 1);
+        return this.getNode(nodeId);
+    }
+
+    public MazeNode find(final Tile tile) {
+        final int nodeId = this.getBoard().find(tile);
+        return this.getNode(nodeId);
+    }
+
+    public Map<MazeNode, Entry<Move, Integer>> getGraphNodeRange(final MazeNode mazeNode) {
+        return this.mazeAsGraph.getGraphNodeRange(mazeNode);
+    }
+
+    public boolean hasIsland() {
+        return this.mazeAsGraph.hasIsland();
+    }
+
+    public int getNumberOfMazeNodes() {
+        return this.mazeAsGraph.getNumberOfMazeNodes();
     }
 
 }

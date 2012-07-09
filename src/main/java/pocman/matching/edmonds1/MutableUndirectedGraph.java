@@ -23,6 +23,10 @@ public final class MutableUndirectedGraph<T> implements Iterable<T> {
         this.mGraph = new HashMap<T, Set<T>>();
     }
 
+    public int getOrder() {
+        return this.mGraph.size();
+    }
+
     public MutableUndirectedGraph(final Map<T, Set<T>> mGraph) {
         this.mGraph = Maps.newHashMap(mGraph);
     }

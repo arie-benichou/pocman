@@ -71,4 +71,10 @@ public final class Matching implements MatchingAlgorithm {
         return new pocman.matching.Matches<T>(matches, cost);
     }
 
+    @Override
+    public <T> void setOriginalGraph(final UndirectedGraph<T> graph) {
+        // TODO Auto-generated method stub
+
+    }
+
 }

@@ -59,4 +59,10 @@ public class Matching implements MatchingAlgorithm {
 
     }
 
+    @Override
+    public <T> void setOriginalGraph(final UndirectedGraph<T> graph) {
+        // TODO Auto-generated method stub
+
+    }
+
 }

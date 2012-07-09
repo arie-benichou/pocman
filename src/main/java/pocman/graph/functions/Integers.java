@@ -7,11 +7,11 @@ public final class Integers {
 
     public static class Predicates {
 
-        private final static Predicate<Integer> IS_EVEN = new isEven();
+        private final static Predicate<Integer> IS_EVEN = new IsEven();
 
-        private final static Predicate<Integer> IS_ODD = com.google.common.base.Predicates.not(new isEven());
+        private final static Predicate<Integer> IS_ODD = com.google.common.base.Predicates.not(new IsEven());
 
-        private final static class isEven implements Predicate<Integer> {
+        private final static class IsEven implements Predicate<Integer> {
 
             @Override
             public boolean apply(final Integer integer) {
@@ -19,11 +19,11 @@ public final class Integers {
             }
         }
 
-        private final static class isSame implements Predicate<Integer> {
+        private final static class Is implements Predicate<Integer> {
 
             private final Integer integer;
 
-            public isSame(final int integer) {
+            public Is(final int integer) {
                 this.integer = integer;
             }
 
@@ -42,8 +42,12 @@ public final class Integers {
             return IS_ODD;
         }
 
-        public static Predicate<Integer> isSame(final int integer) {
-            return new isSame(integer);
+        public static Predicate<Integer> is(final int integer) {
+            return new Is(integer);
+        }
+
+        public static Predicate<Integer> isNot(final int integer) {
+            return com.google.common.base.Predicates.not(new Is(integer));
         }
 
     }

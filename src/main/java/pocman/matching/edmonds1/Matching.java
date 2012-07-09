@@ -17,7 +17,9 @@
 
 package pocman.matching.edmonds1;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -31,6 +33,7 @@ import pocman.matching.MatchingAlgorithm;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -80,7 +83,7 @@ public final class Matching implements MatchingAlgorithm {
             map.put(edge, 1);
 
         final NodeDegreeFunctions<T> nodeDegreeFunctions = NodeDegreeFunctions.from(originalGraph); // TODO
-        final Set<T> nodesWithDegree1 = nodeDegreeFunctions.getNodesWithDegree(1).keySet();
+        final Set<T> nodesWithDegree1 = nodeDegreeFunctions.getNodesHavingDegree(1).keySet();
 
         for (final T t : nodesWithDegree1) {
             final WeightedEdge<T> endWayEdge = originalGraph.getEdges(t).iterator().next();
@@ -122,23 +125,53 @@ public final class Matching implements MatchingAlgorithm {
         return cost;
     }
 
-    // TODO ? pouvoir donner un traversal by edge en option
-    @Override
-    public <T> Matches<T> from(final UndirectedGraph<T> residualGraph) {
-
+    private <T> MutableUndirectedGraph<T> copyGraph(final UndirectedGraph<T> residualGraph) {
         final MutableUndirectedGraph<T> mutableResidualGraph = new MutableUndirectedGraph<T>();
-
         for (final T endPoint : residualGraph)
             mutableResidualGraph.addEndPoint(endPoint);
-
         for (final T endPoint1 : residualGraph)
             for (final T endPoint2 : residualGraph.getEndPoints(endPoint1))
                 mutableResidualGraph.addEdge(endPoint1, endPoint2);
+        return mutableResidualGraph;
+    }
 
+    private <T> UndirectedGraph<T> copyGraph(final MutableUndirectedGraph<T> graph) {
+        final UndirectedGraph.Builder<T> residualGraphBuilder = new UndirectedGraph.Builder<T>(graph.getOrder());
+        final Set<WeightedEdge<T>> edges = Sets.newHashSet();
+        for (final T endPoint1 : graph)
+            for (final T endPoint2 : graph)
+                if (!endPoint1.equals(endPoint2)) { // TODO contains(u, v, w)
+                    final WeightedEdge<T> edge = WeightedEdge.from(endPoint1, endPoint2, 1);
+                    if (!edges.contains(edges)) edges.add(edge);
+                }
+        final List<WeightedEdge<T>> sortedEdges = Lists.newArrayList(edges);
+        Collections.sort(sortedEdges);
+        for (final WeightedEdge<T> weightedEdge : sortedEdges)
+            residualGraphBuilder.addEdge(weightedEdge);
+        return residualGraphBuilder.build();
+    }
+
+    // TODO ? pouvoir donner un traversal by edge en option
+    @Override
+    public <T> Matches<T> from(final UndirectedGraph<T> residualGraph) {
+        final MutableUndirectedGraph<T> mutableResidualGraph = this.copyGraph(residualGraph);
         return this.bestMatching(residualGraph, mutableResidualGraph, new Matches<T>(new HashMap<T, T>(), Double.POSITIVE_INFINITY), 0);
     }
 
-    private <T> Matches<T> bestMatching( // TODO à revoir...
+    public <T> void enumeration(final UndirectedGraph<T> residualGraph, final int i) {
+        System.out.println(i);
+        final MutableUndirectedGraph<T> mutableResidualGraph = this.copyGraph(residualGraph);
+        MutableUndirectedGraph<T> maximumMatching;
+        maximumMatching = EdmondsAlgorithm.maximumMatching(mutableResidualGraph);
+        if (!isPerfect(maximumMatching)) return;
+        final MutableUndirectedGraph<T> mutableUndirectedGraph = new MutableUndirectedGraph<T>(mutableResidualGraph);
+        final T node = maximumMatching.iterator().next();
+        mutableUndirectedGraph.removeEdge(node, maximumMatching.getEndPoints(node).iterator().next());
+        final UndirectedGraph<T> nextResidualGraph = this.copyGraph(mutableUndirectedGraph);
+        this.enumeration(nextResidualGraph, i + 1);
+    }
+
+    private <T> Matches<T> _bestMatching( // TODO à revoir...
             final UndirectedGraph<T> residualGraph,
             final MutableUndirectedGraph<T> mutableResidualGraph,
             Matches<T> bestMatch,
@@ -150,24 +183,75 @@ public final class Matching implements MatchingAlgorithm {
 
         if (!isPerfect(maximumMatching)) return bestMatch;
 
+        /*
+        System.out.println();
+        System.out.println("Perfect Matching");
+        for (final T t : maximumMatching) {
+            System.out.println(t + " - " + maximumMatching.getEndPoints(t).iterator().next());
+        }
+        System.out.println();
+        */
+
         final Map<T, T> matching = buildMatchingMap(maximumMatching);
 
+        System.out.println();
+        System.out.println("Perfect Matching");
+        for (final Entry<T, T> entry : matching.entrySet()) {
+            System.out.println(entry);
+        }
+        System.out.println();
+
         //final double cost = computeCost(residualGraph, matching);
+        //System.out.println(cost);
         final double cost = computeCost(eulerize((UndirectedGraph<T>) this.originalGraph, matching));
 
-        System.err.println(cost + " | " + bestMatch.getCost());
+        //System.err.println(cost + " | " + bestMatch.getCost());
         if (Double.compare(cost, bestMatch.getCost()) == -1) bestMatch = new Matches<T>(matching, cost);
 
         for (final Entry<T, T> entry : matching.entrySet()) {
-
             final MutableUndirectedGraph<T> nextMutableResidualGraph = new MutableUndirectedGraph<T>(mutableResidualGraph);
             nextMutableResidualGraph.removeEdge(entry.getKey(), entry.getValue());
-
-            //System.out.println(entry.getKey() + "-" + entry.getValue());
-
             bestMatch = this.bestMatching(residualGraph, nextMutableResidualGraph, bestMatch, level + 1);
         }
 
+        /*
+        final MutableUndirectedGraph<T> nextMutableResidualGraph = new MutableUndirectedGraph<T>(mutableResidualGraph);
+        for (final Entry<T, T> entry : matching.entrySet()) {
+            nextMutableResidualGraph.removeEdge(entry.getKey(), entry.getValue());
+        }
+        bestMatch = this.bestMatching(residualGraph, nextMutableResidualGraph, bestMatch, level + 1);
+        */
+
+        /*
+        System.out.println("ok");
+        final MutableUndirectedGraph<T> nextMutableResidualGraph = new MutableUndirectedGraph<T>(mutableResidualGraph);
+        for (final Entry<T, T> entry : matching.entrySet())
+            nextMutableResidualGraph.removeEdge(entry.getKey(), entry.getValue());
+        bestMatch = this.bestMatching(residualGraph, nextMutableResidualGraph, bestMatch, level + 1);
+        */
+
+        return bestMatch;
+    }
+
+    private <T> Matches<T> bestMatching(
+            final UndirectedGraph<T> residualGraph,
+            final MutableUndirectedGraph<T> mutableResidualGraph,
+            Matches<T> bestMatch,
+            final int level) {
+
+        final MutableUndirectedGraph<T> maximumMatching = EdmondsAlgorithm.maximumMatching(mutableResidualGraph);
+        if (!isPerfect(maximumMatching)) return bestMatch;
+        final Map<T, T> matching = buildMatchingMap(maximumMatching);
+        //final double cost = computeCost(residualGraph, matching);
+        final double cost = computeCost(eulerize((UndirectedGraph<T>) this.originalGraph, matching));
+        if (Double.compare(cost, bestMatch.getCost()) == -1) bestMatch = new Matches<T>(matching, cost);
+        final MutableUndirectedGraph<T> nextMutableResidualGraph = new MutableUndirectedGraph<T>(mutableResidualGraph);
+        for (final Entry<T, T> entry : matching.entrySet()) {
+            //final MutableUndirectedGraph<T> nextMutableResidualGraph = new MutableUndirectedGraph<T>(mutableResidualGraph);
+            nextMutableResidualGraph.removeEdge(entry.getKey(), entry.getValue());
+            //bestMatch = this.bestMatching(residualGraph, nextMutableResidualGraph, bestMatch, level + 1);
+        }
+        bestMatch = this.bestMatching(residualGraph, nextMutableResidualGraph, bestMatch, level + 1);
         return bestMatch;
     }
 

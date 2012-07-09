@@ -56,6 +56,7 @@ public final class Path<T> implements Comparable<Path<T>> {
         return (17 + hashCode1 * hashCode2) * (hashCode1 + hashCode2);
     }
 
+    /*
     private Path(final double cost) {
         this.edges = ImmutableList.of();
         this.numberOfEdges = 0;
@@ -63,6 +64,7 @@ public final class Path<T> implements Comparable<Path<T>> {
         this.lastEdge = null;
         this.hashCode = 0;
     }
+    */
 
     private Path(final WeightedEdge<T> edge) {
         Preconditions.checkNotNull(edge);
@@ -176,11 +178,15 @@ public final class Path<T> implements Comparable<Path<T>> {
         //System.out.println("\nAdding: " + path + "\nTo: " + this + "\n");
         Preconditions.checkArgument(path != null);
 
+        /*
         if (path.isNull() && this.isNull())
             return new Path<T>(this.getWeight() + path.getWeight());
+        */
 
+        /*
         if (path.isNull())
             return new Path<T>(this.getEdges(), this.getWeight() + path.getWeight(), this.getLastEdge());
+        */
 
         if (this.isNull())
             return new Path<T>(path.getEdges(), path.getWeight() + this.getWeight(), path.getLastEdge());
@@ -226,7 +232,7 @@ public final class Path<T> implements Comparable<Path<T>> {
     }
 
     @SuppressWarnings("unchecked")
-    // TODO
+    // TODO à revoir
     @Override
     public boolean equals(final Object object) {
         if (object == null) return false;

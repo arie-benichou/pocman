@@ -51,10 +51,13 @@ public class UndirectedGraphBuilderTest {
     public void testContains() {
         final Builder<String> builder = new UndirectedGraph.Builder<String>(2);
         final WeightedEdge<String> edge = WeightedEdge.from("A", "B", 1.0);
+
         assertFalse(builder.contains(edge));
         assertEquals(builder, builder.addEdge("A", "B", 1.0));
         assertTrue(builder.contains(edge));
+
         assertTrue(builder.contains(edge.reverse()));
+
         assertTrue(builder.contains(WeightedEdge.from("B", "A", 1.0)));
         assertFalse(builder.contains(WeightedEdge.from("A", "C", 1.0)));
     }

@@ -44,7 +44,7 @@ public final class WeightedEdge<T> implements Comparable<WeightedEdge<T>> {
         Preconditions.checkArgument(endPoint2 != null);
         //Preconditions.checkArgument(!endPoint1.equals(endPoint2));
 
-        Preconditions.checkArgument(weight >= 0.0);
+        Preconditions.checkArgument(weight >= 0);
         this.endPoint1 = endPoint1;
         this.endPoint2 = endPoint2;
         this.weight = weight;
@@ -64,7 +64,7 @@ public final class WeightedEdge<T> implements Comparable<WeightedEdge<T>> {
         return this.endPoint2;
     }
 
-    public double getWeight() {
+    public Double getWeight() {
         return this.weight;
     }
 
@@ -75,6 +75,16 @@ public final class WeightedEdge<T> implements Comparable<WeightedEdge<T>> {
     @Override
     public int hashCode() {
         return this.hashCode;
+        /*
+        int hashCode = 17;
+        hashCode += this.getEndPoint1().hashCode();
+        hashCode *= 31;
+        hashCode += this.getEndPoint2().hashCode();
+        hashCode *= 31;
+        hashCode += this.getWeight().hashCode();
+        hashCode *= 31;
+        return hashCode;
+        */
     }
 
     @Override
@@ -85,7 +95,14 @@ public final class WeightedEdge<T> implements Comparable<WeightedEdge<T>> {
         final Object endPoint = ((WeightedEdge<?>) object).getEndPoint1();
         if (!endPoint.getClass().equals(this.getEndPoint1().getClass())) return false;
         final WeightedEdge<?> that = (WeightedEdge<?>) object;
-        return this.hashCode() == that.hashCode() && this.getWeight() == that.getWeight();
+        //return this.hashCode() == that.hashCode() && this.getWeight() == that.getWeight();
+        if (!this.getWeight().equals(that.getWeight())) return false;
+        final boolean hasSameHashCode = this.hashCode() == that.hashCode();
+        boolean isEqal = false;
+        if (this.getEndPoint1().equals(that.getEndPoint1()) && this.getEndPoint2().equals(that.getEndPoint2())) isEqal = true;
+        if (this.getEndPoint1().equals(that.getEndPoint2()) && this.getEndPoint2().equals(that.getEndPoint1())) isEqal = true;
+        Preconditions.checkState(hasSameHashCode == isEqal);
+        return isEqal;
     }
 
     @Override

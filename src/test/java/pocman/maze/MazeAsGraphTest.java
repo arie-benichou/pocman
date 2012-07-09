@@ -87,15 +87,15 @@ public class MazeAsGraphTest {
     public void testGetNodeById() {
         final MazeNode node1 = MazeNode.from(1, Sets.newHashSet(Move.from(Direction.RIGHT)));
         final MazeNode node2 = MazeNode.from(2, Sets.newHashSet(Move.from(Direction.LEFT)));
-        assertTrue(this.mazeAsGraph.getNodeById(1).equals(node1));
-        assertTrue(this.mazeAsGraph.getNodeById(2).equals(node2));
+        assertTrue(this.mazeAsGraph.getNode(1).equals(node1));
+        assertTrue(this.mazeAsGraph.getNode(2).equals(node2));
     }
 
     @Test
     public void testGetWalkableNodes() {
         final Map<Integer, MazeNode> expected = Maps.newHashMap();
-        expected.put(1, this.mazeAsGraph.getNodeById(1));
-        expected.put(2, this.mazeAsGraph.getNodeById(2));
+        expected.put(1, this.mazeAsGraph.getNode(1));
+        expected.put(2, this.mazeAsGraph.getNode(2));
         assertTrue(expected.equals(this.mazeAsGraph.getWalkableNodes()));
     }
 

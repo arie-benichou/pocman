@@ -69,8 +69,12 @@ public final class NodeDegreeFunctions<T> {
         return Maps.filterValues(this.getData(), Integers.Predicates.isEven());
     }
 
-    public Map<T, Integer> getNodesWithDegree(final int degree) {
-        return Maps.filterValues(this.getData(), Integers.Predicates.isSame(degree));
+    public Map<T, Integer> getNodesHavingDegree(final int degree) {
+        return Maps.filterValues(this.getData(), Integers.Predicates.is(degree));
+    }
+
+    public Map<T, Integer> getNodesNotHavingDegree(final int degree) {
+        return Maps.filterValues(this.getData(), Integers.Predicates.isNot(degree));
     }
 
     public static void main(final String[] args) {
@@ -102,7 +106,7 @@ public final class NodeDegreeFunctions<T> {
 
         System.out.println();
 
-        final Map<String, Integer> nodesOfDegree1 = nodeDegreeVisitor.getNodesWithDegree(1);
+        final Map<String, Integer> nodesOfDegree1 = nodeDegreeVisitor.getNodesHavingDegree(1);
         for (final Entry<String, Integer> entry : nodesOfDegree1.entrySet())
             System.out.println(entry);
     }

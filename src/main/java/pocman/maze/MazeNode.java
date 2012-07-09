@@ -25,6 +25,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSortedSet;
 
+// TODO ? faire une distinction entre MazeNode et GraphNode
 public final class MazeNode {
 
     public enum Type {
@@ -86,13 +87,14 @@ public final class MazeNode {
         this.type = Type.from(options);
 
         int hashcode = 17;
+        hashcode += id;
+        hashcode *= 31;
         hashcode += this.type.name().hashCode();
         hashcode *= 31;
         hashcode += this.options.hashCode();
         hashcode *= 31;
-        hashcode += id;
-        hashcode *= 31;
-        this.hashCode = hashcode;
+        //this.hashCode = hashcode;
+        this.hashCode = id;
 
     }
 
@@ -128,7 +130,10 @@ public final class MazeNode {
         if (object == this) return true;
         if (!(object instanceof MazeNode)) return false;
         final MazeNode that = (MazeNode) object;
-        return this.id == that.id && this.type.equals(that.type) && this.options.equals(that.options);
+        final boolean hasSameHashCode = this.hashCode() == that.hashCode();
+        final boolean isEqal = this.id == that.id && this.type.equals(that.type) && this.options.equals(that.options);
+        Preconditions.checkState(hasSameHashCode == isEqal, "Both nodes does not come from the same maze.");
+        return isEqal;
     }
 
     @Override

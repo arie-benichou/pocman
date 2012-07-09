@@ -58,7 +58,7 @@ public final class NodeOfDegree1Pruning<T> {
         final Map<T, Integer> deltas = Maps.newHashMap();
 
         final ImmutableSet.Builder<WeightedEdge<T>> doubledEdgesbuilder = new ImmutableSet.Builder<WeightedEdge<T>>();
-        final Map<T, Integer> nodesWithDegree1 = graph.getNodesWithDegree(1);
+        final Map<T, Integer> nodesWithDegree1 = graph.getNodesHavingDegree(1);
         final List<T> nodes = Lists.newArrayList(nodesWithDegree1.keySet());
         for (final T node : nodes) {
             final WeightedEdge<T> edge = graph.getEdges(node).iterator().next();

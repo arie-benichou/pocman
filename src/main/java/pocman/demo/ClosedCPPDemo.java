@@ -34,7 +34,7 @@ import pocman.view.MazeAsBoardView;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 
-public class CPPDemo {
+public class ClosedCPPDemo {
 
     public final static MatchingAlgorithm MATCHING_ALGORITHM_1 = new pocman.matching.edmonds1.Matching();
     public final static MatchingAlgorithm MATCHING_ALGORITHM_2 = new pocman.matching.edmonds2.Matching();
@@ -42,7 +42,7 @@ public class CPPDemo {
 
     private final MatchingAlgorithm matchingAlgorithm;
 
-    public CPPDemo(final MatchingAlgorithm matchingAlgorithm) {
+    public ClosedCPPDemo(final MatchingAlgorithm matchingAlgorithm) {
         this.matchingAlgorithm = matchingAlgorithm;
     }
 
@@ -66,7 +66,6 @@ public class CPPDemo {
         return kDelta < 0 ? Move.GO_LEFT : Move.GO_RIGHT;
     }
 
-    // TODO pouvoir afficher les traces
     private void debug(final Maze maze, final List<MazeNode> trail, final long laps) throws InterruptedException {
 
         final char[] board = maze.getBoard().toCharArray();
@@ -101,10 +100,10 @@ public class CPPDemo {
 
         final Stopwatch stopwatch = new Stopwatch();
 
-        final CPPDemo that = new CPPDemo(MATCHING_ALGORITHM_1);
+        final ClosedCPPDemo that = new ClosedCPPDemo(MATCHING_ALGORITHM_1);
 
-        for (String level : Mazes.LEVELS) {
-            level = Mazes.LEVELS[3];
+        for (final String level : Mazes.LEVELS) {
+            //level = Mazes.LEVELS[6];
             final int pocManPosition = level.indexOf(Tile.POCMAN.toCharacter());
             Preconditions.checkState(pocManPosition > -1, "POCMAN POSITION NOT FOUND !");
             final char[] data = level.toCharArray();
@@ -138,7 +137,7 @@ public class CPPDemo {
             that.debug(maze, trail, 160);
             */
 
-            break;
+            //break;
         }
 
         /*

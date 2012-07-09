@@ -17,7 +17,6 @@
 
 package pocman.maze;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +30,8 @@ public final class MazeAsBoard
     public final static int HEIGHT = 19;
     public final static int SIZE = WIDTH * HEIGHT;
 
-    private final Tile[][] board = new Tile[HEIGHT][];
+    private final String data;
+    private final Tile[][] tileBoard = new Tile[HEIGHT][WIDTH];
 
     public static MazeAsBoard from(final String data) {
         return new MazeAsBoard(data);
@@ -42,15 +42,28 @@ public final class MazeAsBoard
     }
 
     private MazeAsBoard(final String data) {
-        for (int i = 0; i < HEIGHT; ++i) {
-            this.board[i] = new Tile[WIDTH];
+        this.data = data;
+        for (int i = 0; i < HEIGHT; ++i)
             for (int j = 0; j < WIDTH; ++j)
-                this.board[i][j] = Tiles.fromCharacter(data.charAt(WIDTH * i + j));
-        }
+                this.tileBoard[i][j] = Tiles.fromCharacter(data.charAt(WIDTH * i + j));
+    }
+
+    /*
+    public int contains(final Tile tile) {
+        return this.data.contains(tile.toCharacter());
+    }
+    */
+
+    public int find(final Tile tile, final int index) {
+        return this.data.indexOf(tile.toCharacter(), index);
+    }
+
+    public int find(final Tile tile) {
+        return this.find(tile, 0);
     }
 
     public Tile getCell(final int y, final int x) {
-        return this.board[y][x];
+        return this.tileBoard[y][x];
     }
 
     public Tile getCell(final int index) {
@@ -93,7 +106,8 @@ public final class MazeAsBoard
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(this.board);
+        //return Arrays.hashCode(this.tileBoard);
+        return this.data.hashCode();
     }
 
     @Override
@@ -105,7 +119,7 @@ public final class MazeAsBoard
         if (that.hashCode() != this.hashCode()) return false;
         for (int i = 0; i < HEIGHT; ++i)
             for (int j = 0; j < WIDTH; ++j)
-                if (this.board[i][j] != that.board[i][j]) return false;
+                if (this.tileBoard[i][j] != that.tileBoard[i][j]) return false;
         return true;
     }
 

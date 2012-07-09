@@ -34,6 +34,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+// TODO ? vertex x = null edge of (x,x)
 public final class UndirectedGraph<T> implements Iterable<T> {
 
     private static final double INFINITY = Double.POSITIVE_INFINITY / 2;
@@ -122,13 +123,13 @@ public final class UndirectedGraph<T> implements Iterable<T> {
     private final int order;
     private final Map<T, Integer> vertices;
     private final Map<T, Set<WeightedEdge<T>>> edgesByEndpoint;
-    private final Map<Integer, WeightedEdge<T>> edgeByHashCode;
+    //private final Map<Integer, WeightedEdge<T>> edgeByHashCode;
     private final Map<T, Set<T>> mGraph;
     private final Map<Integer, T> verticeByIndex;
     private final Path<T>[][] shortestPaths;
 
     private Boolean isConnected;
-    private Boolean isEulerian;
+    //private Boolean isEulerian;
     private final Set<WeightedEdge<T>> edgeSet;
 
     @SuppressWarnings("unchecked")
@@ -175,6 +176,7 @@ public final class UndirectedGraph<T> implements Iterable<T> {
             edgesByMazeNodeBuilder.put(entry.getKey(), ImmutableSet.copyOf(entry.getValue()));
         this.edgesByEndpoint = edgesByMazeNodeBuilder.build();
 
+        /*
         this.edgeByHashCode = Maps.newHashMap();
         for (final T MazeNode : this.vertices.keySet()) {
             for (final WeightedEdge<T> weightedEdge : this.getEdges(MazeNode)) {
@@ -182,6 +184,7 @@ public final class UndirectedGraph<T> implements Iterable<T> {
                 this.edgeByHashCode.put(hashCode, weightedEdge);
             }
         }
+        */
 
         this.verticeByIndex = Maps.newHashMap();
         for (final Entry<T, Integer> entry : this.vertices.entrySet())
@@ -253,8 +256,22 @@ public final class UndirectedGraph<T> implements Iterable<T> {
     public WeightedEdge<T> getEdge(final T endPoint1, final T endPoint2) {
         this.checkEndPoint(endPoint1);
         this.checkEndPoint(endPoint2);
-        final Integer hashCode = WeightedEdge.hashCode(endPoint1.hashCode(), endPoint2.hashCode());
-        return this.edgeByHashCode.get(hashCode);
+        //final Integer hashCode = WeightedEdge.hashCode(endPoint1.hashCode(), endPoint2.hashCode());
+        //return this.edgeByHashCode.get(hashCode);
+        final Set<WeightedEdge<T>> edges = this.getEdges(endPoint1);
+        WeightedEdge<T> edge = null;
+        for (final WeightedEdge<T> weightedEdge : edges) {
+            if (weightedEdge.getEndPoint1().equals(endPoint2)) {
+                edge = weightedEdge;
+                break;
+            }
+            if (weightedEdge.getEndPoint2().equals(endPoint2)) {
+                edge = weightedEdge;
+                break;
+            }
+        }
+        Preconditions.checkState(edge != null);
+        return edge;
     }
 
     public Set<WeightedEdge<T>> getEdges(final T endPoint) {
@@ -292,8 +309,12 @@ public final class UndirectedGraph<T> implements Iterable<T> {
         return this.edgeSet;
     }
 
-    public Map<T, Integer> getNodesWithDegree(final int degree) {
-        return this.getNodeDegreeFunctions().getNodesWithDegree(degree);
+    public Map<T, Integer> getNodesHavingDegree(final int degree) {
+        return this.getNodeDegreeFunctions().getNodesHavingDegree(degree);
+    }
+
+    public Map<T, Integer> getNodesNotHavingDegree(final int degree) {
+        return this.getNodeDegreeFunctions().getNodesNotHavingDegree(degree);
     }
 
     public Map<T, Integer> getDegreeByNode() {
