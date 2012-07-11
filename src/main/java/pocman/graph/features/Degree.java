@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package pocman.graph.functions;
+package pocman.graph.features;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -26,7 +26,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Maps;
 
-public final class NodeDegreeFunctions<T> {
+public final class Degree<T> {
 
     private final UndirectedGraph<T> graph;
 
@@ -34,11 +34,12 @@ public final class NodeDegreeFunctions<T> {
         return this.graph;
     }
 
-    public static <T> NodeDegreeFunctions<T> from(final UndirectedGraph<T> graph) {
-        return new NodeDegreeFunctions<T>(graph);
+    public static <T> Degree<T> from(final UndirectedGraph<T> graph) {
+        return new Degree<T>(graph);
     }
 
-    private NodeDegreeFunctions(final UndirectedGraph<T> graph) {
+    private Degree(final UndirectedGraph<T> graph) {
+        //System.out.println(this.getClass().getSimpleName());
         this.graph = graph;
     }
 
@@ -47,7 +48,7 @@ public final class NodeDegreeFunctions<T> {
     private static <T> Map<T, Integer> computeData(final UndirectedGraph<T> graph) {
         final Builder<T, Integer> builder = new ImmutableMap.Builder<T, Integer>();
         for (final T node : graph)
-            builder.put(node, graph.getEndPoints(node).size());
+            builder.put(node, graph.getConnectedEndPoints(node).size());
         return builder.build();
     }
 
@@ -55,10 +56,14 @@ public final class NodeDegreeFunctions<T> {
         Map<T, Integer> value = this.data;
         if (value == null) {
             synchronized (this) {
-                if ((value = this.data) == null) this.data = value = NodeDegreeFunctions.computeData(this.graph);
+                if ((value = this.data) == null) this.data = value = Degree.computeData(this.graph);
             }
         }
         return value;
+    }
+
+    public Map<T, Integer> getDegreeByNode() {
+        return this.getData();
     }
 
     public Map<T, Integer> getNodesWithOddDegree() {
@@ -86,7 +91,7 @@ public final class NodeDegreeFunctions<T> {
                 .addEdge("A", "D", 1.0)
                 .build();
 
-        final NodeDegreeFunctions<String> nodeDegreeVisitor = NodeDegreeFunctions.from(graph);
+        final Degree<String> nodeDegreeVisitor = Degree.from(graph);
 
         final Map<String, Integer> data = nodeDegreeVisitor.getData();
         for (final Entry<String, Integer> entry : data.entrySet())
@@ -109,6 +114,12 @@ public final class NodeDegreeFunctions<T> {
         final Map<String, Integer> nodesOfDegree1 = nodeDegreeVisitor.getNodesHavingDegree(1);
         for (final Entry<String, Integer> entry : nodesOfDegree1.entrySet())
             System.out.println(entry);
+    }
+
+    // TODO : strictly a graph is ALSO eulerian if it has two and only two endpoints having odd degree.
+    public boolean isEulerian() {
+        final Map<T, Integer> nodesWithOddDegree = this.getNodesWithOddDegree();
+        return nodesWithOddDegree.isEmpty(); // || nodesWithOddDegree.size() == 2;
     }
 
 }

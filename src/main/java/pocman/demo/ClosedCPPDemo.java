@@ -18,6 +18,7 @@
 package pocman.demo;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import pocman.cpp.ClosedCPP;
 import pocman.cpp.ClosedCPPSolution;
@@ -122,7 +123,7 @@ public class ClosedCPPDemo {
 
             that.debug(maze, closedTrail, 160);
             System.out.println(closedCPPSolution);
-            Thread.sleep(2000);
+            Thread.sleep(1000);
 
             /*
             stopwatch.start();
@@ -157,6 +158,6 @@ public class ClosedCPPDemo {
 
         //}
 
-        //System.out.println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS.toString());
+        System.out.println(stopwatch.elapsedTime(TimeUnit.MILLISECONDS) + " " + TimeUnit.MILLISECONDS.toString());
     }
 }

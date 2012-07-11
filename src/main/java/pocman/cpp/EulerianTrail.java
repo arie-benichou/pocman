@@ -37,7 +37,7 @@ public final class EulerianTrail {
      */
     private static <T> List<T> from(final T startingMazeNode, final Map<WeightedEdge<T>, Integer> traversalByEdge, final UndirectedGraph<T> graph) {
         final Builder<T> trailBuilder = new ImmutableList.Builder<T>();
-        for (final WeightedEdge<T> edge : graph.getEdges(startingMazeNode)) {
+        for (final WeightedEdge<T> edge : graph.getEdgesFrom(startingMazeNode)) {
             final Integer integer = traversalByEdge.get(edge);
             if (integer > 0) {
                 traversalByEdge.put(edge, integer - 1);

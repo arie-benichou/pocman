@@ -69,19 +69,19 @@ public class UndirectedGraphTest {
 
         final UndirectedGraph<String> graph = builder.build();
 
-        assertFalse(graph.contains("C", "B"));
-        assertTrue(graph.contains("A", "B"));
+        assertFalse(graph.hasEdge("C", "B"));
+        assertTrue(graph.hasEdge("A", "B"));
 
-        assertFalse(graph.contains("B", "C"));
-        assertTrue(graph.contains("B", "A"));
+        assertFalse(graph.hasEdge("B", "C"));
+        assertTrue(graph.hasEdge("B", "A"));
     }
 
     @Test
     public void testLegalGetConnectedVerticeSet() {
-        assertFalse(this.graph.getEndPoints("A").equals(Sets.newHashSet("C")));
-        assertTrue(this.graph.getEndPoints("A").equals(Sets.newHashSet("B")));
-        assertFalse(this.graph.getEndPoints("B").equals(Sets.newHashSet("C")));
-        assertTrue(this.graph.getEndPoints("B").equals(Sets.newHashSet("A")));
+        assertFalse(this.graph.getConnectedEndPoints("A").equals(Sets.newHashSet("C")));
+        assertTrue(this.graph.getConnectedEndPoints("A").equals(Sets.newHashSet("B")));
+        assertFalse(this.graph.getConnectedEndPoints("B").equals(Sets.newHashSet("C")));
+        assertTrue(this.graph.getConnectedEndPoints("B").equals(Sets.newHashSet("A")));
     }
 
     @Test
@@ -115,7 +115,7 @@ public class UndirectedGraphTest {
     public void testLegalGetEdges1() {
         final Set<WeightedEdge<String>> expectedEdges = Sets.newHashSet();
         expectedEdges.add(WeightedEdge.from("A", "B", 1.0));
-        final Set<WeightedEdge<String>> actualEdges = this.graph.getEdges("A");
+        final Set<WeightedEdge<String>> actualEdges = this.graph.getEdgesFrom("A");
         assertTrue(actualEdges.equals(expectedEdges));
     }
 
@@ -123,18 +123,30 @@ public class UndirectedGraphTest {
     public void testLegalGetEdges2() {
         final Set<WeightedEdge<String>> expectedEdges = Sets.newHashSet();
         expectedEdges.add(WeightedEdge.from("B", "A", 1.0));
-        final Set<WeightedEdge<String>> actualEdges = this.graph.getEdges("A");
+        final Set<WeightedEdge<String>> actualEdges = this.graph.getEdgesFrom("A");
         assertTrue(actualEdges.equals(expectedEdges));
     }
 
     @Test
     public void testContainsT() {
-        assertFalse(this.graph.contains("C"));
-        assertTrue(this.graph.contains("A"));
-        assertTrue(this.graph.contains("B"));
-        assertFalse(this.graph.contains(""));
+        assertFalse(this.graph.hasEndPoint("C"));
+        assertTrue(this.graph.hasEndPoint("A"));
+        assertTrue(this.graph.hasEndPoint("B"));
+        assertFalse(this.graph.hasEndPoint(""));
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void testGetFeature() {
+        this.graph.getFeature(Feature.NONE);
+    }
+
+    @Test
+    public void testGetDegreeFeature() {
+        final Object feature = this.graph.getFeature(Feature.DEGREE);
+        assertTrue(feature.getClass().equals(Feature.DEGREE.getFeatureClass()));
+    }
+
+    /*
     @Test
     public void testIsConnected1() {
         final Builder<String> builder = new UndirectedGraph.Builder<String>(4);
@@ -153,7 +165,7 @@ public class UndirectedGraphTest {
         assertTrue(graph.isConnected());
         assertTrue(graph.isConnected());
     }
-
+    
     @Test
     public void testIsEulerian1() {
         final Builder<String> builder = new UndirectedGraph.Builder<String>(3);
@@ -208,6 +220,7 @@ public class UndirectedGraphTest {
         final Path<String> actualPath = graph.getShortestPathBetween("A", "C");
         assertTrue(actualPath.equals(expectedPath));
     }
+    */
 
     /*
     @Test

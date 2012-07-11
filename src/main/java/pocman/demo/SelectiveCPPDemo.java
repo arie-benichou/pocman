@@ -10,7 +10,10 @@ import pocman.cpp.EulerianTrail;
 import pocman.cpp.OpenCPP;
 import pocman.cpp.OpenCPPSolution;
 import pocman.game.Move;
+import pocman.graph.Feature;
+import pocman.graph.UndirectedGraph;
 import pocman.graph.WeightedEdge;
+import pocman.graph.features.Degree;
 import pocman.maze.Maze;
 import pocman.maze.MazeNode;
 import pocman.maze.Tile;
@@ -77,8 +80,6 @@ public class SelectiveCPPDemo {
 
         System.out.println(view.render(maze));
 
-        //System.exit(0);
-
         final OpenCPP<MazeNode> openCPP = OpenCPP.from(maze);
         final OpenCPPSolution<MazeNode> solution = openCPP.solveFrom(maze.getNearestGraphNode(maze.find(Tile.COIN)));
         final List<MazeNode> trail = EulerianTrail.from(maze, solution.getTraversalByEdge(), solution.getEndPoint());
@@ -111,11 +112,13 @@ public class SelectiveCPPDemo {
     }
 
     private static Maze apply1(final Maze maze) {
-        final Map<MazeNode, Integer> nodesWithDegree = maze.get().getNodesHavingDegree(1);
+        final UndirectedGraph<MazeNode> graph = maze.get();
+        final Degree<MazeNode> degreeFeature = graph.getFeature(Feature.DEGREE);
+        final Map<MazeNode, Integer> nodesWithDegree = degreeFeature.getNodesHavingDegree(1);
         final char[] board = maze.getBoard().toCharArray();
         for (final Entry<MazeNode, Integer> entry : nodesWithDegree.entrySet()) {
             final MazeNode endPoint = entry.getKey();
-            final WeightedEdge<MazeNode> edge = maze.get().getEdges(endPoint).iterator().next();
+            final WeightedEdge<MazeNode> edge = maze.get().getEdgesFrom(endPoint).iterator().next();
             final int dist = Math.abs(edge.getEndPoint2().getId() - edge.getEndPoint1().getId());
             final Move move = endPoint.getOptions().iterator().next();
             final int from = endPoint.getId();
@@ -141,8 +144,11 @@ public class SelectiveCPPDemo {
 
         final char[] board = maze.getBoard().toCharArray();
 
+        final UndirectedGraph<MazeNode> graph = maze.get();
+        final Degree<MazeNode> degreeFeature = graph.getFeature(Feature.DEGREE);
+
         // TODO ? sélectionner uniquement les corners
-        final Map<MazeNode, Integer> nodesNotHavingDegreeOf1 = maze.get().getNodesNotHavingDegree(1);
+        final Map<MazeNode, Integer> nodesNotHavingDegreeOf1 = degreeFeature.getNodesNotHavingDegree(1);
 
         Maze bestReducedMaze = maze;
 

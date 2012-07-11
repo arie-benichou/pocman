@@ -20,7 +20,9 @@ package pocman.matching.edmonds2;
 import java.util.List;
 import java.util.Map;
 
+import pocman.graph.Feature;
 import pocman.graph.UndirectedGraph;
+import pocman.graph.features.Routing;
 import pocman.matching.MatchingAlgorithm;
 
 import com.google.common.collect.Lists;
@@ -48,10 +50,12 @@ public final class Matching implements MatchingAlgorithm {
             ++n;
         }
 
+        final Routing<T> pathFeature = residualGraph.getFeature(Feature.ROUTING);
+
         final double[][] matrix = new double[order][order];
         for (int i = 0; i < order; ++i)
             for (int j = 0; j < order; ++j)
-                matrix[i][j] = residualGraph.getShortestPathBetween(vertexByIndex.get(i), vertexByIndex.get(j)).getWeight();
+                matrix[i][j] = pathFeature.getShortestPathBetween(vertexByIndex.get(i), vertexByIndex.get(j)).getWeight();
 
         final WeightedMatchDouble weightedMatch = new WeightedMatchDouble(matrix);
         final int[] mate = weightedMatch.weightedMatch(WeightedMatchDouble.MINIMIZE);

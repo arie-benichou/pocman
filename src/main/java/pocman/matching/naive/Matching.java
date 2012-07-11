@@ -4,7 +4,9 @@ package pocman.matching.naive;
 import java.util.List;
 import java.util.Map;
 
+import pocman.graph.Feature;
 import pocman.graph.UndirectedGraph;
+import pocman.graph.features.Routing;
 import pocman.matching.MatchingAlgorithm;
 import pocman.matching.naive.BranchAndBoundMatching.Match;
 import pocman.matching.naive.BranchAndBoundMatching.Position;
@@ -31,9 +33,12 @@ public class Matching implements MatchingAlgorithm {
         }
 
         final double[][] matrix = new double[order][order];
+
+        final Routing<T> pathFeature = residualGraph.getFeature(Feature.ROUTING);
+
         for (int i = 0; i < order; ++i)
             for (int j = 0; j < order; ++j)
-                matrix[i][j] = residualGraph.getShortestPathBetween(vertexByIndex.get(i), vertexByIndex.get(j)).getWeight();
+                matrix[i][j] = pathFeature.getShortestPathBetween(vertexByIndex.get(i), vertexByIndex.get(j)).getWeight();
 
         final Match match = new BranchAndBoundMatching(matrix).match();
 

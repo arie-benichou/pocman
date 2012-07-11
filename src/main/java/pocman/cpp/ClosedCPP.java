@@ -25,9 +25,13 @@ import java.util.Set;
 
 import javax.annotation.concurrent.ThreadSafe;
 
+import pocman.graph.Feature;
 import pocman.graph.Path;
 import pocman.graph.UndirectedGraph;
 import pocman.graph.WeightedEdge;
+import pocman.graph.features.Connectivity;
+import pocman.graph.features.Degree;
+import pocman.graph.features.Routing;
 import pocman.matching.Matches;
 import pocman.matching.MatchingAlgorithm;
 
@@ -48,7 +52,8 @@ public final class ClosedCPP<T> {
     public static <T> ClosedCPP<T> from(final UndirectedGraph<T> graph, final MatchingAlgorithm matchingAlgorithm) {
         Preconditions.checkArgument(graph != null);
         Preconditions.checkArgument(matchingAlgorithm != null);
-        Preconditions.checkState(graph.isConnected(), "Graph must be connected.");
+        final Connectivity<T> feature = graph.getFeature(Feature.CONNECTIVITY);
+        Preconditions.checkState(feature.isConnected(), "Graph must be connected.");
         return new ClosedCPP<T>(graph, matchingAlgorithm);
     }
 
@@ -90,10 +95,13 @@ public final class ClosedCPP<T> {
     private static <T> UndirectedGraph<T> buildResidualGraph(final UndirectedGraph<T> originalGraph, final Set<T> oddVertices) {
         final UndirectedGraph.Builder<T> residualGraphBuilder = new UndirectedGraph.Builder<T>(oddVertices.size());
         final Set<WeightedEdge<T>> edges = Sets.newHashSet();
+
+        final Routing<T> pathFeature = originalGraph.getFeature(Feature.ROUTING);
+
         for (final T endPoint1 : oddVertices)
             for (final T endPoint2 : oddVertices)
                 if (!endPoint1.equals(endPoint2)) { // TODO contains(u, v, w)
-                    final Path<T> shortestPath = originalGraph.getShortestPathBetween(endPoint1, endPoint2);
+                    final Path<T> shortestPath = pathFeature.getShortestPathBetween(endPoint1, endPoint2);
                     final WeightedEdge<T> edge = WeightedEdge.from(endPoint1, endPoint2, shortestPath.getWeight());
                     //if (!residualGraphBuilder.contains(edge)) residualGraphBuilder.addEdge(edge);
                     if (!edges.contains(edges)) edges.add(edge);
@@ -110,14 +118,17 @@ public final class ClosedCPP<T> {
     private static <T> Map<WeightedEdge<T>, Integer> computeTraversalByEdge(final UndirectedGraph<T> originalGraph, final Map<T, T> matching) {
         final Set<WeightedEdge<T>> edges = Sets.newHashSet();
         for (final T MazeNode : originalGraph)
-            edges.addAll(originalGraph.getEdges(MazeNode));
+            edges.addAll(originalGraph.getEdgesFrom(MazeNode));
         final Map<WeightedEdge<T>, Integer> map = Maps.newHashMap();
         for (final WeightedEdge<T> edge : edges)
             map.put(edge, 1);
+
+        final Routing<T> pathFeature = originalGraph.getFeature(Feature.ROUTING);
+
         for (final Entry<T, T> entry : matching.entrySet()) {
             final T endPoint1 = entry.getKey();
             final T endPoint2 = entry.getValue();
-            final Path<T> path = originalGraph.getShortestPathBetween(endPoint1, endPoint2);
+            final Path<T> path = pathFeature.getShortestPathBetween(endPoint1, endPoint2);
             for (final WeightedEdge<T> edge : path.getEdges()) {
                 map.put(edge, (map.get(edge) + 1) % 2 == 0 ? 2 : 1);
             }
@@ -127,7 +138,10 @@ public final class ClosedCPP<T> {
 
     private static <T> Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final MatchingAlgorithm matchingAlgorithm, final UndirectedGraph<T> graph) {
 
-        final Map<T, Integer> nodesWithOddDegree = graph.getNodesWithOddDegree();
+        //final DegreeFeature<T> feature = graph.getFeature(Feature.DEGREE, (DegreeFeature<T>) null);
+        final Degree<T> feature = graph.getFeature(Feature.DEGREE);
+
+        final Map<T, Integer> nodesWithOddDegree = feature.getNodesWithOddDegree();
         Preconditions.checkState(nodesWithOddDegree.size() % 2 == 0, "Number of odd vertices should be even.");
 
         final NodeOfDegree1Pruning<T> nodeOfDegree1Pruning = NodeOfDegree1Pruning.from(graph);
@@ -140,7 +154,7 @@ public final class ClosedCPP<T> {
         if (remainingOddVertices.isEmpty()) {
             eulerization = Maps.newHashMap();
             for (final T endPoint1 : graph)
-                for (final T endPoint2 : graph.getEndPoints(endPoint1))
+                for (final T endPoint2 : graph.getConnectedEndPoints(endPoint1))
                     eulerization.put(graph.getEdge(endPoint1, endPoint2), 1);
         }
         else {

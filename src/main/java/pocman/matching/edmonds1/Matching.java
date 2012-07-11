@@ -24,10 +24,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import pocman.graph.Feature;
 import pocman.graph.Path;
 import pocman.graph.UndirectedGraph;
 import pocman.graph.WeightedEdge;
-import pocman.graph.functions.NodeDegreeFunctions;
+import pocman.graph.features.Degree;
+import pocman.graph.features.Routing;
 import pocman.matching.Matches;
 import pocman.matching.MatchingAlgorithm;
 
@@ -58,9 +60,12 @@ public final class Matching implements MatchingAlgorithm {
 
     private static <T> double computeCost(final UndirectedGraph<T> originalGraph, final Map<T, T> matching) {
         if (matching.isEmpty()) return Double.POSITIVE_INFINITY;
+
+        final Routing<T> pathFeature = originalGraph.getFeature(Feature.ROUTING);
+
         double cost = 0;
         for (final Entry<T, T> entry : matching.entrySet())
-            cost += originalGraph.getShortestPathBetween(entry.getKey(), entry.getValue()).getWeight();
+            cost += pathFeature.getShortestPathBetween(entry.getKey(), entry.getValue()).getWeight();
         return cost;
     }
 
@@ -76,17 +81,17 @@ public final class Matching implements MatchingAlgorithm {
 
         final Set<WeightedEdge<T>> edges = Sets.newHashSet();
         for (final T vertex : originalGraph)
-            edges.addAll(originalGraph.getEdges(vertex));
+            edges.addAll(originalGraph.getEdgesFrom(vertex));
 
         final Map<WeightedEdge<T>, Integer> map = Maps.newHashMap();
         for (final WeightedEdge<T> edge : edges)
             map.put(edge, 1);
 
-        final NodeDegreeFunctions<T> nodeDegreeFunctions = NodeDegreeFunctions.from(originalGraph); // TODO
+        final Degree<T> nodeDegreeFunctions = Degree.from(originalGraph); // TODO
         final Set<T> nodesWithDegree1 = nodeDegreeFunctions.getNodesHavingDegree(1).keySet();
 
         for (final T t : nodesWithDegree1) {
-            final WeightedEdge<T> endWayEdge = originalGraph.getEdges(t).iterator().next();
+            final WeightedEdge<T> endWayEdge = originalGraph.getEdgesFrom(t).iterator().next();
             map.put(endWayEdge, 2);
         }
 
@@ -103,10 +108,12 @@ public final class Matching implements MatchingAlgorithm {
         }
         */
 
+        final Routing<T> pathFeature = originalGraph.getFeature(Feature.ROUTING);
+
         for (final Entry<T, T> entry : matching.entrySet()) {
             final T endPoint1 = entry.getKey();
             final T endPoint2 = entry.getValue();
-            final Path<T> path = originalGraph.getShortestPathBetween(endPoint1, endPoint2);
+            final Path<T> path = pathFeature.getShortestPathBetween(endPoint1, endPoint2);
             for (final WeightedEdge<T> edge : path.getEdges()) {
                 map.put(edge, (map.get(edge) + 1) % 2 == 0 ? 2 : 1);
                 //map.put(edge, 2);
@@ -130,7 +137,7 @@ public final class Matching implements MatchingAlgorithm {
         for (final T endPoint : residualGraph)
             mutableResidualGraph.addEndPoint(endPoint);
         for (final T endPoint1 : residualGraph)
-            for (final T endPoint2 : residualGraph.getEndPoints(endPoint1))
+            for (final T endPoint2 : residualGraph.getConnectedEndPoints(endPoint1))
                 mutableResidualGraph.addEdge(endPoint1, endPoint2);
         return mutableResidualGraph;
     }

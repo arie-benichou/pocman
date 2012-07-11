@@ -25,9 +25,12 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import pocman.game.Move;
+import pocman.graph.Feature;
 import pocman.graph.Path;
 import pocman.graph.UndirectedGraph;
 import pocman.graph.WeightedEdge;
+import pocman.graph.features.Connectivity;
+import pocman.graph.features.Routing;
 import pocman.maze.MazeNode.Type;
 
 import com.google.common.base.Preconditions;
@@ -122,7 +125,8 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
     }
 
     public boolean hasIsland() {
-        return !this.graph.isConnected();
+        final Connectivity<MazeNode> connectivityFeature = this.graph.getFeature(Feature.CONNECTIVITY);
+        return !connectivityFeature.isConnected();
     }
 
     public MazeNode getNode(final int nodeId) {
@@ -188,7 +192,8 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
     }
 
     public Path<MazeNode> getShortestPath(final MazeNode endPoint1, final MazeNode endPoint2) {
-        return this.graph.getShortestPathBetween(endPoint1, endPoint2);
+        final Routing<MazeNode> feature = this.graph.getFeature(Feature.ROUTING);
+        return feature.getShortestPathBetween(endPoint1, endPoint2);
     }
 
     public int getNumberOfMazeNodes() {

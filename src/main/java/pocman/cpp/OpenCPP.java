@@ -21,9 +21,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import pocman.graph.Feature;
 import pocman.graph.UndirectedGraph;
 import pocman.graph.UndirectedGraph.Builder;
 import pocman.graph.WeightedEdge;
+import pocman.graph.features.Degree;
 import pocman.matching.MatchingAlgorithm;
 
 import com.google.common.base.Preconditions;
@@ -116,7 +118,7 @@ public final class OpenCPP<T> {
         if (this.boxedGraph == null) {
             final Builder<Box<T>> builder = new UndirectedGraph.Builder<Box<T>>(this.getGraph().getOrder());
             for (final T MazeNode : this.getGraph()) {
-                final Set<WeightedEdge<T>> edges = this.getGraph().getEdges(MazeNode);
+                final Set<WeightedEdge<T>> edges = this.getGraph().getEdgesFrom(MazeNode);
                 for (final WeightedEdge<T> weightedEdge : edges) {
                     final WeightedEdge<Box<T>> edge = WeightedEdge.from(
                             new Box<T>(weightedEdge.getEndPoint1()),
@@ -148,13 +150,14 @@ public final class OpenCPP<T> {
     private UndirectedGraph<Box<T>> buildVirtualGraph(final UndirectedGraph<Box<T>> boxedGraph, final T startingMazeNode, final T oddVertice) {
         final Builder<Box<T>> builder = new UndirectedGraph.Builder<Box<T>>(boxedGraph.getOrder() + 1);
         for (final Box<T> MazeNode : boxedGraph) {
-            final Set<WeightedEdge<Box<T>>> edges = boxedGraph.getEdges(MazeNode);
+            final Set<WeightedEdge<Box<T>>> edges = boxedGraph.getEdgesFrom(MazeNode);
             for (final WeightedEdge<Box<T>> edge : edges)
                 if (!builder.contains(edge)) builder.addEdge(edge);
         }
         final WeightedEdge<Box<T>> virtualEdge1 = WeightedEdge.from(new Box<T>(null), new Box<T>(startingMazeNode), this.getLowerBoundCost());
         builder.addEdge(virtualEdge1);
-        if (!boxedGraph.isEulerian()) {
+        final Degree<T> degreeFeature = boxedGraph.getFeature(Feature.DEGREE); // TODO ? utiliser le graph original
+        if (!degreeFeature.isEulerian()) {
             final WeightedEdge<Box<T>> virtualEdge2 = WeightedEdge.from(new Box<T>(oddVertice), new Box<T>(null), this.getLowerBoundCost());
             if (!builder.contains(virtualEdge2)) builder.addEdge(virtualEdge2);
         }
@@ -164,7 +167,7 @@ public final class OpenCPP<T> {
     public OpenCPPSolution<T> solveFrom(final T startingMazeNode) {
 
         Preconditions.checkArgument(startingMazeNode != null);
-        Preconditions.checkState(this.getGraph().contains(startingMazeNode));
+        Preconditions.checkState(this.getGraph().hasEndPoint(startingMazeNode));
 
         final OpenCPPSolution<Box<T>> bestSolution = this.bestSolution(this.getBoxedGraph(), startingMazeNode);
 
@@ -197,8 +200,10 @@ public final class OpenCPP<T> {
 
         final Stopwatch stopwatch = new Stopwatch();
 
+        final Degree<T> degreeFeature = this.getGraph().getFeature(Feature.DEGREE);
+
         //final int i = 0;
-        for (final T oddVertice : this.getGraph().getNodesWithOddDegree().keySet()) {
+        for (final T oddVertice : degreeFeature.getNodesWithOddDegree().keySet()) {
             stopwatch.start();
             final UndirectedGraph<Box<T>> virtualGraph = this.buildVirtualGraph(boxedGraph, startingMazeNode, oddVertice);
             final ClosedCPP<Box<T>> cppSolver = ClosedCPP.from(virtualGraph);

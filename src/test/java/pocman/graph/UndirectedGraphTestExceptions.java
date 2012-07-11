@@ -43,17 +43,17 @@ public class UndirectedGraphTestExceptions {
 
     @Test(expected = NoSuchElementException.class)
     public void testIllegalContainsEdge1() {
-        this.graph.contains("A", "C");
+        this.graph.hasEdge("A", "C");
     }
 
     @Test(expected = NoSuchElementException.class)
     public void testIllegalContainsEdge2() {
-        this.graph.contains("C", "A");
+        this.graph.hasEdge("C", "A");
     }
 
     @Test(expected = NoSuchElementException.class)
     public void testIllegalGetConnectedVerticeSet() {
-        this.graph.getEndPoints("C");
+        this.graph.getConnectedEndPoints("C");
     }
 
     @Test(expected = NoSuchElementException.class)
@@ -68,9 +68,10 @@ public class UndirectedGraphTestExceptions {
 
     @Test(expected = IllegalArgumentException.class)
     public void testIllegalContainsT() {
-        this.graph.contains(null);
+        this.graph.hasEndPoint(null);
     }
 
+    /*
     @Test(expected = NoSuchElementException.class)
     public void testIllegalGetShortestPathBetween1() {
         this.graph.getShortestPathBetween("A", "C");
@@ -80,5 +81,6 @@ public class UndirectedGraphTestExceptions {
     public void testIllegalGetShortestPathBetween2() {
         this.graph.getShortestPathBetween("C", "A");
     }
+    */
 
 }

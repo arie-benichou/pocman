@@ -80,7 +80,7 @@ public class MazeDemo {
             final List<MazeNode> potential = Lists.newArrayList(trail);
 
             for (final MazeNode mazeNode : trail) {
-                final Set<MazeNode> endPoints = maze.get().getEndPoints(mazeNode);
+                final Set<MazeNode> endPoints = maze.get().getConnectedEndPoints(mazeNode);
                 //System.out.println(endPoints);
                 potential.addAll(endPoints);
             }

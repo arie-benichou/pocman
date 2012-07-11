@@ -421,7 +421,8 @@ public class ClosedCPPDemoTest {
                 "┃∙⬛⬛⬛⬛⬛⬛⬛⬛⬛∙⬛⬛⬛⬛⬛⬛⬛⬛∙⬛⬛⬛⬛⬛┃" +
                 "┃∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙┃" +
                 "┃⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃";
-        ClosedCPPDemoTest.check(new Bound(116, 144), level);
+        //ClosedCPPDemoTest.check(new Bound(116, 144), level);
+        ClosedCPPDemoTest.check(new Bound(116, 138), level);
     }
 
     @Test
@@ -446,7 +447,8 @@ public class ClosedCPPDemoTest {
                 "┃∙┃⬛⬛┃∙┃∙⬛⬛⬛⬛⬛⬛⬛⬛⬛∙┃∙┃⬛⬛┃∙┃" +
                 "┃∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙┃" +
                 "┃⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃";
-        ClosedCPPDemoTest.check(new Bound(266, 336), level); // TODO FIXME
+        //ClosedCPPDemoTest.check(new Bound(266, 336), level); // TODO FIXME
+        ClosedCPPDemoTest.check(new Bound(266, 340), level); // TODO FIXME
     }
 
     /*"" +
