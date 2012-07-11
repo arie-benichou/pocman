@@ -176,16 +176,6 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
         return range;
     }
 
-    /*
-    public MazeNode getNearestNodeBefore(final MazeNode mazeNode) {
-        return this.mazeNodes.get(this.edgeByNodeId.headMap(mazeNode.getId()).lastKey());
-    }
-
-    public MazeNode getNearestNodeAfter(final MazeNode mazeNode) {
-        return this.mazeNodes.get(this.edgeByNodeId.tailMap(mazeNode.getId()).lastKey());
-    }
-    */
-
     @Override
     public UndirectedGraph<MazeNode> get() {
         return this.graph;

@@ -87,8 +87,6 @@ public class ClosedCPPDemo {
                 node = maze.getNode(node.getId() + move.getDelta());
                 board[node.getId() + move.getOpposite().getDelta()] = move.toString().charAt(0);
                 board[node.getId()] = Tile.POCMAN.toCharacter();
-                //board[node.getId()] = move.toString().charAt(0);
-                //System.out.println(move);
                 System.out.println(view.render(board));
                 Thread.sleep(laps);
             }
@@ -104,7 +102,6 @@ public class ClosedCPPDemo {
         final ClosedCPPDemo that = new ClosedCPPDemo(MATCHING_ALGORITHM_1);
 
         for (final String level : Mazes.LEVELS) {
-            //level = Mazes.LEVELS[6];
             final int pocManPosition = level.indexOf(Tile.POCMAN.toCharacter());
             Preconditions.checkState(pocManPosition > -1, "POCMAN POSITION NOT FOUND !");
             final char[] data = level.toCharArray();

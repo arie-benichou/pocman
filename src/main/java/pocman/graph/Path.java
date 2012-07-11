@@ -34,16 +34,6 @@ public final class Path<T> implements Comparable<Path<T>> {
     private final WeightedEdge<T> lastEdge;
     private final int hashCode;
 
-    /*
-    public static Path<?> from(final double cost) {
-        return new Path<Object>(cost);
-    }
-
-    public static Path<?> from() {
-        return Path.from(0);
-    }
-    */
-
     public static <T> Path<T> from(final WeightedEdge<T> edge) {
         return new Path<T>(edge);
     }
@@ -55,16 +45,6 @@ public final class Path<T> implements Comparable<Path<T>> {
     private static int hashCode(final int hashCode1, final int hashCode2) {
         return (17 + hashCode1 * hashCode2) * (hashCode1 + hashCode2);
     }
-
-    /*
-    private Path(final double cost) {
-        this.edges = ImmutableList.of();
-        this.numberOfEdges = 0;
-        this.cost = cost;
-        this.lastEdge = null;
-        this.hashCode = 0;
-    }
-    */
 
     private Path(final WeightedEdge<T> edge) {
         Preconditions.checkNotNull(edge);
@@ -175,18 +155,7 @@ public final class Path<T> implements Comparable<Path<T>> {
 
     public Path<T> add(final Path<T> path) {
 
-        //System.out.println("\nAdding: " + path + "\nTo: " + this + "\n");
         Preconditions.checkArgument(path != null);
-
-        /*
-        if (path.isNull() && this.isNull())
-            return new Path<T>(this.getWeight() + path.getWeight());
-        */
-
-        /*
-        if (path.isNull())
-            return new Path<T>(this.getEdges(), this.getWeight() + path.getWeight(), this.getLastEdge());
-        */
 
         if (this.isNull())
             return new Path<T>(path.getEdges(), path.getWeight() + this.getWeight(), path.getLastEdge());

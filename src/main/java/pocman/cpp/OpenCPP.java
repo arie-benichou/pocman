@@ -33,6 +33,7 @@ import com.google.common.base.Stopwatch;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 
+// TODO vérifier que le graphe est connecté
 public final class OpenCPP<T> {
 
     public final static MatchingAlgorithm DEFAULT_MATCHING_ALGORITHM = ClosedCPP.DEFAULT_MATCHING_ALGORITHM;

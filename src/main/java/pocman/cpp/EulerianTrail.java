@@ -23,12 +23,10 @@ import java.util.Map;
 import pocman.graph.UndirectedGraph;
 import pocman.graph.WeightedEdge;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Maps;
-
 
 public final class EulerianTrail {
 
@@ -41,11 +39,7 @@ public final class EulerianTrail {
             final Integer integer = traversalByEdge.get(edge);
             if (integer > 0) {
                 traversalByEdge.put(edge, integer - 1);
-                T nextMazeNode = null;
-                if (startingMazeNode.equals(edge.getEndPoint1())) nextMazeNode = edge.getEndPoint2();
-                else if (startingMazeNode.equals(edge.getEndPoint2())) nextMazeNode = edge.getEndPoint1();
-                Preconditions.checkState(nextMazeNode != null);
-                trailBuilder.addAll(EulerianTrail.from(nextMazeNode, traversalByEdge, graph));
+                trailBuilder.addAll(EulerianTrail.from(edge.getEndPoint2(), traversalByEdge, graph));
             }
         }
         trailBuilder.add(startingMazeNode);

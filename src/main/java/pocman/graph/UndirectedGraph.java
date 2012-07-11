@@ -17,10 +17,8 @@
 
 package pocman.graph;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
@@ -29,7 +27,9 @@ import java.util.Set;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
 // TODO ? vertex x = null edge of (x,x)
@@ -39,9 +39,9 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
 
         private final int order;
         private final Map<T, Integer> endPoints;
-        private final Map<T, List<WeightedEdge<T>>> edgesByEndPoint;
         private final Map<T, Set<T>> connectedEndPointsByEndPoint;
         private final Set<WeightedEdge<T>> edges;
+        private final ImmutableSortedMap.Builder<Integer, WeightedEdge<T>> edgeByHashCodeBuilder;
 
         private int ordinal;
 
@@ -51,7 +51,7 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
             this.endPoints = Maps.newHashMap();
             this.edges = Sets.newHashSet();
             this.connectedEndPointsByEndPoint = Maps.newHashMap();
-            this.edgesByEndPoint = Maps.newHashMap();
+            this.edgeByHashCodeBuilder = new ImmutableSortedMap.Builder<Integer, WeightedEdge<T>>(Ordering.natural());
             this.ordinal = 0;
         }
 
@@ -68,22 +68,31 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
                 Preconditions.checkState(this.ordinal != this.order, "Maximal number of vertices (" + this.order + ") reached.");
                 this.endPoints.put(endPoint, ++this.ordinal);
                 this.connectedEndPointsByEndPoint.put(endPoint, new HashSet<T>());
-                this.edgesByEndPoint.put(endPoint, new ArrayList<WeightedEdge<T>>());
             }
             return endPoint;
         }
 
         public Builder<T> addEdge(final WeightedEdge<T> edge) {
+
             Preconditions.checkArgument(edge != null);
             Preconditions.checkState(!this.contains(edge), "Edge " + edge + " is already defined.");
+
             final T endPoint1 = this.checkEndPoint(edge.getEndPoint1());
             final T endPoint2 = this.checkEndPoint(edge.getEndPoint2());
+
             this.edges.add(edge);
-            this.edgesByEndPoint.get(endPoint1).add(edge);
+
             this.connectedEndPointsByEndPoint.get(endPoint1).add(endPoint2);
-            this.edgesByEndPoint.get(endPoint2).add(edge);
             this.connectedEndPointsByEndPoint.get(endPoint2).add(endPoint1);
+
+            final int hashCode1 = this.getOrder() * this.endPoints.get(edge.getEndPoint1()) + this.endPoints.get(edge.getEndPoint2());
+            final int hashCode2 = this.getOrder() * this.endPoints.get(edge.getEndPoint2()) + this.endPoints.get(edge.getEndPoint1());
+
+            this.edgeByHashCodeBuilder.put(hashCode1, edge);
+            this.edgeByHashCodeBuilder.put(hashCode2, edge.reverse());
+
             return this;
+
         }
 
         public Builder<T> addEdge(final T endPoint1, final T endPoint2, final double weight) {
@@ -104,19 +113,18 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
     private final Map<T, Set<WeightedEdge<T>>> edgesByEndpoint;
     private final Map<T, Set<T>> connectedEndPointsByEndPoint;
     private final Set<WeightedEdge<T>> edgeSet;
+    private final Map<Integer, WeightedEdge<T>> edgeByHashCode;
 
     private UndirectedGraph(final Builder<T> graphBuilder) {
         this.order = graphBuilder.order;
         this.endPoints = ImmutableMap.copyOf(graphBuilder.endPoints);
         this.edgeSet = ImmutableSet.copyOf(graphBuilder.edges);
+        this.edgeByHashCode = graphBuilder.edgeByHashCodeBuilder.build();
         final ImmutableMap.Builder<T, Set<T>> connectedEndPointsByEndPointBuilder = new ImmutableMap.Builder<T, Set<T>>();
         for (final Entry<T, Set<T>> entry : graphBuilder.connectedEndPointsByEndPoint.entrySet())
             connectedEndPointsByEndPointBuilder.put(entry.getKey(), ImmutableSet.copyOf(entry.getValue()));
         this.connectedEndPointsByEndPoint = connectedEndPointsByEndPointBuilder.build();
-        final ImmutableMap.Builder<T, Set<WeightedEdge<T>>> edgesByEndpointBuilder = new ImmutableMap.Builder<T, Set<WeightedEdge<T>>>();
-        for (final Entry<T, List<WeightedEdge<T>>> entry : graphBuilder.edgesByEndPoint.entrySet())
-            edgesByEndpointBuilder.put(entry.getKey(), ImmutableSet.copyOf(entry.getValue()));
-        this.edgesByEndpoint = edgesByEndpointBuilder.build();
+        this.edgesByEndpoint = Maps.newHashMap();
     }
 
     @Override
@@ -138,24 +146,14 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
     public boolean hasEdge(final T endPoint1, final T endPoint2) {
         this.checkEndPoint(endPoint1);
         this.checkEndPoint(endPoint2);
-        return this.connectedEndPointsByEndPoint.get(endPoint1).contains(endPoint2);
+        final int hashCode = this.getOrder() * this.endPoints.get(endPoint1) + this.endPoints.get(endPoint2);
+        return this.edgeByHashCode.containsKey(hashCode);
     }
 
     @Override
     public Set<T> getConnectedEndPoints(final T endPoint) {
         this.checkEndPoint(endPoint);
         return this.connectedEndPointsByEndPoint.get(endPoint);
-    }
-
-    @Override
-    public Set<WeightedEdge<T>> getEdgesFrom(final T endPoint) {
-        this.checkEndPoint(endPoint);
-        return this.edgesByEndpoint.get(endPoint);
-    }
-
-    @Override
-    public Set<T> getSetOfEndPoints() {
-        return this.endPoints.keySet();
     }
 
     @Override
@@ -167,37 +165,41 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
     public WeightedEdge<T> getEdge(final T endPoint1, final T endPoint2) {
         this.checkEndPoint(endPoint1);
         this.checkEndPoint(endPoint2);
-        // TODO ? générer un hash à partir de l'ordinal et stocker les edges par hash
-        final Set<WeightedEdge<T>> edges = this.getEdgesFrom(endPoint1);
-        WeightedEdge<T> edge = null;
-        for (final WeightedEdge<T> weightedEdge : edges) {
-            if (weightedEdge.getEndPoint1().equals(endPoint2)) {
-                edge = weightedEdge;
-                break;
-            }
-            if (weightedEdge.getEndPoint2().equals(endPoint2)) {
-                edge = weightedEdge;
-                break;
-            }
-        }
+        final int hashCode = this.getOrder() * this.endPoints.get(endPoint1) + this.endPoints.get(endPoint2);
+        final WeightedEdge<T> edge = this.edgeByHashCode.get(hashCode);
+        Preconditions.checkState(edge != null, "Edge (" + endPoint1 + " - " + endPoint2 + ") does not exist.");
         return edge;
     }
 
     @Override
+    public Set<WeightedEdge<T>> getEdgesFrom(final T endPoint1) {
+        this.checkEndPoint(endPoint1);
+        Set<WeightedEdge<T>> edges = this.edgesByEndpoint.get(endPoint1);
+        if (edges == null) {
+            final ImmutableSet.Builder<WeightedEdge<T>> builder = new ImmutableSet.Builder<WeightedEdge<T>>();
+            for (final T endPoint2 : this.getConnectedEndPoints(endPoint1))
+                builder.add(this.getEdge(endPoint1, endPoint2));
+            edges = builder.build();
+            this.edgesByEndpoint.put(endPoint1, edges);
+        }
+        return edges;
+    }
+
+    @Override
     public Iterator<T> iterator() {
-        return this.endPoints.keySet().iterator();
+        return this.endPoints.keySet().iterator(); // TODO ? suivant l'ordinal
     }
 
     private final Map<Feature, Object> features = Maps.newConcurrentMap();
 
     @SuppressWarnings("unchecked")
-    public <X> X getFeature(final Feature feature) {
+    public <F> F getFeature(final Feature feature) { // TODO ! à revoir
         Object object = this.features.get(feature);
         if (object == null) {
             object = feature.on(this);
             this.features.put(feature, object);
         }
-        return (X) object;
+        return (F) object;
     }
 
 }

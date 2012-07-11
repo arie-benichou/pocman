@@ -141,6 +141,7 @@ public class PathTest { // TODO à compléter
         assertTrue(path3.reverse().getEndPoint2().equals("A"));
     }
 
+    /*
     @Test
     public void testAddWeightedEdgeOfT_On_NullPathOfT() {
         final Path<String> path = Path.from("A", "A", 9.0);
@@ -152,6 +153,7 @@ public class PathTest { // TODO à compléter
         assertTrue(augmentedPath.getEndPoint2().equals("B"));
         assertEquals(10.0, augmentedPath.getWeight(), 0.1);
     }
+    */
 
     @Test
     public void testAddWeightedEdgeOfT_On_PathOfTHavingOneSingleEdge1() {
@@ -241,6 +243,7 @@ public class PathTest { // TODO à compléter
         assertEquals(3.0, augmentedPath.getWeight(), 0.1);
     }
 
+    /*
     @Test
     public void testAddNullPathOfT_On_NullPathOfT() {
         final Path<String> path1 = Path.from("A", "A", 1.0);
@@ -249,7 +252,9 @@ public class PathTest { // TODO à compléter
         //assertTrue(augmentedPath.isNull());
         assertEquals(3.0, augmentedPath.getWeight(), 0.1);
     }
+    */
 
+    /*
     @Test
     public void testAddPathOfT_On_NullPathOfT() {
         final Path<String> path1 = Path.from("A", "A", 1.0);
@@ -260,7 +265,9 @@ public class PathTest { // TODO à compléter
         assertTrue(augmentedPath.getEndPoint2().equals("B"));
         assertEquals(3.0, augmentedPath.getWeight(), 0.1);
     }
+    */
 
+    /*
     @Test
     public void testAddNullPathOfT_On_PathOfT() {
         final Path<String> path1 = Path.from("A", "B", 2.0);
@@ -271,6 +278,7 @@ public class PathTest { // TODO à compléter
         assertTrue(augmentedPath.getEndPoint2().equals("B"));
         assertEquals(3.0, augmentedPath.getWeight(), 0.1);
     }
+    */
 
     @Test
     public void testAddPathOfTHavingOneSingleEdge_On_PathOfTHavingOneSingleEdge1() {

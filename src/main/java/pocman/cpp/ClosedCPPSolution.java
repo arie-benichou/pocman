@@ -76,18 +76,6 @@ public final class ClosedCPPSolution<T> {
         return that.getTraversalByEdge().equals(this.getTraversalByEdge()); // TODO ? comparer uniquement la taille des maps
     }
 
-    /*
-    public static <T> ClosedCPPSolution<T> from(final ClosedCPP<T> closedCPP) {
-        final Map<WeightedEdge<T>, Integer> traversalByEdge = closedCPP.getTraversalByEdge();
-        return new ClosedCPPSolution<T>(
-                closedCPP.getMatchingAlgorithm(),
-                closedCPP.getGraph(),
-                traversalByEdge,
-                closedCPP.getLowerBoundCost(),
-                closedCPP.getUpperBoundCost());
-    }
-    */
-
     public ClosedCPPSolution(
             final MatchingAlgorithm matchingAlgorithm,
             final UndirectedGraph<T> graph,
