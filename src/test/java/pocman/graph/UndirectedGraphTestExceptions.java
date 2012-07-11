@@ -17,13 +17,15 @@
 
 package pocman.graph;
 
+import graph.UndirectedGraph;
+import graph.UndirectedGraph.Builder;
+
 import java.util.NoSuchElementException;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import pocman.graph.UndirectedGraph.Builder;
 
 public class UndirectedGraphTestExceptions {
 

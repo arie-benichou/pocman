@@ -17,11 +17,14 @@
 
 package pocman.cpp;
 
+import graph.UndirectedGraph;
+
 import org.junit.Test;
 
-import pocman.graph.UndirectedGraph;
 
 import com.google.common.base.Supplier;
+
+import cpp.ClosedCPP;
 
 public class ClosedCPPTestExceptions {
 

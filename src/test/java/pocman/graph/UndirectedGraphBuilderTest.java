@@ -21,10 +21,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import graph.UndirectedGraph;
+import graph.WeightedEdge;
+import graph.UndirectedGraph.Builder;
 
 import org.junit.Test;
 
-import pocman.graph.UndirectedGraph.Builder;
 
 public class UndirectedGraphBuilderTest {
 

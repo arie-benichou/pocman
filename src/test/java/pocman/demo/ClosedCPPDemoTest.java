@@ -5,10 +5,11 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import pocman.cpp.Bound;
-import pocman.cpp.ClosedCPPSolution;
-import pocman.maze.Maze;
-import pocman.maze.MazeNode;
+import cpp.Bound;
+import cpp.ClosedCPPSolution;
+
+import pocman.game.Maze;
+import pocman.game.MazeNode;
 
 public class ClosedCPPDemoTest {
 

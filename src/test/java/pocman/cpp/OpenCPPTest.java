@@ -19,10 +19,14 @@ package pocman.cpp;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import graph.UndirectedGraph;
 
 import org.junit.Test;
 
-import pocman.graph.UndirectedGraph;
+import cpp.ClosedCPP;
+import cpp.ClosedCPPSolution;
+import cpp.OpenCPP;
+
 
 public class OpenCPPTest {
 

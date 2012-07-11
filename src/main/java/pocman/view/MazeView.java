@@ -17,8 +17,8 @@
 
 package pocman.view;
 
-import pocman.maze.Maze;
-import pocman.maze.MazeNode;
+import pocman.game.Maze;
+import pocman.game.MazeNode;
 
 public class MazeView {
 

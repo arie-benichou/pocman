@@ -19,15 +19,20 @@ package pocman.cpp;
 
 import static org.junit.Assert.assertTrue;
 
+import graph.UndirectedGraph;
+
 import java.util.HashSet;
 import java.util.List;
 
 import org.junit.Test;
 
-import pocman.graph.UndirectedGraph;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
+import cpp.ClosedCPP;
+import cpp.ClosedCPPSolution;
+import cpp.EulerianTrail;
 
 public class EulerianTrailTest {
 

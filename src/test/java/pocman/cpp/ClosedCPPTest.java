@@ -20,15 +20,20 @@ package pocman.cpp;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import graph.UndirectedGraph;
+import graph.WeightedEdge;
+
 import java.util.Map;
 
 import org.junit.Test;
 
-import pocman.graph.UndirectedGraph;
-import pocman.graph.WeightedEdge;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
+
+import cpp.ClosedCPP;
+import cpp.ClosedCPPSolution;
+import cpp.OpenCPPSolution;
 
 public class ClosedCPPTest {
 

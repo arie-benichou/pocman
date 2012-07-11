@@ -17,17 +17,18 @@
 
 package pocman.demo;
 
+import graph.Path;
+import graph.WeightedEdge;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import pocman.game.Maze;
+import pocman.game.MazeNode;
 import pocman.game.Move;
-import pocman.graph.Path;
-import pocman.graph.WeightedEdge;
-import pocman.maze.Maze;
-import pocman.maze.MazeNode;
-import pocman.maze.Tile;
+import pocman.game.Tile;
 import pocman.view.MazeAsBoardView;
 
 import com.google.common.collect.Lists;

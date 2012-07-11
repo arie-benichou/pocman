@@ -17,9 +17,9 @@
 
 package pocman.view;
 
-import pocman.maze.Maze;
-import pocman.maze.MazeNode;
-import pocman.maze.MazeNode.Type;
+import pocman.game.Maze;
+import pocman.game.MazeNode;
+import pocman.game.MazeNode.Type;
 
 import com.google.common.base.Preconditions;
 

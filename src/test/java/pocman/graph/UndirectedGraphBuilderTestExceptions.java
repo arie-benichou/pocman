@@ -18,10 +18,11 @@
 package pocman.graph;
 
 import static org.junit.Assert.assertTrue;
+import graph.UndirectedGraph;
+import graph.UndirectedGraph.Builder;
 
 import org.junit.Test;
 
-import pocman.graph.UndirectedGraph.Builder;
 
 public class UndirectedGraphBuilderTestExceptions {
 

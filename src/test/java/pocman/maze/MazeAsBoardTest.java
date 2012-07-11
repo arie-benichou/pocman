@@ -24,6 +24,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import pocman.game.Direction;
+import pocman.game.MazeAsBoard;
+import pocman.game.Tile;
+
 import com.google.common.collect.Maps;
 
 /**

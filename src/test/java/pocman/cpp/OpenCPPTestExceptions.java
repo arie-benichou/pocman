@@ -17,9 +17,14 @@
 
 package pocman.cpp;
 
+import graph.UndirectedGraph;
+
 import org.junit.Test;
 
-import pocman.graph.UndirectedGraph;
+import cpp.ClosedCPP;
+import cpp.ClosedCPPSolution;
+import cpp.OpenCPP;
+
 
 public class OpenCPPTestExceptions {
 

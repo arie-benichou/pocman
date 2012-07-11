@@ -22,7 +22,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import pocman.maze.Direction;
+import pocman.game.Direction;
+import pocman.game.Move;
 
 public class MoveTest {
 

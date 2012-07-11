@@ -20,14 +20,17 @@ package pocman.cpp;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import graph.WeightedEdge;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
 
-import pocman.graph.WeightedEdge;
 
 import com.google.common.collect.ImmutableMap;
+
+import cpp.OpenCPPSolution;
 
 public class SolutionTest {
 

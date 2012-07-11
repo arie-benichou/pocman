@@ -17,7 +17,6 @@
 
 package pocman.game;
 
-import pocman.maze.Direction;
 
 public enum Move { // TODO à revoir
 

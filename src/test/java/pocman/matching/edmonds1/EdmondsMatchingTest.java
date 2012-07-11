@@ -20,10 +20,11 @@ package pocman.matching.edmonds1;
 import static org.junit.Assert.assertTrue;
 import junit.framework.Assert;
 
+import matching.edmonds1.EdmondsAlgorithm;
+import matching.edmonds1.MutableUndirectedGraph;
+
 import org.junit.Test;
 
-import pocman.matching.edmonds1.EdmondsAlgorithm;
-import pocman.matching.edmonds1.MutableUndirectedGraph;
 
 public class EdmondsMatchingTest { // TODO à compléter
 

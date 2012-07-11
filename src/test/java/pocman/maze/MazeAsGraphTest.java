@@ -21,14 +21,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import graph.UndirectedGraph;
+
 import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import pocman.game.Direction;
+import pocman.game.MazeAsBoard;
+import pocman.game.MazeAsGraph;
+import pocman.game.MazeNode;
 import pocman.game.Move;
-import pocman.graph.UndirectedGraph;
+
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;

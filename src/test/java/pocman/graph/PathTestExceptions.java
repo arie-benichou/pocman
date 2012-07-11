@@ -17,6 +17,9 @@
 
 package pocman.graph;
 
+import graph.Path;
+import graph.WeightedEdge;
+
 import org.junit.Test;
 
 public class PathTestExceptions { // TODO à compléter

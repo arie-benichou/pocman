@@ -19,6 +19,9 @@ package pocman.maze;
 
 import org.junit.Test;
 
+import pocman.game.Tile;
+import pocman.game.Tiles;
+
 public class TilesTestExceptions {
 
     private static final Tile[] TILES = Tile.values();

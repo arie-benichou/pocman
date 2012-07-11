@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import pocman.maze.Maze;
+import pocman.game.Maze;
 
 public class MazeAsGraphViewTest { // TODO à compléter
 

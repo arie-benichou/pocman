@@ -21,6 +21,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import pocman.game.Tile;
+import pocman.game.Tiles;
+
 public class TilesTest {
 
     private static final Tile[] TILES = Tile.values();

@@ -29,8 +29,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import pocman.game.MazeNode;
 import pocman.game.Move;
-import pocman.maze.MazeNode.Type;
+import pocman.game.MazeNode.Type;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;

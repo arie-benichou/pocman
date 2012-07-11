@@ -1,8 +1,9 @@
 
 package pocman.matching.edmonds1;
 
-import pocman.graph.UndirectedGraph;
-import pocman.graph.UndirectedGraph.Builder;
+import matching.edmonds1.Matching;
+import graph.UndirectedGraph;
+import graph.UndirectedGraph.Builder;
 
 public class MatchingTest {
 

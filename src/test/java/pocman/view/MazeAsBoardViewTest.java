@@ -20,7 +20,7 @@ package pocman.view;
 import org.junit.Assert;
 import org.junit.Test;
 
-import pocman.maze.Maze;
+import pocman.game.Maze;
 
 public class MazeAsBoardViewTest {
 

@@ -20,26 +20,28 @@ package pocman.demo;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import pocman.cpp.ClosedCPP;
-import pocman.cpp.ClosedCPPSolution;
-import pocman.cpp.EulerianTrail;
-import pocman.cpp.OpenCPP;
-import pocman.cpp.OpenCPPSolution;
+import matching.MatchingAlgorithm;
+
+import pocman.game.Maze;
+import pocman.game.MazeNode;
 import pocman.game.Move;
-import pocman.matching.MatchingAlgorithm;
-import pocman.maze.Maze;
-import pocman.maze.MazeNode;
-import pocman.maze.Tile;
+import pocman.game.Tile;
 import pocman.view.MazeAsBoardView;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 
+import cpp.ClosedCPP;
+import cpp.ClosedCPPSolution;
+import cpp.EulerianTrail;
+import cpp.OpenCPP;
+import cpp.OpenCPPSolution;
+
 public class ClosedCPPDemo {
 
-    public final static MatchingAlgorithm MATCHING_ALGORITHM_1 = new pocman.matching.edmonds1.Matching();
-    public final static MatchingAlgorithm MATCHING_ALGORITHM_2 = new pocman.matching.edmonds2.Matching();
-    public final static MatchingAlgorithm MATCHING_ALGORITHM_3 = new pocman.matching.naive.Matching();
+    public final static MatchingAlgorithm MATCHING_ALGORITHM_1 = new matching.edmonds1.Matching();
+    public final static MatchingAlgorithm MATCHING_ALGORITHM_2 = new matching.edmonds2.Matching();
+    public final static MatchingAlgorithm MATCHING_ALGORITHM_3 = new matching.naive.Matching();
 
     private final MatchingAlgorithm matchingAlgorithm;
 

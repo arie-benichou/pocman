@@ -25,6 +25,8 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import pocman.game.Tile;
+
 import com.google.common.collect.Sets;
 
 public class TileTest {

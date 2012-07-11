@@ -21,6 +21,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import graph.Feature;
+import graph.UndirectedGraph;
+import graph.WeightedEdge;
+import graph.UndirectedGraph.Builder;
+
 import java.util.Set;
 
 import org.junit.After;
@@ -29,7 +34,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import pocman.graph.UndirectedGraph.Builder;
 
 import com.google.common.collect.Sets;
 

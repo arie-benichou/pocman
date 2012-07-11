@@ -1,27 +1,29 @@
 
 package pocman.demo;
 
+import graph.Feature;
+import graph.UndirectedGraph;
+import graph.WeightedEdge;
+import graph.features.Degree;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
-import pocman.cpp.EulerianTrail;
-import pocman.cpp.OpenCPP;
-import pocman.cpp.OpenCPPSolution;
+import pocman.game.Maze;
+import pocman.game.MazeNode;
 import pocman.game.Move;
-import pocman.graph.Feature;
-import pocman.graph.UndirectedGraph;
-import pocman.graph.WeightedEdge;
-import pocman.graph.features.Degree;
-import pocman.maze.Maze;
-import pocman.maze.MazeNode;
-import pocman.maze.Tile;
+import pocman.game.Tile;
 import pocman.view.MazeAsBoardView;
 import pocman.view.MazeView;
 
 import com.google.common.base.Function;
 import com.google.common.base.Stopwatch;
+
+import cpp.EulerianTrail;
+import cpp.OpenCPP;
+import cpp.OpenCPPSolution;
 
 // TODO MazeNode != GraphNode ( + between nodes)
 // TODO MazePath

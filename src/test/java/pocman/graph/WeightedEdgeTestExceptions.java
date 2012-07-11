@@ -17,6 +17,8 @@
 
 package pocman.graph;
 
+import graph.WeightedEdge;
+
 import org.junit.Test;
 
 public class WeightedEdgeTestExceptions {
