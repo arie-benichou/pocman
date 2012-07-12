@@ -55,7 +55,7 @@ public class Matching implements MatchingAlgorithm {
 
         for (int i = 0; i < order; ++i)
             for (int j = 0; j < order; ++j)
-                matrix[i][j] = pathFeature.getShortestPathBetween(vertexByIndex.get(i), vertexByIndex.get(j)).getWeight();
+                matrix[i][j] = pathFeature.getShortestPath(vertexByIndex.get(i), vertexByIndex.get(j)).getWeight();
 
         final Match match = new BranchAndBoundMatching(matrix).match();
 

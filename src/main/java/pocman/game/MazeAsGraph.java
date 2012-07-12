@@ -146,7 +146,7 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
                 ++k;
             data.put(k, move);
         }
-        System.out.println(data);
+        //System.out.println(data);
         final Entry<Integer, Move> firstEntry = data.firstEntry();
         final MazeNode nearestGraphNode = this.getNode(mazeNodeId + firstEntry.getKey() * firstEntry.getValue().getDelta());
         return nearestGraphNode;
@@ -165,7 +165,7 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
                 ++k;
             data.put(move, k);
         }
-        System.out.println(data);
+        //System.out.println(data);
         final Map<MazeNode, Entry<Move, Integer>> range = Maps.newHashMap();
         for (final Entry<Move, Integer> entry : data.entrySet()) {
             final Move move = entry.getKey();
@@ -183,11 +183,16 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
 
     public Path<MazeNode> getShortestPath(final MazeNode endPoint1, final MazeNode endPoint2) {
         final Routing<MazeNode> feature = this.graph.getFeature(Feature.ROUTING);
-        return feature.getShortestPathBetween(endPoint1, endPoint2);
+        return feature.getShortestPath(endPoint1, endPoint2);
     }
 
     public int getNumberOfMazeNodes() {
         return this.mazeNodes.size();
+    }
+
+    public boolean hasPath(final MazeNode endPoint1, final MazeNode endPoint2) {
+        final Connectivity<MazeNode> feature = this.graph.getFeature(Feature.CONNECTIVITY);
+        return feature.isConnected(endPoint1, endPoint2);
     }
 
 }

@@ -63,25 +63,26 @@ public final class Connectivity<T> {
         return value;
     }
 
-    private volatile Boolean data = null;
+    private volatile boolean[][] data = null;
+    private boolean isConnected;
 
-    private Boolean getData() {
-        Boolean value = this.data;
+    private boolean[][] getData() {
+        boolean[][] value = this.data;
         if (value == null) {
             synchronized (this) {
                 if ((value = this.data) == null) {
                     final int n = this.getGraph().getOrder();
-                    final boolean[][] matrix = new boolean[n][n];
+                    final boolean[][] data = new boolean[n][n];
                     int potentiallyNotConnected = 0;
                     for (final T endPoint1 : this.getGraph()) {
                         final int i = this.getOrdinalByEndPoint().get(endPoint1);
                         for (final T endPoint2 : this.getGraph()) {
                             final int j = this.getOrdinalByEndPoint().get(endPoint2);
-                            if (i == j) matrix[i][j] = true;
-                            if (this.getGraph().hasEdge(endPoint1, endPoint2)) matrix[i][j] = true;
+                            if (i == j) data[i][j] = true;
+                            if (this.getGraph().hasEdge(endPoint1, endPoint2)) data[i][j] = true;
                             else {
                                 ++potentiallyNotConnected;
-                                matrix[i][j] = false;
+                                data[i][j] = false;
                             }
                         }
                     }
@@ -91,17 +92,18 @@ public final class Connectivity<T> {
                         for (int k = 0; k < n; ++k) {
                             for (int i = 0; i < n; ++i) {
                                 for (int j = 0; j < n; ++j) {
-                                    if (matrix[i][j]) continue;
-                                    if (!matrix[i][k] || !matrix[k][j]) continue;
-                                    matrix[i][j] = true;
+                                    if (data[i][j]) continue;
+                                    if (!data[i][k] || !data[k][j]) continue;
+                                    data[i][j] = true;
                                     --notConnected;
-                                    if (notConnected == 0) break;
+                                    //if (notConnected == 0) break;
                                 }
                             }
                         }
                     }
                     //this.debug(matrix);
-                    this.data = value = notConnected == 0;
+                    this.isConnected = notConnected <= 0;
+                    this.data = value = data;
                 }
             }
         }
@@ -109,7 +111,15 @@ public final class Connectivity<T> {
     }
 
     public boolean isConnected() {
-        return this.getData();
+        this.getData();
+        return this.isConnected;
+    }
+
+    public boolean isConnected(final T endPoint1, final T endPoint2) {
+        this.getData();
+        final Integer integer1 = this.getOrdinalByEndPoint().get(endPoint1); // TODO !! method getId(T endPoint) dans UndirectedGraph
+        final Integer integer2 = this.getOrdinalByEndPoint().get(endPoint2); // TODO !! method getId(T endPoint) dans UndirectedGraph
+        return this.getData()[integer1][integer2];
     }
 
     public void debug(final boolean[][] array) {

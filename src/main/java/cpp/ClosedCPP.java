@@ -103,7 +103,7 @@ public final class ClosedCPP<T> {
         for (final T endPoint1 : oddVertices)
             for (final T endPoint2 : oddVertices)
                 if (!endPoint1.equals(endPoint2)) { // TODO contains(u, v, w)
-                    final Path<T> shortestPath = pathFeature.getShortestPathBetween(endPoint1, endPoint2);
+                    final Path<T> shortestPath = pathFeature.getShortestPath(endPoint1, endPoint2);
                     final WeightedEdge<T> edge = WeightedEdge.from(endPoint1, endPoint2, shortestPath.getWeight());
                     //if (!residualGraphBuilder.contains(edge)) residualGraphBuilder.addEdge(edge);
                     if (!edges.contains(edges)) edges.add(edge);
@@ -130,7 +130,7 @@ public final class ClosedCPP<T> {
         for (final Entry<T, T> entry : matching.entrySet()) {
             final T endPoint1 = entry.getKey();
             final T endPoint2 = entry.getValue();
-            final Path<T> path = pathFeature.getShortestPathBetween(endPoint1, endPoint2);
+            final Path<T> path = pathFeature.getShortestPath(endPoint1, endPoint2);
             for (final WeightedEdge<T> edge : path.getEdges()) {
                 map.put(edge, (map.get(edge) + 1) % 2 == 0 ? 2 : 1);
             }

@@ -118,7 +118,7 @@ public final class Routing<T> {
         return value;
     }
 
-    public Path<T> getShortestPathBetween(final T endPoint1, final T endPoint2) {
+    public Path<T> getShortestPath(final T endPoint1, final T endPoint2) {
         final Integer integer1 = this.getOrdinalByEndPoint().get(endPoint1);
         Preconditions.checkState(integer1 != null);
         final Integer integer2 = this.getOrdinalByEndPoint().get(endPoint2);

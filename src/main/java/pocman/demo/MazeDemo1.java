@@ -33,7 +33,7 @@ import pocman.view.MazeAsBoardView;
 
 import com.google.common.collect.Lists;
 
-public class MazeDemo {
+public class MazeDemo1 {
 
     public static void main(final String[] args) throws InterruptedException {
 

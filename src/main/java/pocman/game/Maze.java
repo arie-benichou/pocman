@@ -23,7 +23,6 @@ import graph.UndirectedGraph;
 import java.util.Map;
 import java.util.Map.Entry;
 
-
 import com.google.common.base.Supplier;
 
 public final class Maze implements Supplier<UndirectedGraph<MazeNode>> {
@@ -109,6 +108,10 @@ public final class Maze implements Supplier<UndirectedGraph<MazeNode>> {
 
     public int getNumberOfMazeNodes() {
         return this.mazeAsGraph.getNumberOfMazeNodes();
+    }
+
+    public boolean hasPath(final MazeNode endPoint1, final MazeNode endPoint2) {
+        return this.mazeAsGraph.hasPath(endPoint1, endPoint2);
     }
 
 }

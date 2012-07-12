@@ -67,7 +67,7 @@ public final class Matching implements MatchingAlgorithm {
 
         double cost = 0;
         for (final Entry<T, T> entry : matching.entrySet())
-            cost += pathFeature.getShortestPathBetween(entry.getKey(), entry.getValue()).getWeight();
+            cost += pathFeature.getShortestPath(entry.getKey(), entry.getValue()).getWeight();
         return cost;
     }
 
@@ -115,7 +115,7 @@ public final class Matching implements MatchingAlgorithm {
         for (final Entry<T, T> entry : matching.entrySet()) {
             final T endPoint1 = entry.getKey();
             final T endPoint2 = entry.getValue();
-            final Path<T> path = pathFeature.getShortestPathBetween(endPoint1, endPoint2);
+            final Path<T> path = pathFeature.getShortestPath(endPoint1, endPoint2);
             for (final WeightedEdge<T> edge : path.getEdges()) {
                 map.put(edge, (map.get(edge) + 1) % 2 == 0 ? 2 : 1);
                 //map.put(edge, 2);

@@ -17,8 +17,8 @@
 
 package pocman.game;
 
+import java.util.List;
 import java.util.Set;
-
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -142,6 +142,10 @@ public final class MazeNode {
                 .add("type", this.getType())
                 .add("options", this.getOptions())
                 .toString();
+    }
+
+    public List<MazeEdge> getEdges() {
+        return null; // TODO
     }
 
 }
