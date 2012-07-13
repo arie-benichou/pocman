@@ -92,6 +92,16 @@ final class Routing<T> implements RoutingInterface<T> {
     }
 
     @Override
+    public double[][] getShortestPathWeights() {
+        final int n = this.getGraph().getOrder();
+        final double[][] copy = new double[n][n];
+        for (int i = 0; i < n; ++i)
+            for (int j = 0; j < n; ++j)
+                if (i != j) copy[i][j] = this.getData()[i][j].getWeight();
+        return copy;
+    }
+
+    @Override
     public Path<T> getShortestPath(final T endPoint1, final T endPoint2) {
         return this.getData()[this.getGraph().getOrdinal(endPoint1)][this.getGraph().getOrdinal(endPoint2)];
     }

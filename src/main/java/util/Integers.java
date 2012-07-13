@@ -19,7 +19,6 @@ package util;
 
 import com.google.common.base.Predicate;
 
-// TODO move into lib package
 public final class Integers {
 
     public static class Predicates {

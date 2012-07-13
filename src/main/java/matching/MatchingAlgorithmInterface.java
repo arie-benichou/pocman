@@ -19,13 +19,14 @@ package matching;
 
 import graph.UndirectedGraph;
 
-public interface MatchingAlgorithm {
+public interface MatchingAlgorithmInterface {
 
     <T> Matches<T> from(final UndirectedGraph<T> graph);
 
     //TODO !! à faire
     //<T> Matches<T> from(final UndirectedGraph<T> graph, map edgeInstance);
 
+    // TODO !! à virer
     <T> void setOriginalGraph(final UndirectedGraph<T> graph);
 
 }

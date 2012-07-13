@@ -22,7 +22,7 @@ import graph.WeightedEdge;
 
 import java.util.Map;
 
-import matching.MatchingAlgorithm;
+import matching.MatchingAlgorithmInterface;
 
 
 import com.google.common.base.Objects;
@@ -33,7 +33,7 @@ public final class ClosedCPPSolution<T> {
     private final Map<WeightedEdge<T>, Integer> traversalByEdge;
     private final Double lowerBoundCost;
     private final Double upperBoundCost;
-    private final MatchingAlgorithm matchingAlgorithm;
+    private final MatchingAlgorithmInterface matchingAlgorithm;
 
     public double getLowerBoundCost() {
         return this.lowerBoundCost;
@@ -51,7 +51,7 @@ public final class ClosedCPPSolution<T> {
         return this.traversalByEdge;
     }
 
-    public MatchingAlgorithm getMatchingAlgorithm() {
+    public MatchingAlgorithmInterface getMatchingAlgorithm() {
         return this.matchingAlgorithm;
     }
 
@@ -79,7 +79,7 @@ public final class ClosedCPPSolution<T> {
     }
 
     public ClosedCPPSolution(
-            final MatchingAlgorithm matchingAlgorithm,
+            final MatchingAlgorithmInterface matchingAlgorithm,
             final UndirectedGraph<T> graph,
             final Map<WeightedEdge<T>, Integer> traversalByEdge,
             final Double lowerBoundCost,

@@ -33,7 +33,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import matching.Matches;
-import matching.MatchingAlgorithm;
+import matching.MatchingAlgorithmInterface;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
@@ -44,7 +44,7 @@ import com.google.common.collect.Sets;
 /**
  * Minimum Weight Perfect Matching Algorithm
  */
-public final class Matching implements MatchingAlgorithm {
+public final class Matching implements MatchingAlgorithmInterface {
 
     private static <T> Map<T, T> buildMatchingMap(final MutableUndirectedGraph<T> maximumMatching) {
         final Builder<T, T> builder = new ImmutableMap.Builder<T, T>();

@@ -63,7 +63,7 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
         }
 
         public Builder(final int order) {
-            this(order, true);
+            this(order, USER_MODE);
         }
 
         public int getOrder() {
@@ -188,13 +188,13 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
         return this.endPointById.get(ordinal + 1);
     }
 
-    private Integer hashCode(final T endPoint1, final T endPoint2) {
-        return this.getOrder() * this.getId(endPoint1) + this.getId(endPoint2);
-    }
-
     @Override
     public Set<T> getConnectedEndPoints(final T endPoint) {
         return this.connectedEndPointsByEndPoint.get(this.checkEndPoint(endPoint));
+    }
+
+    private Integer hashCode(final T endPoint1, final T endPoint2) {
+        return this.getOrder() * this.getId(endPoint1) + this.getId(endPoint2);
     }
 
     @Override

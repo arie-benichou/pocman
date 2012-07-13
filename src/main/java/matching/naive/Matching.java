@@ -24,7 +24,7 @@ import graph.features.routing.RoutingInterface;
 import java.util.List;
 import java.util.Map;
 
-import matching.MatchingAlgorithm;
+import matching.MatchingAlgorithmInterface;
 import matching.naive.BranchAndBoundMatching.Match;
 import matching.naive.BranchAndBoundMatching.Position;
 
@@ -32,47 +32,31 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
-public class Matching implements MatchingAlgorithm {
+public class Matching implements MatchingAlgorithmInterface {
 
     @Override
     public <T> matching.Matches<T> from(final UndirectedGraph<T> residualGraph) {
 
-        final int order = residualGraph.getOrder();
-        final Map<T, Integer> indexByVertex = Maps.newHashMap();
-        final Map<Integer, T> vertexByIndex = Maps.newHashMap();
+        final RoutingInterface<T> routingInterface = residualGraph.fetch(RoutingFeature.class).up();
 
-        int n = 0;
-        for (final T vertex : residualGraph) {
-            indexByVertex.put(vertex, n);
-            vertexByIndex.put(n, vertex);
-            ++n;
-        }
+        final double[][] weights = routingInterface.getShortestPathWeights();
 
-        final double[][] matrix = new double[order][order];
-
-        final RoutingInterface<T> pathFeature = residualGraph.fetch(RoutingFeature.class).up();
-
-        for (int i = 0; i < order; ++i)
-            for (int j = 0; j < order; ++j)
-                matrix[i][j] = pathFeature.getShortestPath(vertexByIndex.get(i), vertexByIndex.get(j)).getWeight();
-
-        final Match match = new BranchAndBoundMatching(matrix).match();
+        final Match match = new BranchAndBoundMatching(weights).match();
 
         final Function<Position, Map<T, T>> mapping = new Function<Position, Map<T, T>>() {
 
             @Override
             public Map<T, T> apply(final Position position) {
                 final ImmutableMap.Builder<T, T> builder = new ImmutableMap.Builder<T, T>();
-                final T t1 = vertexByIndex.get(position.getRowIndex());
-                final T t2 = vertexByIndex.get(position.getColumnIndex());
-                builder.put(t1, t2);
+                builder.put(residualGraph.get(position.getRowIndex()), residualGraph.get(position.getColumnIndex()));
                 return builder.build();
             }
+
         };
 
         final List<Map<T, T>> map = match.apply(mapping);
 
-        final Map<T, T> result = Maps.newHashMap(); // TODO builder Map immutable
+        final Map<T, T> result = Maps.newHashMap(); // TODO
         for (final Map<T, T> entry : map)
             result.putAll(entry);
 

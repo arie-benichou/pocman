@@ -20,7 +20,7 @@ package pocman.demo;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import matching.MatchingAlgorithm;
+import matching.MatchingAlgorithmInterface;
 import pocman.game.Maze;
 import pocman.game.MazeNode;
 import pocman.game.Move;
@@ -38,13 +38,13 @@ import cpp.OpenCPPSolution;
 
 public class ClosedCPPDemo {
 
-    public final static MatchingAlgorithm MATCHING_ALGORITHM_1 = new matching.edmonds1.Matching();
-    public final static MatchingAlgorithm MATCHING_ALGORITHM_2 = new matching.edmonds2.Matching();
-    public final static MatchingAlgorithm MATCHING_ALGORITHM_3 = new matching.naive.Matching();
+    public final static MatchingAlgorithmInterface MATCHING_ALGORITHM_1 = new matching.edmonds1.Matching();
+    public final static MatchingAlgorithmInterface MATCHING_ALGORITHM_2 = new matching.edmonds2.Matching();
+    public final static MatchingAlgorithmInterface MATCHING_ALGORITHM_3 = new matching.naive.Matching();
 
-    private final MatchingAlgorithm matchingAlgorithm;
+    private final MatchingAlgorithmInterface matchingAlgorithm;
 
-    public ClosedCPPDemo(final MatchingAlgorithm matchingAlgorithm) {
+    public ClosedCPPDemo(final MatchingAlgorithmInterface matchingAlgorithm) {
         this.matchingAlgorithm = matchingAlgorithm;
     }
 

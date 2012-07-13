@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import matching.MatchingAlgorithm;
+import matching.MatchingAlgorithmInterface;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
@@ -37,7 +37,7 @@ import com.google.common.collect.Maps;
 // TODO vérifier que le graphe est connecté
 public final class OpenCPP<T> {
 
-    public final static MatchingAlgorithm DEFAULT_MATCHING_ALGORITHM = ClosedCPP.DEFAULT_MATCHING_ALGORITHM;
+    public final static MatchingAlgorithmInterface DEFAULT_MATCHING_ALGORITHM = ClosedCPP.DEFAULT_MATCHING_ALGORITHM;
 
     private static class Box<T> {
 
@@ -88,16 +88,16 @@ public final class OpenCPP<T> {
     }
 
     private UndirectedGraph<Box<T>> boxedGraph;
-    private final MatchingAlgorithm matchingAlgorithm;
+    private final MatchingAlgorithmInterface matchingAlgorithm;
     private ClosedCPPSolution<T> closedCPPSolution;
 
-    public static <T> OpenCPP<T> from(final UndirectedGraph<T> graph, final MatchingAlgorithm matchingAlgorithm) {
+    public static <T> OpenCPP<T> from(final UndirectedGraph<T> graph, final MatchingAlgorithmInterface matchingAlgorithm) {
         Preconditions.checkArgument(graph != null);
         Preconditions.checkArgument(matchingAlgorithm != null);
         return new OpenCPP<T>(graph, matchingAlgorithm);
     }
 
-    public static <T> OpenCPP<T> from(final Supplier<UndirectedGraph<T>> graphSupplier, final MatchingAlgorithm matchingAlgorithm) {
+    public static <T> OpenCPP<T> from(final Supplier<UndirectedGraph<T>> graphSupplier, final MatchingAlgorithmInterface matchingAlgorithm) {
         Preconditions.checkArgument(graphSupplier != null);
         Preconditions.checkArgument(matchingAlgorithm != null);
         return OpenCPP.from(graphSupplier.get(), matchingAlgorithm);
@@ -134,7 +134,7 @@ public final class OpenCPP<T> {
         return this.boxedGraph;
     }
 
-    private OpenCPP(final UndirectedGraph<T> graph, final MatchingAlgorithm matchingAlgorithm) {
+    private OpenCPP(final UndirectedGraph<T> graph, final MatchingAlgorithmInterface matchingAlgorithm) {
         this.graph = graph;
         this.matchingAlgorithm = matchingAlgorithm;
     }

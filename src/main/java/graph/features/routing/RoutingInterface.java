@@ -23,4 +23,6 @@ public interface RoutingInterface<T> {
 
     Path<T> getShortestPath(final T endPoint1, final T endPoint2);
 
+    double[][] getShortestPathWeights();
+
 }

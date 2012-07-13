@@ -24,7 +24,7 @@ import graph.features.routing.RoutingInterface;
 import java.util.List;
 import java.util.Map;
 
-import matching.MatchingAlgorithm;
+import matching.MatchingAlgorithmInterface;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -33,44 +33,27 @@ import com.google.common.primitives.Ints;
 /**
  * Minimum Weight Perfect Matching Algorithm
  */
-public final class Matching implements MatchingAlgorithm {
+public final class Matching implements MatchingAlgorithmInterface {
 
     @Override
-    //public <T> pocman.matching.Match<T> from(final UndirectedGraph<T> originalGraph, final MutableUndirectedGraph<T> residualGraph) {
     public <T> matching.Matches<T> from(final UndirectedGraph<T> residualGraph) {
 
-        final int order = residualGraph.getOrder();
+        final RoutingInterface<T> routingInterface = residualGraph.fetch(RoutingFeature.class).up();
+        final double[][] weights = routingInterface.getShortestPathWeights();
 
-        final Map<T, Integer> indexByVertex = Maps.newHashMap();
-        final Map<Integer, T> vertexByIndex = Maps.newHashMap();
-
-        int n = 0;
-        for (final T vertex : residualGraph) {
-            indexByVertex.put(vertex, n);
-            vertexByIndex.put(n, vertex);
-            ++n;
-        }
-
-        final RoutingInterface<T> pathFeature = residualGraph.fetch(RoutingFeature.class).up();
-
-        final double[][] matrix = new double[order][order];
-        for (int i = 0; i < order; ++i)
-            for (int j = 0; j < order; ++j)
-                matrix[i][j] = pathFeature.getShortestPath(vertexByIndex.get(i), vertexByIndex.get(j)).getWeight();
-
-        final WeightedMatchDouble weightedMatch = new WeightedMatchDouble(matrix);
+        final WeightedMatchDouble weightedMatch = new WeightedMatchDouble(weights);
         final int[] mate = weightedMatch.weightedMatch(WeightedMatchDouble.MINIMIZE);
-
         final int[] matched = weightedMatch.getMatched(mate);
-        final List<List<Integer>> partition = Lists.partition(Ints.asList(matched), 2);
 
         double cost = 0.0;
+        final List<List<Integer>> partition = Lists.partition(Ints.asList(matched), 2);
         final Map<T, T> matches = Maps.newHashMap();
+
         for (final List<Integer> position : partition) {
             final Integer i = position.get(0);
             final Integer j = position.get(1);
-            matches.put(vertexByIndex.get(i), vertexByIndex.get(j));
-            cost += matrix[i][j];
+            matches.put(residualGraph.get(i), residualGraph.get(j));
+            cost += weights[i][j];
         }
 
         return new matching.Matches<T>(matches, cost);
@@ -79,7 +62,6 @@ public final class Matching implements MatchingAlgorithm {
     @Override
     public <T> void setOriginalGraph(final UndirectedGraph<T> graph) {
         // TODO Auto-generated method stub
-
     }
 
 }

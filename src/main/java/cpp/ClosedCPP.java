@@ -36,7 +36,7 @@ import java.util.Set;
 import javax.annotation.concurrent.ThreadSafe;
 
 import matching.Matches;
-import matching.MatchingAlgorithm;
+import matching.MatchingAlgorithmInterface;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
@@ -50,9 +50,9 @@ import com.google.common.collect.Sets;
 @ThreadSafe
 public final class ClosedCPP<T> {
 
-    public final static MatchingAlgorithm DEFAULT_MATCHING_ALGORITHM = new matching.edmonds1.Matching();
+    public final static MatchingAlgorithmInterface DEFAULT_MATCHING_ALGORITHM = new matching.edmonds1.Matching();
 
-    public static <T> ClosedCPP<T> from(final UndirectedGraph<T> graph, final MatchingAlgorithm matchingAlgorithm) {
+    public static <T> ClosedCPP<T> from(final UndirectedGraph<T> graph, final MatchingAlgorithmInterface matchingAlgorithm) {
         Preconditions.checkArgument(graph != null);
         Preconditions.checkArgument(matchingAlgorithm != null);
         final ConnectivityInterface<T> feature = graph.fetch(ConnectivityFeature.class).up();
@@ -60,7 +60,7 @@ public final class ClosedCPP<T> {
         return new ClosedCPP<T>(graph, matchingAlgorithm);
     }
 
-    public static <T> ClosedCPP<T> from(final Supplier<UndirectedGraph<T>> graphSupplier, final MatchingAlgorithm matchingAlgorithm) {
+    public static <T> ClosedCPP<T> from(final Supplier<UndirectedGraph<T>> graphSupplier, final MatchingAlgorithmInterface matchingAlgorithm) {
         Preconditions.checkArgument(graphSupplier != null);
         return ClosedCPP.from(graphSupplier.get(), matchingAlgorithm);
     }
@@ -139,7 +139,7 @@ public final class ClosedCPP<T> {
         return map;
     }
 
-    private static <T> Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final MatchingAlgorithm matchingAlgorithm, final UndirectedGraph<T> graph) {
+    private static <T> Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final MatchingAlgorithmInterface matchingAlgorithm, final UndirectedGraph<T> graph) {
 
         final DegreeInterface<T> degreeInterface = graph.fetch(DegreeFeature.class).up();
         final Map<T, Integer> nodesWithOddDegree = degreeInterface.getNodesWithOddDegree();
@@ -188,13 +188,13 @@ public final class ClosedCPP<T> {
         return value;
     }
 
-    private final MatchingAlgorithm matchingAlgorithm;
+    private final MatchingAlgorithmInterface matchingAlgorithm;
 
-    public MatchingAlgorithm getMatchingAlgorithm() {
+    public MatchingAlgorithmInterface getMatchingAlgorithm() {
         return this.matchingAlgorithm;
     }
 
-    private ClosedCPP(final UndirectedGraph<T> graph, final MatchingAlgorithm matchingAlgorithm) {
+    private ClosedCPP(final UndirectedGraph<T> graph, final MatchingAlgorithmInterface matchingAlgorithm) {
         this.graph = graph;
         this.matchingAlgorithm = matchingAlgorithm;
         // TODO à revoir
