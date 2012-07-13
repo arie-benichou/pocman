@@ -47,6 +47,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 // TODO ? réduire les noeuds de type corner
+// TODO ! make it a graph feature
 @ThreadSafe
 public final class ClosedCPP<T> {
 
@@ -139,7 +140,8 @@ public final class ClosedCPP<T> {
         return map;
     }
 
-    private static <T> Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final MatchingAlgorithmInterface matchingAlgorithm, final UndirectedGraph<T> graph) {
+    private static <T> Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final MatchingAlgorithmInterface matchingAlgorithm,
+            final UndirectedGraph<T> graph) {
 
         final DegreeInterface<T> degreeInterface = graph.fetch(DegreeFeature.class).up();
         final Map<T, Integer> nodesWithOddDegree = degreeInterface.getNodesWithOddDegree();

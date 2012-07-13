@@ -19,6 +19,7 @@ package matching;
 
 import graph.UndirectedGraph;
 
+// TODO ! make it a graph feature
 public interface MatchingAlgorithmInterface {
 
     <T> Matches<T> from(final UndirectedGraph<T> graph);

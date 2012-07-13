@@ -35,6 +35,7 @@ import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 
 // TODO vérifier que le graphe est connecté
+// TODO ! make it a graph feature
 public final class OpenCPP<T> {
 
     public final static MatchingAlgorithmInterface DEFAULT_MATCHING_ALGORITHM = ClosedCPP.DEFAULT_MATCHING_ALGORITHM;

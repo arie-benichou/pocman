@@ -23,12 +23,12 @@ import graph.WeightedEdge;
 import java.util.List;
 import java.util.Map;
 
-
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Maps;
 
+// TODO ! make it a graph feature
 public final class EulerianTrail {
 
     /**
