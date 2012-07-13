@@ -19,7 +19,7 @@ package graph;
 
 import graph.features.connectivity.Connectivity;
 import graph.features.degree.Degree;
-import graph.features.routing.Routing3;
+import graph.features.routing.Routing;
 
 import java.lang.reflect.Method;
 
@@ -30,7 +30,7 @@ public enum Feature {
     NONE(null),
 
     CONNECTIVITY(Connectivity.class),
-    ROUTING(Routing3.class),
+    ROUTING(Routing.class),
     DEGREE(Degree.class);
 
     private final Class<?> featureClass;

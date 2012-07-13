@@ -26,17 +26,17 @@ import pocman.game.MazeNode;
 
 import com.google.common.base.Strings;
 
-public final class Routing3<T> implements RoutingInterface<T> {
+public final class Routing<T> implements RoutingInterface<T> {
 
     private final UndirectedGraph<T> graph;
 
     private volatile Path<T>[][] data = null;
 
-    public static <T> Routing3<T> from(final UndirectedGraph<T> graph) {
-        return new Routing3<T>(graph);
+    public static <T> Routing<T> from(final UndirectedGraph<T> graph) {
+        return new Routing<T>(graph);
     }
 
-    private Routing3(final UndirectedGraph<T> graph) {
+    private Routing(final UndirectedGraph<T> graph) {
         this.graph = graph;
     }
 
@@ -127,7 +127,7 @@ public final class Routing3<T> implements RoutingInterface<T> {
 
         final Maze maze = Maze.from(Mazes.LEVELS[0]);
         final UndirectedGraph<MazeNode> graph = maze.get();
-        final Routing3<MazeNode> feature = graph.getFeature(Feature.ROUTING);
+        final Routing<MazeNode> feature = graph.getFeature(Feature.ROUTING);
         feature.debug(feature.getData());
     }
 
