@@ -20,7 +20,7 @@ package cpp;
 import graph.Feature;
 import graph.UndirectedGraph;
 import graph.WeightedEdge;
-import graph.features.Degree;
+import graph.features.degree.DegreeInterface;
 
 import java.util.List;
 import java.util.Map;
@@ -60,7 +60,7 @@ public final class NodeOfDegree1Pruning<T> {
 
         final Map<T, Integer> deltas = Maps.newHashMap();
 
-        final Degree<T> degreeFeature = graph.getFeature(Feature.DEGREE);
+        final DegreeInterface<T> degreeFeature = graph.getFeature(Feature.DEGREE);
 
         final ImmutableSet.Builder<WeightedEdge<T>> doubledEdgesbuilder = new ImmutableSet.Builder<WeightedEdge<T>>();
 

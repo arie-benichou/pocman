@@ -21,8 +21,8 @@ import graph.Feature;
 import graph.Path;
 import graph.UndirectedGraph;
 import graph.WeightedEdge;
-import graph.features.Connectivity;
-import graph.features.Routing;
+import graph.features.connectivity.ConnectivityInterface;
+import graph.features.routing.RoutingInterface;
 
 import java.util.HashSet;
 import java.util.List;
@@ -125,7 +125,7 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
     }
 
     public boolean hasIsland() {
-        final Connectivity<MazeNode> connectivityFeature = this.graph.getFeature(Feature.CONNECTIVITY);
+        final ConnectivityInterface<MazeNode> connectivityFeature = this.graph.getFeature(Feature.CONNECTIVITY);
         return !connectivityFeature.isConnected();
     }
 
@@ -182,7 +182,7 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
     }
 
     public Path<MazeNode> getShortestPath(final MazeNode endPoint1, final MazeNode endPoint2) {
-        final Routing<MazeNode> feature = this.graph.getFeature(Feature.ROUTING);
+        final RoutingInterface<MazeNode> feature = this.graph.getFeature(Feature.ROUTING);
         return feature.getShortestPath(endPoint1, endPoint2);
     }
 
@@ -191,7 +191,7 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
     }
 
     public boolean hasPath(final MazeNode endPoint1, final MazeNode endPoint2) {
-        final Connectivity<MazeNode> feature = this.graph.getFeature(Feature.CONNECTIVITY);
+        final ConnectivityInterface<MazeNode> feature = this.graph.getFeature(Feature.CONNECTIVITY);
         return feature.isConnected(endPoint1, endPoint2);
     }
 

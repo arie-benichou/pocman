@@ -15,28 +15,22 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package graph;
+package graph.features.degree;
 
-import java.util.Set;
+import java.util.Map;
 
-public interface UndirectedGraphInterface<T> extends Iterable<T> {
+public interface DegreeInterface<T> {
 
-    int getOrder();
+    Map<T, Integer> getDegreeByNode();
 
-    boolean hasEndPoint(final T endPoint);
+    Map<T, Integer> getNodesWithOddDegree();
 
-    Integer getOrdinal(final T endPoint);
+    Map<T, Integer> getNodesWithEvenDegree();
 
-    T get(final int ordinal);
+    Map<T, Integer> getNodesHavingDegree(final int degree);
 
-    boolean hasEdge(final T endPoint1, final T endPoint2);
+    Map<T, Integer> getNodesNotHavingDegree(final int degree);
 
-    Set<T> getConnectedEndPoints(final T endPoint);
-
-    Set<WeightedEdge<T>> getEdgesFrom(final T endPoint);
-
-    Set<WeightedEdge<T>> getSetOfEdges();
-
-    WeightedEdge<T> getEdge(final T endPoint1, final T endPoint2);
+    boolean isEulerian();
 
 }

@@ -19,7 +19,7 @@ package matching.naive;
 
 import graph.Feature;
 import graph.UndirectedGraph;
-import graph.features.Routing;
+import graph.features.routing.RoutingInterface;
 
 import java.util.List;
 import java.util.Map;
@@ -51,7 +51,7 @@ public class Matching implements MatchingAlgorithm {
 
         final double[][] matrix = new double[order][order];
 
-        final Routing<T> pathFeature = residualGraph.getFeature(Feature.ROUTING);
+        final RoutingInterface<T> pathFeature = residualGraph.getFeature(Feature.ROUTING);
 
         for (int i = 0; i < order; ++i)
             for (int j = 0; j < order; ++j)

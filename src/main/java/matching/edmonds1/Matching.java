@@ -21,8 +21,8 @@ import graph.Feature;
 import graph.Path;
 import graph.UndirectedGraph;
 import graph.WeightedEdge;
-import graph.features.Degree;
-import graph.features.Routing;
+import graph.features.degree.DegreeInterface;
+import graph.features.routing.RoutingInterface;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,7 +33,6 @@ import java.util.Set;
 
 import matching.Matches;
 import matching.MatchingAlgorithm;
-
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
@@ -63,7 +62,7 @@ public final class Matching implements MatchingAlgorithm {
     private static <T> double computeCost(final UndirectedGraph<T> originalGraph, final Map<T, T> matching) {
         if (matching.isEmpty()) return Double.POSITIVE_INFINITY;
 
-        final Routing<T> pathFeature = originalGraph.getFeature(Feature.ROUTING);
+        final RoutingInterface<T> pathFeature = originalGraph.getFeature(Feature.ROUTING);
 
         double cost = 0;
         for (final Entry<T, T> entry : matching.entrySet())
@@ -89,8 +88,9 @@ public final class Matching implements MatchingAlgorithm {
         for (final WeightedEdge<T> edge : edges)
             map.put(edge, 1);
 
-        final Degree<T> nodeDegreeFunctions = Degree.from(originalGraph); // TODO
-        final Set<T> nodesWithDegree1 = nodeDegreeFunctions.getNodesHavingDegree(1).keySet();
+        final DegreeInterface<T> degreeInterface = originalGraph.getFeature(Feature.DEGREE);
+
+        final Set<T> nodesWithDegree1 = degreeInterface.getNodesHavingDegree(1).keySet();
 
         for (final T t : nodesWithDegree1) {
             final WeightedEdge<T> endWayEdge = originalGraph.getEdgesFrom(t).iterator().next();
@@ -110,7 +110,7 @@ public final class Matching implements MatchingAlgorithm {
         }
         */
 
-        final Routing<T> pathFeature = originalGraph.getFeature(Feature.ROUTING);
+        final RoutingInterface<T> pathFeature = originalGraph.getFeature(Feature.ROUTING);
 
         for (final Entry<T, T> entry : matching.entrySet()) {
             final T endPoint1 = entry.getKey();
@@ -145,7 +145,7 @@ public final class Matching implements MatchingAlgorithm {
     }
 
     private <T> UndirectedGraph<T> copyGraph(final MutableUndirectedGraph<T> graph) {
-        final UndirectedGraph.Builder<T> residualGraphBuilder = new UndirectedGraph.Builder<T>(graph.getOrder());
+        final UndirectedGraph.Builder<T> residualGraphBuilder = new UndirectedGraph.Builder<T>(graph.getOrder(), UndirectedGraph.SUPERVISER_MODE);
         final Set<WeightedEdge<T>> edges = Sets.newHashSet();
         for (final T endPoint1 : graph)
             for (final T endPoint2 : graph)

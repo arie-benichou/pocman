@@ -19,16 +19,15 @@ package cpp;
 
 import graph.Feature;
 import graph.UndirectedGraph;
-import graph.WeightedEdge;
 import graph.UndirectedGraph.Builder;
-import graph.features.Degree;
+import graph.WeightedEdge;
+import graph.features.degree.DegreeInterface;
 
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import matching.MatchingAlgorithm;
-
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
@@ -119,7 +118,7 @@ public final class OpenCPP<T> {
 
     private UndirectedGraph<Box<T>> getBoxedGraph() {
         if (this.boxedGraph == null) {
-            final Builder<Box<T>> builder = new UndirectedGraph.Builder<Box<T>>(this.getGraph().getOrder());
+            final Builder<Box<T>> builder = new UndirectedGraph.Builder<Box<T>>(this.getGraph().getOrder(), UndirectedGraph.SUPERVISER_MODE);
             for (final T MazeNode : this.getGraph()) {
                 final Set<WeightedEdge<T>> edges = this.getGraph().getEdgesFrom(MazeNode);
                 for (final WeightedEdge<T> weightedEdge : edges) {
@@ -151,7 +150,7 @@ public final class OpenCPP<T> {
 
     // TODO optimisation possible
     private UndirectedGraph<Box<T>> buildVirtualGraph(final UndirectedGraph<Box<T>> boxedGraph, final T startingMazeNode, final T oddVertice) {
-        final Builder<Box<T>> builder = new UndirectedGraph.Builder<Box<T>>(boxedGraph.getOrder() + 1);
+        final Builder<Box<T>> builder = new UndirectedGraph.Builder<Box<T>>(boxedGraph.getOrder() + 1, UndirectedGraph.SUPERVISER_MODE);
         for (final Box<T> MazeNode : boxedGraph) {
             final Set<WeightedEdge<Box<T>>> edges = boxedGraph.getEdgesFrom(MazeNode);
             for (final WeightedEdge<Box<T>> edge : edges)
@@ -159,7 +158,7 @@ public final class OpenCPP<T> {
         }
         final WeightedEdge<Box<T>> virtualEdge1 = WeightedEdge.from(new Box<T>(null), new Box<T>(startingMazeNode), this.getLowerBoundCost());
         builder.addEdge(virtualEdge1);
-        final Degree<T> degreeFeature = boxedGraph.getFeature(Feature.DEGREE); // TODO ? utiliser le graph original
+        final DegreeInterface<T> degreeFeature = boxedGraph.getFeature(Feature.DEGREE); // TODO ? utiliser le graph original
         if (!degreeFeature.isEulerian()) {
             final WeightedEdge<Box<T>> virtualEdge2 = WeightedEdge.from(new Box<T>(oddVertice), new Box<T>(null), this.getLowerBoundCost());
             if (!builder.contains(virtualEdge2)) builder.addEdge(virtualEdge2);
@@ -203,7 +202,7 @@ public final class OpenCPP<T> {
 
         final Stopwatch stopwatch = new Stopwatch();
 
-        final Degree<T> degreeFeature = this.getGraph().getFeature(Feature.DEGREE);
+        final DegreeInterface<T> degreeFeature = this.getGraph().getFeature(Feature.DEGREE);
 
         //final int i = 0;
         for (final T oddVertice : degreeFeature.getNodesWithOddDegree().keySet()) {

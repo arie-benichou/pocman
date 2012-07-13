@@ -26,7 +26,7 @@ public final class Integers {
 
         private final static Predicate<Integer> IS_EVEN = new IsEven();
 
-        private final static Predicate<Integer> IS_ODD = com.google.common.base.Predicates.not(new IsEven());
+        private final static Predicate<Integer> IS_ODD = com.google.common.base.Predicates.not(IS_EVEN);
 
         private final static class IsEven implements Predicate<Integer> {
 

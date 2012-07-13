@@ -15,28 +15,12 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package graph;
+package graph.features.routing;
 
-import java.util.Set;
+import graph.Path;
 
-public interface UndirectedGraphInterface<T> extends Iterable<T> {
+public interface RoutingInterface<T> {
 
-    int getOrder();
-
-    boolean hasEndPoint(final T endPoint);
-
-    Integer getOrdinal(final T endPoint);
-
-    T get(final int ordinal);
-
-    boolean hasEdge(final T endPoint1, final T endPoint2);
-
-    Set<T> getConnectedEndPoints(final T endPoint);
-
-    Set<WeightedEdge<T>> getEdgesFrom(final T endPoint);
-
-    Set<WeightedEdge<T>> getSetOfEdges();
-
-    WeightedEdge<T> getEdge(final T endPoint1, final T endPoint2);
+    Path<T> getShortestPath(final T endPoint1, final T endPoint2);
 
 }

@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import matching.MatchingAlgorithm;
-
 import pocman.game.Maze;
 import pocman.game.MazeNode;
 import pocman.game.Move;

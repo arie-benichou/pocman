@@ -21,9 +21,9 @@ import graph.Feature;
 import graph.Path;
 import graph.UndirectedGraph;
 import graph.WeightedEdge;
-import graph.features.Connectivity;
-import graph.features.Degree;
-import graph.features.Routing;
+import graph.features.connectivity.ConnectivityInterface;
+import graph.features.degree.DegreeInterface;
+import graph.features.routing.RoutingInterface;
 
 import java.util.Collections;
 import java.util.List;
@@ -35,7 +35,6 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import matching.Matches;
 import matching.MatchingAlgorithm;
-
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
@@ -54,7 +53,7 @@ public final class ClosedCPP<T> {
     public static <T> ClosedCPP<T> from(final UndirectedGraph<T> graph, final MatchingAlgorithm matchingAlgorithm) {
         Preconditions.checkArgument(graph != null);
         Preconditions.checkArgument(matchingAlgorithm != null);
-        final Connectivity<T> feature = graph.getFeature(Feature.CONNECTIVITY);
+        final ConnectivityInterface<T> feature = graph.getFeature(Feature.CONNECTIVITY);
         Preconditions.checkState(feature.isConnected(), "Graph must be connected.");
         return new ClosedCPP<T>(graph, matchingAlgorithm);
     }
@@ -95,10 +94,10 @@ public final class ClosedCPP<T> {
     }
 
     private static <T> UndirectedGraph<T> buildResidualGraph(final UndirectedGraph<T> originalGraph, final Set<T> oddVertices) {
-        final UndirectedGraph.Builder<T> residualGraphBuilder = new UndirectedGraph.Builder<T>(oddVertices.size());
+        final UndirectedGraph.Builder<T> residualGraphBuilder = new UndirectedGraph.Builder<T>(oddVertices.size(), UndirectedGraph.SUPERVISER_MODE);
         final Set<WeightedEdge<T>> edges = Sets.newHashSet();
 
-        final Routing<T> pathFeature = originalGraph.getFeature(Feature.ROUTING);
+        final RoutingInterface<T> pathFeature = originalGraph.getFeature(Feature.ROUTING);
 
         for (final T endPoint1 : oddVertices)
             for (final T endPoint2 : oddVertices)
@@ -125,7 +124,7 @@ public final class ClosedCPP<T> {
         for (final WeightedEdge<T> edge : edges)
             map.put(edge, 1);
 
-        final Routing<T> pathFeature = originalGraph.getFeature(Feature.ROUTING);
+        final RoutingInterface<T> pathFeature = originalGraph.getFeature(Feature.ROUTING);
 
         for (final Entry<T, T> entry : matching.entrySet()) {
             final T endPoint1 = entry.getKey();
@@ -140,7 +139,7 @@ public final class ClosedCPP<T> {
 
     private static <T> Map<WeightedEdge<T>, Integer> computeOptimalEulerization(final MatchingAlgorithm matchingAlgorithm, final UndirectedGraph<T> graph) {
 
-        final Degree<T> feature = graph.getFeature(Feature.DEGREE);
+        final DegreeInterface<T> feature = graph.getFeature(Feature.DEGREE);
 
         final Map<T, Integer> nodesWithOddDegree = feature.getNodesWithOddDegree();
         Preconditions.checkState(nodesWithOddDegree.size() % 2 == 0, "Number of odd vertices should be even.");

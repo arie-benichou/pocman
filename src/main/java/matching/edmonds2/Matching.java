@@ -19,7 +19,7 @@ package matching.edmonds2;
 
 import graph.Feature;
 import graph.UndirectedGraph;
-import graph.features.Routing;
+import graph.features.routing.RoutingInterface;
 
 import java.util.List;
 import java.util.Map;
@@ -52,7 +52,7 @@ public final class Matching implements MatchingAlgorithm {
             ++n;
         }
 
-        final Routing<T> pathFeature = residualGraph.getFeature(Feature.ROUTING);
+        final RoutingInterface<T> pathFeature = residualGraph.getFeature(Feature.ROUTING);
 
         final double[][] matrix = new double[order][order];
         for (int i = 0; i < order; ++i)

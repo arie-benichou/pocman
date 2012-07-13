@@ -4,7 +4,7 @@ package pocman.demo;
 import graph.Feature;
 import graph.UndirectedGraph;
 import graph.WeightedEdge;
-import graph.features.Degree;
+import graph.features.degree.DegreeInterface;
 
 import java.util.List;
 import java.util.Map;
@@ -115,7 +115,7 @@ public class SelectiveCPPDemo {
 
     private static Maze apply1(final Maze maze) {
         final UndirectedGraph<MazeNode> graph = maze.get();
-        final Degree<MazeNode> degreeFeature = graph.getFeature(Feature.DEGREE);
+        final DegreeInterface<MazeNode> degreeFeature = graph.getFeature(Feature.DEGREE);
         final Map<MazeNode, Integer> nodesWithDegree = degreeFeature.getNodesHavingDegree(1);
         final char[] board = maze.getBoard().toCharArray();
         for (final Entry<MazeNode, Integer> entry : nodesWithDegree.entrySet()) {
@@ -147,7 +147,7 @@ public class SelectiveCPPDemo {
         final char[] board = maze.getBoard().toCharArray();
 
         final UndirectedGraph<MazeNode> graph = maze.get();
-        final Degree<MazeNode> degreeFeature = graph.getFeature(Feature.DEGREE);
+        final DegreeInterface<MazeNode> degreeFeature = graph.getFeature(Feature.DEGREE);
 
         // TODO ? sélectionner uniquement les corners
         final Map<MazeNode, Integer> nodesNotHavingDegreeOf1 = degreeFeature.getNodesNotHavingDegree(1);

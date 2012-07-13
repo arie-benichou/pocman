@@ -15,23 +15,18 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package graph.features;
+package graph.features.routing;
 
 import graph.Feature;
 import graph.Path;
 import graph.UndirectedGraph;
-
-import java.util.Map;
-
 import pocman.demo.Mazes;
 import pocman.game.Maze;
 import pocman.game.MazeNode;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
 
-public final class Routing<T> {
+public final class Routing2<T> implements RoutingInterface<T> {
 
     private final UndirectedGraph<T> graph;
 
@@ -39,40 +34,24 @@ public final class Routing<T> {
         return this.graph;
     }
 
-    public static <T> Routing<T> from(final UndirectedGraph<T> graph) {
-        return new Routing<T>(graph);
+    public static <T> Routing2<T> from(final UndirectedGraph<T> graph) {
+        return new Routing2<T>(graph);
     }
 
-    private Routing(final UndirectedGraph<T> graph) {
-        //System.out.println(this.getClass().getSimpleName());
+    private Routing2(final UndirectedGraph<T> graph) {
         this.graph = graph;
-    }
-
-    private volatile Map<T, Integer> ordinalByEndPoint = null;
-
-    // TODO refactoring
-    public Map<T, Integer> getOrdinalByEndPoint() {
-        Map<T, Integer> value = this.ordinalByEndPoint;
-        if (value == null) {
-            synchronized (this) {
-                if ((value = this.ordinalByEndPoint) == null) {
-                    final ImmutableMap.Builder<T, Integer> builder = new ImmutableMap.Builder<T, Integer>();
-                    int i = -1;
-                    for (final T endPoint : this.getGraph())
-                        builder.put(endPoint, ++i);
-                    this.ordinalByEndPoint = value = builder.build();
-                }
-            }
-        }
-        return value;
     }
 
     private volatile Path<T>[][] data = null;
 
     private Path<T>[][] getData() {
+
         Path<T>[][] value = this.data;
+
         if (value == null) {
+
             synchronized (this) {
+
                 if ((value = this.data) == null) {
 
                     final int n = this.getGraph().getOrder();
@@ -81,11 +60,11 @@ public final class Routing<T> {
                     final Path<T>[][] data = new Path[n][n];
 
                     for (final T endPoint1 : this.getGraph()) {
-                        final int i = this.getOrdinalByEndPoint().get(endPoint1);
+                        final int i = this.getGraph().getOrdinal(endPoint1);
                         for (final T endPoint2 : this.getGraph()) {
-                            final int j = this.getOrdinalByEndPoint().get(endPoint2);
+                            final int j = this.getGraph().getOrdinal(endPoint2);
                             if (i != j && this.getGraph().hasEdge(endPoint1, endPoint2))
-                                data[i][j] = Path.from(endPoint1, endPoint2, this.getGraph().getEdge(endPoint1, endPoint2).getWeight());
+                                data[i][j] = Path.from(this.getGraph().getEdge(endPoint1, endPoint2));
                         }
                     }
 
@@ -113,17 +92,17 @@ public final class Routing<T> {
 
                     this.data = value = data;
                 }
+
             }
+
         }
+
         return value;
     }
 
+    @Override
     public Path<T> getShortestPath(final T endPoint1, final T endPoint2) {
-        final Integer integer1 = this.getOrdinalByEndPoint().get(endPoint1);
-        Preconditions.checkState(integer1 != null);
-        final Integer integer2 = this.getOrdinalByEndPoint().get(endPoint2);
-        Preconditions.checkState(integer2 != null);
-        return this.getData()[integer1][integer2];
+        return this.getData()[this.getGraph().getOrdinal(endPoint1)][this.getGraph().getOrdinal(endPoint2)];
     }
 
     public void debug(final Path<T>[][] array) {
@@ -153,8 +132,7 @@ public final class Routing<T> {
 
         final Maze maze = Maze.from(Mazes.LEVELS[0]);
         final UndirectedGraph<MazeNode> graph = maze.get();
-        final Routing<MazeNode> feature = graph.getFeature(Feature.ROUTING);
-        //feature.getData();
+        final Routing2<MazeNode> feature = graph.getFeature(Feature.ROUTING);
         feature.debug(feature.getData());
     }
 }

@@ -5,11 +5,10 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import cpp.Bound;
-import cpp.ClosedCPPSolution;
-
 import pocman.game.Maze;
 import pocman.game.MazeNode;
+import cpp.Bound;
+import cpp.ClosedCPPSolution;
 
 public class ClosedCPPDemoTest {
 
@@ -449,7 +448,8 @@ public class ClosedCPPDemoTest {
                 "┃∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙┃" +
                 "┃⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛┃";
         //ClosedCPPDemoTest.check(new Bound(266, 336), level); // TODO FIXME
-        ClosedCPPDemoTest.check(new Bound(266, 340), level); // TODO FIXME
+        //ClosedCPPDemoTest.check(new Bound(266, 340), level); // TODO FIXME
+        ClosedCPPDemoTest.check(new Bound(266, 334), level); // TODO FIXME
     }
 
     /*"" +

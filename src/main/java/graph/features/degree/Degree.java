@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package graph.features;
+package graph.features.degree;
 
 import graph.UndirectedGraph;
 
@@ -24,12 +24,12 @@ import java.util.Map.Entry;
 
 import util.Integers;
 
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Maps;
 
-public final class Degree<T> {
+// TODO caching
+public final class Degree<T> implements DegreeInterface<T> {
 
     private final UndirectedGraph<T> graph;
 
@@ -42,7 +42,6 @@ public final class Degree<T> {
     }
 
     private Degree(final UndirectedGraph<T> graph) {
-        //System.out.println(this.getClass().getSimpleName());
         this.graph = graph;
     }
 
@@ -65,24 +64,36 @@ public final class Degree<T> {
         return value;
     }
 
+    @Override
     public Map<T, Integer> getDegreeByNode() {
         return this.getData();
     }
 
+    @Override
     public Map<T, Integer> getNodesWithOddDegree() {
         return Maps.filterValues(this.getData(), Integers.Predicates.isOdd());
     }
 
+    @Override
     public Map<T, Integer> getNodesWithEvenDegree() {
         return Maps.filterValues(this.getData(), Integers.Predicates.isEven());
     }
 
+    @Override
     public Map<T, Integer> getNodesHavingDegree(final int degree) {
         return Maps.filterValues(this.getData(), Integers.Predicates.is(degree));
     }
 
+    @Override
     public Map<T, Integer> getNodesNotHavingDegree(final int degree) {
         return Maps.filterValues(this.getData(), Integers.Predicates.isNot(degree));
+    }
+
+    // TODO : strictly a graph is ALSO eulerian if it has two and only two endpoints having odd degree.
+    @Override
+    public boolean isEulerian() {
+        final Map<T, Integer> nodesWithOddDegree = this.getNodesWithOddDegree();
+        return nodesWithOddDegree.isEmpty(); // || nodesWithOddDegree.size() == 2;
     }
 
     public static void main(final String[] args) {
@@ -117,12 +128,6 @@ public final class Degree<T> {
         final Map<String, Integer> nodesOfDegree1 = nodeDegreeVisitor.getNodesHavingDegree(1);
         for (final Entry<String, Integer> entry : nodesOfDegree1.entrySet())
             System.out.println(entry);
-    }
-
-    // TODO : strictly a graph is ALSO eulerian if it has two and only two endpoints having odd degree.
-    public boolean isEulerian() {
-        final Map<T, Integer> nodesWithOddDegree = this.getNodesWithOddDegree();
-        return nodesWithOddDegree.isEmpty(); // || nodesWithOddDegree.size() == 2;
     }
 
 }

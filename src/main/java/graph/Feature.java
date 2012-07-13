@@ -17,12 +17,11 @@
 
 package graph;
 
-import graph.features.Connectivity;
-import graph.features.Degree;
-import graph.features.Routing;
+import graph.features.connectivity.Connectivity;
+import graph.features.degree.Degree;
+import graph.features.routing.Routing3;
 
 import java.lang.reflect.Method;
-
 
 import com.google.common.base.Preconditions;
 
@@ -31,7 +30,7 @@ public enum Feature {
     NONE(null),
 
     CONNECTIVITY(Connectivity.class),
-    ROUTING(Routing.class),
+    ROUTING(Routing3.class),
     DEGREE(Degree.class);
 
     private final Class<?> featureClass;
@@ -48,7 +47,7 @@ public enum Feature {
         Object feature = null;
         Exception featureException = null;
         try {
-            final Method method = this.getFeatureClass().getMethod("from", UndirectedGraph.class);
+            final Method method = this.getFeatureClass().getMethod("from", UndirectedGraph.class); // TODO extract constant
             feature = method.invoke(null, graph);
         }
         catch (final Exception exception) {
