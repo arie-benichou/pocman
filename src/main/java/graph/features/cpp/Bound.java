@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package cpp;
+package graph.features.cpp;
 
 import com.google.common.base.Preconditions;
 

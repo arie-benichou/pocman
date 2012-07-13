@@ -20,6 +20,9 @@ package cpp;
 import graph.UndirectedGraph;
 import graph.UndirectedGraph.Builder;
 import graph.WeightedEdge;
+import graph.features.cpp.ClosedCPPFeature;
+import graph.features.cpp.ClosedCPPInterface;
+import graph.features.cpp.ClosedCPPSolution;
 import graph.features.degree.DegreeFeature;
 import graph.features.degree.DegreeInterface;
 
@@ -38,7 +41,8 @@ import com.google.common.collect.Maps;
 // TODO ! make it a graph feature
 public final class OpenCPP<T> {
 
-    public final static MatchingAlgorithmInterface DEFAULT_MATCHING_ALGORITHM = ClosedCPP.DEFAULT_MATCHING_ALGORITHM;
+    //public final static MatchingAlgorithmInterface DEFAULT_MATCHING_ALGORITHM = ClosedCPP.DEFAULT_MATCHING_ALGORITHM;
+    public final static MatchingAlgorithmInterface DEFAULT_MATCHING_ALGORITHM = new matching.edmonds1.Matching(); // TODO
 
     private static class Box<T> {
 
@@ -84,7 +88,12 @@ public final class OpenCPP<T> {
     }
 
     public ClosedCPPSolution<T> getClosedCPPSolution() {
-        if (this.closedCPPSolution == null) this.closedCPPSolution = ClosedCPP.from(this.getGraph(), this.matchingAlgorithm).solve();
+        if (this.closedCPPSolution == null) {
+            final ClosedCPPInterface<T> closedCPPInterface = this.getGraph().fetch(ClosedCPPFeature.class).up();
+            //this.closedCPPSolution = ClosedCPP.from(this.getGraph(), this.matchingAlgorithm).solve(); //TODO
+            this.closedCPPSolution = closedCPPInterface.solve();
+
+        }
         return this.closedCPPSolution;
     }
 
@@ -105,11 +114,13 @@ public final class OpenCPP<T> {
     }
 
     public static <T> OpenCPP<T> from(final UndirectedGraph<T> graph) {
-        return OpenCPP.from(graph, ClosedCPP.DEFAULT_MATCHING_ALGORITHM);
+        //return OpenCPP.from(graph, ClosedCPP.DEFAULT_MATCHING_ALGORITHM); // TODO
+        return OpenCPP.from(graph, DEFAULT_MATCHING_ALGORITHM);
     }
 
     public static <T> OpenCPP<T> from(final Supplier<UndirectedGraph<T>> graphSupplier) {
-        return OpenCPP.from(graphSupplier, ClosedCPP.DEFAULT_MATCHING_ALGORITHM);
+        //return OpenCPP.from(graphSupplier, ClosedCPP.DEFAULT_MATCHING_ALGORITHM); // TODO
+        return OpenCPP.from(graphSupplier, DEFAULT_MATCHING_ALGORITHM); // TODO
     }
 
     public static <T> OpenCPP<T> from(final ClosedCPPSolution<T> closedCPPSolution) {
@@ -211,8 +222,11 @@ public final class OpenCPP<T> {
         for (final T oddVertice : degreeInterface.getNodesWithOddDegree().keySet()) {
             stopwatch.start();
             final UndirectedGraph<Box<T>> virtualGraph = this.buildVirtualGraph(boxedGraph, startingMazeNode, oddVertice);
-            final ClosedCPP<Box<T>> cppSolver = ClosedCPP.from(virtualGraph);
-            final ClosedCPPSolution<Box<T>> cppSolution = cppSolver.solve();
+
+            //final ClosedCPP<Box<T>> cppSolver = ClosedCPP.from(virtualGraph);
+            final ClosedCPPInterface<Box<T>> closedCPPInterface = virtualGraph.fetch(ClosedCPPFeature.class).up();
+
+            final ClosedCPPSolution<Box<T>> cppSolution = closedCPPInterface.solve();
             if (cppSolution.getUpperBoundCost() < bestSolution.getUpperBoundCost()) {
                 bestSolution = new OpenCPPSolution<Box<T>>(new Box<T>(oddVertice), virtualGraph, cppSolution.getTraversalByEdge(),
                         cppSolution.getLowerBoundCost(), cppSolution.getUpperBoundCost());

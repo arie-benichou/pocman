@@ -2,13 +2,13 @@
 package pocman.demo;
 
 import static org.junit.Assert.assertEquals;
+import graph.features.cpp.Bound;
+import graph.features.cpp.ClosedCPPSolution;
 
 import org.junit.Test;
 
 import pocman.game.Maze;
 import pocman.game.MazeNode;
-import cpp.Bound;
-import cpp.ClosedCPPSolution;
 
 public class ClosedCPPDemoTest {
 

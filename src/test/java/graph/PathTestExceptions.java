@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package pocman.graph;
+package graph;
 
 import graph.Path;
 import graph.WeightedEdge;

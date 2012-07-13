@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package cpp;
+package graph.features.cpp;
 
 import graph.UndirectedGraph;
 import graph.WeightedEdge;
@@ -26,6 +26,8 @@ import matching.MatchingAlgorithmInterface;
 
 
 import com.google.common.base.Objects;
+
+import cpp.OpenCPPSolution;
 
 public final class ClosedCPPSolution<T> {
 

@@ -15,35 +15,34 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package pocman.cpp;
+package graph;
 
-import graph.UndirectedGraph;
+import graph.WeightedEdge;
 
 import org.junit.Test;
 
+public class WeightedEdgeTestExceptions {
 
-import com.google.common.base.Supplier;
-
-import cpp.ClosedCPP;
-
-public class ClosedCPPTestExceptions {
+    /*
+    @Test(expected = IllegalArgumentException.class)
+    public void testNewEdgeFromOneEndpointToSameEndpoint() {
+        WeightedEdge.from("A", "A", 1.0);
+    }
+    */
 
     @Test(expected = IllegalArgumentException.class)
-    public void testFromUndirectedGraphOfTWithNullReference() {
-        final UndirectedGraph<?> input = null;
-        ClosedCPP.from(input);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testFromUndirectedGraphOfTWithNotConnectedGraph() {
-        final UndirectedGraph<String> input = new UndirectedGraph.Builder<String>(4).addEdge("A", "B", 1.0).addEdge("C", "D", 1.0).build();
-        ClosedCPP.from(input);
+    public void testNewEdgeWithEndpoint1BeingNull() {
+        WeightedEdge.from(null, "B", 1.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testFromSupplierOfUndirectedGraphOfTWithNullReference() {
-        final Supplier<UndirectedGraph<Object>> input = null;
-        ClosedCPP.from(input);
+    public void testNewEdgeWithEndpoint2BeingNull() {
+        WeightedEdge.from("A", null, 1.0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNewEdgeWithNegativeWeight() {
+        WeightedEdge.from("A", "B", -1.0);
     }
 
 }

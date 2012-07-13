@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package pocman.cpp;
+package graph.features.cpp;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

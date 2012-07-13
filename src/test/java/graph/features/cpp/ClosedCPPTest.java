@@ -15,24 +15,21 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package pocman.cpp;
+package graph.features.cpp;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
 import graph.UndirectedGraph;
 import graph.WeightedEdge;
+import graph.features.cpp.ClosedCPPSolution;
 
 import java.util.Map;
 
 import org.junit.Test;
 
-
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 
-import cpp.ClosedCPP;
-import cpp.ClosedCPPSolution;
 import cpp.OpenCPPSolution;
 
 public class ClosedCPPTest {

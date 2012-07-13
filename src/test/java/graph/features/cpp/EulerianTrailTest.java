@@ -15,11 +15,13 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package pocman.cpp;
+package graph.features.cpp;
 
 import static org.junit.Assert.assertTrue;
 
 import graph.UndirectedGraph;
+import graph.features.cpp.ClosedCPP;
+import graph.features.cpp.ClosedCPPSolution;
 
 import java.util.HashSet;
 import java.util.List;
@@ -30,8 +32,6 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import cpp.ClosedCPP;
-import cpp.ClosedCPPSolution;
 import cpp.EulerianTrail;
 
 public class EulerianTrailTest {

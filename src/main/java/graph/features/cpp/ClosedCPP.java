@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package cpp;
+package graph.features.cpp;
 
 import graph.Path;
 import graph.UndirectedGraph;
@@ -46,10 +46,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import cpp.NodeOfDegree1Pruning;
+
 // TODO ? réduire les noeuds de type corner
-// TODO ! make it a graph feature
 @ThreadSafe
-public final class ClosedCPP<T> {
+final class ClosedCPP<T> implements ClosedCPPInterface<T> {
 
     public final static MatchingAlgorithmInterface DEFAULT_MATCHING_ALGORITHM = new matching.edmonds1.Matching();
 
@@ -192,6 +193,7 @@ public final class ClosedCPP<T> {
 
     private final MatchingAlgorithmInterface matchingAlgorithm;
 
+    @Override
     public MatchingAlgorithmInterface getMatchingAlgorithm() {
         return this.matchingAlgorithm;
     }
@@ -206,6 +208,7 @@ public final class ClosedCPP<T> {
         this.lowerBoundCost = lowerBoundCost;
     }
 
+    @Override
     public ClosedCPPSolution<T> solve() {
         final Map<WeightedEdge<T>, Integer> traversalByEdge = this.getTraversalByEdge();
         return new ClosedCPPSolution<T>(this.matchingAlgorithm, this.graph, traversalByEdge, this.getLowerBoundCost(), computeCost(traversalByEdge)); // TODO à revoir

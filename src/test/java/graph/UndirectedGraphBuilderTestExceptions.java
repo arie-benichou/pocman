@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package pocman.graph;
+package graph;
 
 import static org.junit.Assert.assertTrue;
 import graph.UndirectedGraph;

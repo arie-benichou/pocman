@@ -17,6 +17,10 @@
 
 package pocman.demo;
 
+import graph.features.cpp.ClosedCPPFeature;
+import graph.features.cpp.ClosedCPPInterface;
+import graph.features.cpp.ClosedCPPSolution;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -30,8 +34,6 @@ import pocman.view.MazeAsBoardView;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 
-import cpp.ClosedCPP;
-import cpp.ClosedCPPSolution;
 import cpp.EulerianTrail;
 import cpp.OpenCPP;
 import cpp.OpenCPPSolution;
@@ -56,8 +58,9 @@ public class ClosedCPPDemo {
     }
 
     public ClosedCPPSolution<MazeNode> solve(final Maze maze) {
-        final ClosedCPP<MazeNode> closedCPP = ClosedCPP.from(maze, this.matchingAlgorithm);
-        final ClosedCPPSolution<MazeNode> closedCPPSolution = closedCPP.solve();
+        //final ClosedCPP<MazeNode> closedCPP = ClosedCPP.from(maze, this.matchingAlgorithm); // TODO
+        final ClosedCPPInterface<MazeNode> closedCPPInterface = maze.get().fetch(ClosedCPPFeature.class).up(); // TODO
+        final ClosedCPPSolution<MazeNode> closedCPPSolution = closedCPPInterface.solve();
         //final double upperBoundCost = closedCPPSolution.getUpperBoundCost();
         return closedCPPSolution;
     }
