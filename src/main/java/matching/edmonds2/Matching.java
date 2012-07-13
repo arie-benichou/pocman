@@ -17,15 +17,14 @@
 
 package matching.edmonds2;
 
-import graph.Feature;
 import graph.UndirectedGraph;
+import graph.features.routing.RoutingFeature;
 import graph.features.routing.RoutingInterface;
 
 import java.util.List;
 import java.util.Map;
 
 import matching.MatchingAlgorithm;
-
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -52,7 +51,7 @@ public final class Matching implements MatchingAlgorithm {
             ++n;
         }
 
-        final RoutingInterface<T> pathFeature = residualGraph.getFeature(Feature.ROUTING);
+        final RoutingInterface<T> pathFeature = residualGraph.fetch(RoutingFeature.class).up();
 
         final double[][] matrix = new double[order][order];
         for (int i = 0; i < order; ++i)

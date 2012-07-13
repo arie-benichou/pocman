@@ -17,6 +17,8 @@
 
 package graph;
 
+import graph.features.FeatureInterface;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -230,16 +232,23 @@ public final class UndirectedGraph<T> implements UndirectedGraphInterface<T> {
         return this.endPointById.values().iterator();
     }
 
-    private final Map<Feature, Object> features = Maps.newConcurrentMap();
+    private final Map<Class<?>, FeatureInterface> features = Maps.newConcurrentMap();
 
     @SuppressWarnings("unchecked")
-    public <F> F getFeature(final Feature feature) { // TODO !! à revoir (retourner une Function<T> et aplly() retourne la feature ?)
-        Object object = this.features.get(feature);
-        if (object == null) {
-            object = feature.on(this);
-            this.features.put(feature, object);
+    public <F extends FeatureInterface> F fetch(final Class<F> featureClass) {
+        F feature = (F) this.features.get(featureClass);
+        if (feature == null) {
+            Exception featureException = null;
+            try {
+                feature = featureClass.getConstructor(UndirectedGraph.class).newInstance(this);
+            }
+            catch (final Exception exception) {
+                featureException = exception;
+            }
+            Preconditions.checkState(feature != null, featureException);
+            this.features.put(featureClass, feature);
         }
-        return (F) object;
+        return feature;
     }
 
 }

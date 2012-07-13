@@ -17,13 +17,9 @@
 
 package graph.features.connectivity;
 
-import graph.Feature;
 import graph.UndirectedGraph;
-import pocman.demo.Mazes;
-import pocman.game.Maze;
-import pocman.game.MazeNode;
 
-public final class Connectivity<T> implements ConnectivityInterface<T> {
+final class Connectivity<T> implements ConnectivityInterface<T> {
 
     private final UndirectedGraph<T> graph;
 
@@ -113,13 +109,6 @@ public final class Connectivity<T> implements ConnectivityInterface<T> {
             System.out.println();
         }
         System.out.println();
-    }
-
-    public static void main(final String[] args) {
-        final Maze maze = Maze.from(Mazes.LEVELS[0]);
-        final UndirectedGraph<MazeNode> graph = maze.get();
-        final Connectivity<MazeNode> feature = graph.getFeature(Feature.CONNECTIVITY);
-        feature.debug(feature.getData());
     }
 
 }

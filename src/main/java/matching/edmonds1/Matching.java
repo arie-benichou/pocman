@@ -17,11 +17,12 @@
 
 package matching.edmonds1;
 
-import graph.Feature;
 import graph.Path;
 import graph.UndirectedGraph;
 import graph.WeightedEdge;
+import graph.features.degree.DegreeFeature;
 import graph.features.degree.DegreeInterface;
+import graph.features.routing.RoutingFeature;
 import graph.features.routing.RoutingInterface;
 
 import java.util.Collections;
@@ -62,7 +63,7 @@ public final class Matching implements MatchingAlgorithm {
     private static <T> double computeCost(final UndirectedGraph<T> originalGraph, final Map<T, T> matching) {
         if (matching.isEmpty()) return Double.POSITIVE_INFINITY;
 
-        final RoutingInterface<T> pathFeature = originalGraph.getFeature(Feature.ROUTING);
+        final RoutingInterface<T> pathFeature = originalGraph.fetch(RoutingFeature.class).up();
 
         double cost = 0;
         for (final Entry<T, T> entry : matching.entrySet())
@@ -88,7 +89,7 @@ public final class Matching implements MatchingAlgorithm {
         for (final WeightedEdge<T> edge : edges)
             map.put(edge, 1);
 
-        final DegreeInterface<T> degreeInterface = originalGraph.getFeature(Feature.DEGREE);
+        final DegreeInterface<T> degreeInterface = originalGraph.fetch(DegreeFeature.class).up();
 
         final Set<T> nodesWithDegree1 = degreeInterface.getNodesHavingDegree(1).keySet();
 
@@ -110,7 +111,7 @@ public final class Matching implements MatchingAlgorithm {
         }
         */
 
-        final RoutingInterface<T> pathFeature = originalGraph.getFeature(Feature.ROUTING);
+        final RoutingInterface<T> pathFeature = originalGraph.fetch(RoutingFeature.class).up();
 
         for (final Entry<T, T> entry : matching.entrySet()) {
             final T endPoint1 = entry.getKey();

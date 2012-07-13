@@ -20,11 +20,9 @@ package pocman.graph;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import graph.Feature;
 import graph.UndirectedGraph;
-import graph.WeightedEdge;
 import graph.UndirectedGraph.Builder;
+import graph.WeightedEdge;
 
 import java.util.Set;
 
@@ -33,7 +31,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 
 import com.google.common.collect.Sets;
 
@@ -139,6 +136,7 @@ public class UndirectedGraphTest {
         assertFalse(this.graph.hasEndPoint(""));
     }
 
+    /*
     @Test(expected = IllegalStateException.class)
     public void testGetFeature() {
         this.graph.getFeature(Feature.NONE);
@@ -146,9 +144,10 @@ public class UndirectedGraphTest {
 
     @Test
     public void testGetDegreeFeature() {
-        final Object feature = this.graph.getFeature(Feature.DEGREE);
+        final Object feature = this.graph.fetch(Feature.DEGREE);
         assertTrue(feature.getClass().equals(Feature.DEGREE.getFeatureClass()));
     }
+    */
 
     /*
     @Test

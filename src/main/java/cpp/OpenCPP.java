@@ -17,10 +17,10 @@
 
 package cpp;
 
-import graph.Feature;
 import graph.UndirectedGraph;
 import graph.UndirectedGraph.Builder;
 import graph.WeightedEdge;
+import graph.features.degree.DegreeFeature;
 import graph.features.degree.DegreeInterface;
 
 import java.util.Map;
@@ -158,8 +158,10 @@ public final class OpenCPP<T> {
         }
         final WeightedEdge<Box<T>> virtualEdge1 = WeightedEdge.from(new Box<T>(null), new Box<T>(startingMazeNode), this.getLowerBoundCost());
         builder.addEdge(virtualEdge1);
-        final DegreeInterface<T> degreeFeature = boxedGraph.getFeature(Feature.DEGREE); // TODO ? utiliser le graph original
-        if (!degreeFeature.isEulerian()) {
+
+        final DegreeInterface<T> degreeInterface = boxedGraph.fetch(DegreeFeature.class).up();// TODO ? utiliser le graph original
+
+        if (!degreeInterface.isEulerian()) {
             final WeightedEdge<Box<T>> virtualEdge2 = WeightedEdge.from(new Box<T>(oddVertice), new Box<T>(null), this.getLowerBoundCost());
             if (!builder.contains(virtualEdge2)) builder.addEdge(virtualEdge2);
         }
@@ -202,10 +204,10 @@ public final class OpenCPP<T> {
 
         final Stopwatch stopwatch = new Stopwatch();
 
-        final DegreeInterface<T> degreeFeature = this.getGraph().getFeature(Feature.DEGREE);
+        final DegreeInterface<T> degreeInterface = this.getGraph().fetch(DegreeFeature.class).up();
 
         //final int i = 0;
-        for (final T oddVertice : degreeFeature.getNodesWithOddDegree().keySet()) {
+        for (final T oddVertice : degreeInterface.getNodesWithOddDegree().keySet()) {
             stopwatch.start();
             final UndirectedGraph<Box<T>> virtualGraph = this.buildVirtualGraph(boxedGraph, startingMazeNode, oddVertice);
             final ClosedCPP<Box<T>> cppSolver = ClosedCPP.from(virtualGraph);

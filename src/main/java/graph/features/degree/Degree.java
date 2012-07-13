@@ -29,7 +29,7 @@ import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Maps;
 
 // TODO caching
-public final class Degree<T> implements DegreeInterface<T> {
+final class Degree<T> implements DegreeInterface<T> {
 
     private final UndirectedGraph<T> graph;
 
@@ -41,7 +41,7 @@ public final class Degree<T> implements DegreeInterface<T> {
         return new Degree<T>(graph);
     }
 
-    private Degree(final UndirectedGraph<T> graph) {
+    public Degree(final UndirectedGraph<T> graph) {
         this.graph = graph;
     }
 

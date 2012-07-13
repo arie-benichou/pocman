@@ -17,11 +17,12 @@
 
 package pocman.game;
 
-import graph.Feature;
 import graph.Path;
 import graph.UndirectedGraph;
 import graph.WeightedEdge;
+import graph.features.connectivity.ConnectivityFeature;
 import graph.features.connectivity.ConnectivityInterface;
+import graph.features.routing.RoutingFeature;
 import graph.features.routing.RoutingInterface;
 
 import java.util.HashSet;
@@ -125,7 +126,7 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
     }
 
     public boolean hasIsland() {
-        final ConnectivityInterface<MazeNode> connectivityFeature = this.graph.getFeature(Feature.CONNECTIVITY);
+        final ConnectivityInterface<MazeNode> connectivityFeature = this.graph.fetch(ConnectivityFeature.class).up();
         return !connectivityFeature.isConnected();
     }
 
@@ -182,7 +183,7 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
     }
 
     public Path<MazeNode> getShortestPath(final MazeNode endPoint1, final MazeNode endPoint2) {
-        final RoutingInterface<MazeNode> feature = this.graph.getFeature(Feature.ROUTING);
+        final RoutingInterface<MazeNode> feature = this.graph.fetch(RoutingFeature.class).up();
         return feature.getShortestPath(endPoint1, endPoint2);
     }
 
@@ -191,7 +192,7 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
     }
 
     public boolean hasPath(final MazeNode endPoint1, final MazeNode endPoint2) {
-        final ConnectivityInterface<MazeNode> feature = this.graph.getFeature(Feature.CONNECTIVITY);
+        final ConnectivityInterface<MazeNode> feature = this.graph.fetch(ConnectivityFeature.class).up();
         return feature.isConnected(endPoint1, endPoint2);
     }
 

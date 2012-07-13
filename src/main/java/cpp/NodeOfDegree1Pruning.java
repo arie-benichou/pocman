@@ -17,16 +17,15 @@
 
 package cpp;
 
-import graph.Feature;
 import graph.UndirectedGraph;
 import graph.WeightedEdge;
+import graph.features.degree.DegreeFeature;
 import graph.features.degree.DegreeInterface;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
@@ -60,11 +59,11 @@ public final class NodeOfDegree1Pruning<T> {
 
         final Map<T, Integer> deltas = Maps.newHashMap();
 
-        final DegreeInterface<T> degreeFeature = graph.getFeature(Feature.DEGREE);
+        final DegreeInterface<T> degreeInterface = graph.fetch(DegreeFeature.class).up();
 
         final ImmutableSet.Builder<WeightedEdge<T>> doubledEdgesbuilder = new ImmutableSet.Builder<WeightedEdge<T>>();
 
-        final Map<T, Integer> nodesWithDegree1 = degreeFeature.getNodesHavingDegree(1);
+        final Map<T, Integer> nodesWithDegree1 = degreeInterface.getNodesHavingDegree(1);
         final List<T> nodes = Lists.newArrayList(nodesWithDegree1.keySet());
         for (final T node : nodes) {
             final WeightedEdge<T> edge = graph.getEdgesFrom(node).iterator().next();
@@ -80,7 +79,7 @@ public final class NodeOfDegree1Pruning<T> {
 
         final Builder<T, Integer> remainingOddVerticesBuilder = new ImmutableMap.Builder<T, Integer>();
         final Set<T> remainingOddVertices = Sets.newHashSet();
-        for (final Entry<T, Integer> entry : degreeFeature.getDegreeByNode().entrySet()) {
+        for (final Entry<T, Integer> entry : degreeInterface.getDegreeByNode().entrySet()) {
             final T node = entry.getKey();
             final Integer degree = entry.getValue();
             Integer delta = deltas.get(node);

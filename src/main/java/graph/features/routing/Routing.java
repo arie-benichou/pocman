@@ -17,16 +17,12 @@
 
 package graph.features.routing;
 
-import graph.Feature;
 import graph.Path;
 import graph.UndirectedGraph;
-import pocman.demo.Mazes;
-import pocman.game.Maze;
-import pocman.game.MazeNode;
 
 import com.google.common.base.Strings;
 
-public final class Routing<T> implements RoutingInterface<T> {
+final class Routing<T> implements RoutingInterface<T> {
 
     private final UndirectedGraph<T> graph;
 
@@ -121,14 +117,6 @@ public final class Routing<T> implements RoutingInterface<T> {
             System.out.println();
         }
         System.out.println();
-    }
-
-    public static void main(final String[] args) {
-
-        final Maze maze = Maze.from(Mazes.LEVELS[0]);
-        final UndirectedGraph<MazeNode> graph = maze.get();
-        final Routing<MazeNode> feature = graph.getFeature(Feature.ROUTING);
-        feature.debug(feature.getData());
     }
 
 }
