@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Lists;
@@ -47,27 +48,37 @@ final class EulerianTrail<T> implements EulerianTrailInterface<T> {
         return this.graph;
     }
 
-    private static class Data<N> implements Comparable<Data<N>> {
+    private class Data implements Comparable<Data> {
 
-        private final WeightedEdge<N> edge;
+        private final WeightedEdge<T> edge;
         private final int degree;
 
-        public Data(final WeightedEdge<N> edge, final int degree) {
+        public Data(final WeightedEdge<T> edge, final int degree) {
             this.edge = edge;
             this.degree = degree;
         }
 
-        public int _compareTo(final Data<N> that) {
-            final int compare = this.degree - that.degree;
-            if (compare < 0) return -1;
-            if (compare > 0) return 1;
-            return Double.compare(this.edge.getWeight(), that.edge.getWeight());
+        @Override
+        public int compareTo(final Data that) {
+            final int compare1 = -(this.degree - that.degree);
+            if (compare1 < 0) return -1;
+            if (compare1 > 0) return 1;
+
+            final int compare2 = -Double.compare(this.edge.getWeight(), that.edge.getWeight());
+            if (compare2 < 0) return -1;
+            if (compare2 > 0) return 1;
+
+            final Integer ordinal1 = EulerianTrail.this.getGraph().getOrdinal(this.edge.getEndPoint2());
+            final Integer ordinal2 = EulerianTrail.this.getGraph().getOrdinal(that.edge.getEndPoint2());
+
+            final int compare3 = -(ordinal1 - ordinal2);
+            if (compare3 < 0) return -1;
+            if (compare3 > 0) return 1;
+
+            Preconditions.checkState(false);
+            return 0;
         }
 
-        @Override
-        public int compareTo(final Data<N> that) {
-            return -this._compareTo(that);
-        }
     }
 
     /*
@@ -91,13 +102,13 @@ final class EulerianTrail<T> implements EulerianTrailInterface<T> {
 
         final Builder<T> trailBuilder = new ImmutableList.Builder<T>();
 
-        final List<Data<T>> nextNodes = Lists.newArrayList();
+        final List<Data> nextNodes = Lists.newArrayList();
         for (final WeightedEdge<T> edge : this.getGraph().getEdgesFrom(startingNode)) {
             final Integer integer = traversalByEdge.get(edge);
-            if (integer > 0) nextNodes.add(new Data<T>(edge, degreeByNode.get(edge.getEndPoint2())));
+            if (integer > 0) nextNodes.add(new Data(edge, degreeByNode.get(edge.getEndPoint2())));
         }
         Collections.sort(nextNodes);
-        for (final Data<T> data : nextNodes) {
+        for (final Data data : nextNodes) {
             final Integer integer = traversalByEdge.get(data.edge);
             if (integer > 0) {
                 traversalByEdge.put(data.edge, integer - 1);

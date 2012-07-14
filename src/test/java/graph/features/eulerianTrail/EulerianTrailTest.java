@@ -23,13 +23,11 @@ import graph.features.cpp.ClosedCPPFeature;
 import graph.features.cpp.ClosedCPPInterface;
 import graph.features.cpp.ClosedCPPSolution;
 
-import java.util.HashSet;
 import java.util.List;
 
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 public class EulerianTrailTest {
 
@@ -60,9 +58,7 @@ public class EulerianTrailTest {
                 .addEdge("B", "C", 1.0)
                 .addEdge("C", "A", 1.0)
                 .build();
-        final HashSet<List<String>> expected = Sets.newHashSet();
-        expected.add(Lists.newArrayList("A", "B", "C", "A"));
-        expected.add(Lists.newArrayList("A", "C", "B", "A"));
+        final List<String> expectedTrail = Lists.newArrayList("A", "B", "C", "A");
 
         // TODO ! soit:
         // - écrire une classe de graphe non orienté écrite ?
@@ -73,7 +69,7 @@ public class EulerianTrailTest {
         final EulerianTrailInterface<String> eulerianTrailInterface = graph.fetch(EulerianTrailFeature.class).up();
         final List<String> actualTrail = eulerianTrailInterface.getEulerianTrail("A", solution.getTraversalByEdge());
 
-        assertTrue(expected.contains(actualTrail));
+        assertTrue(actualTrail.equals(expectedTrail));
     }
 
 }
