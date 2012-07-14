@@ -201,8 +201,6 @@ public class SelectiveCPPDemo {
             final int childNodeId = trail.get(i).getId();
             final MazeNode childNode = maze.getNode(childNodeId);
             final Move move = findMove(parentNode, childNode);
-            System.out.println(move);
-            System.out.println(childNode);
             MazeNode node = parentNode;
             while (!node.equals(childNode)) {
                 node = maze.getNode(node.getId() + move.getDelta());
