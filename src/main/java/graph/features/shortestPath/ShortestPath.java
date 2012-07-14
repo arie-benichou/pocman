@@ -15,24 +15,25 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package graph.features.routing;
+package graph.features.shortestPath;
 
-import graph.Path;
 import graph.UndirectedGraph;
 
 import com.google.common.base.Strings;
 
-final class Routing<T> implements RoutingInterface<T> {
+// TODO scinder en ShortestPathFeature et EulerianTrail
+// TODO inclure cpp features dans le package routing
+final class ShortestPath<T> implements ShortestPathInterface<T> {
 
     private final UndirectedGraph<T> graph;
 
-    private volatile Path<T>[][] data = null;
+    private volatile PathInterface<T>[][] data = null;
 
-    public static <T> Routing<T> from(final UndirectedGraph<T> graph) {
-        return new Routing<T>(graph);
+    public static <T> ShortestPath<T> from(final UndirectedGraph<T> graph) {
+        return new ShortestPath<T>(graph);
     }
 
-    private Routing(final UndirectedGraph<T> graph) {
+    private ShortestPath(final UndirectedGraph<T> graph) {
         this.graph = graph;
     }
 
@@ -41,9 +42,9 @@ final class Routing<T> implements RoutingInterface<T> {
     }
 
     @SuppressWarnings("unchecked")
-    private Path<T>[][] initializeData() {
+    private PathInterface<T>[][] initializeData() {
         final int n = this.getGraph().getOrder();
-        final Path<T>[][] data = new Path[n][n];
+        final PathInterface<T>[][] data = new PathInterface[n][n];
         for (int i = 0; i < n; ++i) {
             final T endPoint1 = this.getGraph().get(i);
             for (int j = 0; j < n; ++j) {
@@ -61,17 +62,17 @@ final class Routing<T> implements RoutingInterface<T> {
      * 
      * @return
      */
-    private Path<T>[][] computeData(final Path<T>[][] data) {
+    private PathInterface<T>[][] computeData(final PathInterface<T>[][] data) {
         final int n = this.getGraph().getOrder();
         for (int k = 0; k < n; ++k) {
             for (int i = 0; i < n; ++i) {
                 for (int j = 0; j < n; ++j) {
                     if (i == j) continue;
-                    final Path<T> path = data[i][j];
+                    final PathInterface<T> path = data[i][j];
                     final double currentCost = path == null ? Double.POSITIVE_INFINITY : path.getWeight(); // TODO ? compute upper-bound
-                    final Path<T> path1 = data[i][k];
+                    final PathInterface<T> path1 = data[i][k];
                     if (path1 == null) continue;
-                    final Path<T> path2 = data[k][j];
+                    final PathInterface<T> path2 = data[k][j];
                     if (path2 == null) continue;
                     if (path1.getWeight() + path2.getWeight() < currentCost) data[i][j] = path1.add(path2);
                 }
@@ -81,8 +82,8 @@ final class Routing<T> implements RoutingInterface<T> {
         return data;
     }
 
-    private Path<T>[][] getData() {
-        Path<T>[][] value = this.data;
+    private PathInterface<T>[][] getData() {
+        PathInterface<T>[][] value = this.data;
         if (value == null) {
             synchronized (this) {
                 if ((value = this.data) == null) this.data = value = this.computeData(this.initializeData());
@@ -102,19 +103,16 @@ final class Routing<T> implements RoutingInterface<T> {
     }
 
     @Override
-    public Path<T> getShortestPath(final T endPoint1, final T endPoint2) {
+    public PathInterface<T> getShortestPath(final T endPoint1, final T endPoint2) {
         return this.getData()[this.getGraph().getOrdinal(endPoint1)][this.getGraph().getOrdinal(endPoint2)];
     }
 
-    public void debug(final Path<T>[][] array) {
-
+    public void debug(final PathInterface<T>[][] array) {
         double max = 0;
         final int order = this.getGraph().getOrder();
-
         for (int i = 0; i < order; ++i)
             for (int j = 0; j < order; ++j)
                 if (i != j && array[i][j] != null && array[i][j].getWeight() > max) max = array[i][j].getWeight();
-
         final int n = (int) Math.floor(Math.log10(Double.valueOf(max).intValue())) + 1;
         for (int i = 0; i < order; ++i) {
             for (int j = 0; j < order; ++j) {

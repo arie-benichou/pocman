@@ -15,7 +15,9 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package graph;
+package graph.features.shortestPath;
+
+import graph.WeightedEdge;
 
 import java.util.List;
 
@@ -26,7 +28,7 @@ import com.google.common.collect.ImmutableList.Builder;
 
 // TODO WeightedEdgeInterface
 // TODO implémenter WeightedEdgeInterface
-public final class Path<T> implements Comparable<Path<T>> {
+final class Path<T> implements PathInterface<T>, Comparable<Path<T>> {
 
     private final List<WeightedEdge<T>> edges;
     private final int numberOfEdges;
@@ -65,20 +67,24 @@ public final class Path<T> implements Comparable<Path<T>> {
         this.hashCode = hashCode(endPoint1.hashCode(), endPoint2.hashCode());
     }
 
+    // TODO à virer
     public boolean isNull() {
         return this.getNumberOfEdges() == 0;
     }
 
+    @Override
     public T getEndPoint1() {
         if (this.isNull()) return null;
         return this.getEdges().get(0).getEndPoint1();
     }
 
+    @Override
     public T getEndPoint2() {
         if (this.isNull()) return null;
         return this.getLastEdge().getEndPoint2();
     }
 
+    @Override
     public double getWeight() {// TODO retourner un Double
         return this.cost;
     }
@@ -90,19 +96,23 @@ public final class Path<T> implements Comparable<Path<T>> {
         return 0;
     }
 
+    @Override
     public int getNumberOfEdges() {
         return this.numberOfEdges;
     }
 
     // TODO retourner une liste immutable uniquement à ce moment ?
+    @Override
     public List<WeightedEdge<T>> getEdges() {
         return this.edges;
     }
 
+    @Override
     public WeightedEdge<T> getLastEdge() {
         return this.lastEdge;
     }
 
+    @Override
     public Path<T> reverse() {
         if (this.isNull()) return this;
         final Builder<WeightedEdge<T>> builder = new ImmutableList.Builder<WeightedEdge<T>>();
@@ -113,6 +123,10 @@ public final class Path<T> implements Comparable<Path<T>> {
         return new Path<T>(builder.build(), this.getWeight(), this.getEdges().get(0).reverse());
     }
 
+    /* (non-Javadoc)
+     * @see graph.features.shortestPath.PI#add(graph.WeightedEdge)
+     */
+    @Override
     public Path<T> add(final WeightedEdge<T> edge) {
         Preconditions.checkArgument(edge != null);
         final int n = this.getNumberOfEdges();
@@ -154,6 +168,11 @@ public final class Path<T> implements Comparable<Path<T>> {
     }
 
     public Path<T> add(final Path<T> path) {
+        return (Path<T>) this.add((PathInterface<T>) path);
+    }
+
+    @Override
+    public PathInterface<T> add(final PathInterface<T> path) {
 
         Preconditions.checkArgument(path != null);
 
@@ -193,11 +212,6 @@ public final class Path<T> implements Comparable<Path<T>> {
 
         throw new IllegalStateException("invalid path" + "\nAdding: " + path + "\nTo: " + this + "\n"); // TODO
 
-    }
-
-    @Override
-    public int hashCode() {
-        return this.hashCode;
     }
 
     @SuppressWarnings("unchecked")

@@ -20,6 +20,8 @@ package pocman.demo;
 import graph.features.cpp.ClosedCPPFeature;
 import graph.features.cpp.ClosedCPPInterface;
 import graph.features.cpp.ClosedCPPSolution;
+import graph.features.eulerianTrail.EulerianTrailFeature;
+import graph.features.eulerianTrail.EulerianTrailInterface;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -34,10 +36,6 @@ import pocman.view.MazeAsBoardView;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 
-import cpp.EulerianTrail;
-import cpp.OpenCPP;
-import cpp.OpenCPPSolution;
-
 public class ClosedCPPDemo {
 
     public final static MatchingAlgorithmInterface MATCHING_ALGORITHM_1 = new matching.edmonds1.Matching();
@@ -50,12 +48,15 @@ public class ClosedCPPDemo {
         this.matchingAlgorithm = matchingAlgorithm;
     }
 
+    /*
     public OpenCPPSolution<MazeNode> solve(final ClosedCPPSolution<MazeNode> closedCPPSolution, final MazeNode mazeNode) {
         //return OpenCPP.from(maze, this.matchingAlgorithm).solveFrom(maze.getNode(pocManPosition));
         final OpenCPP<MazeNode> openCPP = OpenCPP.from(closedCPPSolution);
+        
         final OpenCPPSolution<MazeNode> openCPPSolution = openCPP.solveFrom(mazeNode);
         return openCPPSolution;
     }
+    */
 
     public ClosedCPPSolution<MazeNode> solve(final Maze maze) {
         //final ClosedCPP<MazeNode> closedCPP = ClosedCPP.from(maze, this.matchingAlgorithm); // TODO
@@ -117,10 +118,11 @@ public class ClosedCPPDemo {
             final ClosedCPPSolution<MazeNode> closedCPPSolution = that.solve(maze);
             stopwatch.stop();
 
-            final List<MazeNode> closedTrail = EulerianTrail.from(
-                    closedCPPSolution.getGraph(),
-                    closedCPPSolution.getTraversalByEdge(),
-                    maze.getNode(pocManPosition));
+            final EulerianTrailInterface<MazeNode> eulerianTrailInterface = maze.get().fetch(EulerianTrailFeature.class).up();
+            final List<MazeNode> closedTrail = eulerianTrailInterface.getEulerianTrail(
+                    maze.getNode(pocManPosition),
+                    closedCPPSolution.getTraversalByEdge()
+                    ); // TODO ! maze.getEulerianTrail(startingMazeNode)
 
             that.debug(maze, closedTrail, 160);
             System.out.println(closedCPPSolution);

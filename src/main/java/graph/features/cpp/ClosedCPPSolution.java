@@ -27,7 +27,6 @@ import matching.MatchingAlgorithmInterface;
 
 import com.google.common.base.Objects;
 
-import cpp.OpenCPPSolution;
 
 public final class ClosedCPPSolution<T> {
 

@@ -15,10 +15,10 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package graph;
+package graph.features.shortestPath;
 
-import graph.Path;
 import graph.WeightedEdge;
+import graph.features.shortestPath.Path;
 
 import org.junit.Test;
 

@@ -17,13 +17,13 @@
 
 package matching.edmonds1;
 
-import graph.Path;
 import graph.UndirectedGraph;
 import graph.WeightedEdge;
 import graph.features.degree.DegreeFeature;
 import graph.features.degree.DegreeInterface;
-import graph.features.routing.RoutingFeature;
-import graph.features.routing.RoutingInterface;
+import graph.features.shortestPath.PathInterface;
+import graph.features.shortestPath.ShortestPathFeature;
+import graph.features.shortestPath.ShortestPathInterface;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -63,7 +63,7 @@ public final class Matching implements MatchingAlgorithmInterface {
     private static <T> double computeCost(final UndirectedGraph<T> originalGraph, final Map<T, T> matching) {
         if (matching.isEmpty()) return Double.POSITIVE_INFINITY;
 
-        final RoutingInterface<T> pathFeature = originalGraph.fetch(RoutingFeature.class).up();
+        final ShortestPathInterface<T> pathFeature = originalGraph.fetch(ShortestPathFeature.class).up();
 
         double cost = 0;
         for (final Entry<T, T> entry : matching.entrySet())
@@ -111,12 +111,12 @@ public final class Matching implements MatchingAlgorithmInterface {
         }
         */
 
-        final RoutingInterface<T> pathFeature = originalGraph.fetch(RoutingFeature.class).up();
+        final ShortestPathInterface<T> pathFeature = originalGraph.fetch(ShortestPathFeature.class).up();
 
         for (final Entry<T, T> entry : matching.entrySet()) {
             final T endPoint1 = entry.getKey();
             final T endPoint2 = entry.getValue();
-            final Path<T> path = pathFeature.getShortestPath(endPoint1, endPoint2);
+            final PathInterface<T> path = pathFeature.getShortestPath(endPoint1, endPoint2);
             for (final WeightedEdge<T> edge : path.getEdges()) {
                 map.put(edge, (map.get(edge) + 1) % 2 == 0 ? 2 : 1);
                 //map.put(edge, 2);

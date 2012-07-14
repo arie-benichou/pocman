@@ -24,7 +24,7 @@ public final class ClosedCPPFeature implements FeatureInterface {
 
     private final UndirectedGraph<?> graph;
 
-    private ClosedCPP<?> instance = null;
+    private ClosedCPPInterface<?> instance = null;
 
     public ClosedCPPFeature(final UndirectedGraph<?> graph) {
         this.graph = graph;
@@ -32,13 +32,13 @@ public final class ClosedCPPFeature implements FeatureInterface {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> ClosedCPP<T> up() {
+    public <T> ClosedCPPInterface<T> up() {
         if (this.instance == null) this.instance = ClosedCPP.from(this.graph);
         return (ClosedCPP<T>) this.instance;
     }
 
     @Override
-    public <T> ClosedCPP<T> getInterface() {
+    public <T> ClosedCPPInterface<T> getInterface() {
         return this.up();
     }
 

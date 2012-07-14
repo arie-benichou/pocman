@@ -18,8 +18,8 @@
 package matching.edmonds2;
 
 import graph.UndirectedGraph;
-import graph.features.routing.RoutingFeature;
-import graph.features.routing.RoutingInterface;
+import graph.features.shortestPath.ShortestPathFeature;
+import graph.features.shortestPath.ShortestPathInterface;
 
 import java.util.List;
 import java.util.Map;
@@ -38,7 +38,7 @@ public final class Matching implements MatchingAlgorithmInterface {
     @Override
     public <T> matching.Matches<T> from(final UndirectedGraph<T> residualGraph) {
 
-        final RoutingInterface<T> routingInterface = residualGraph.fetch(RoutingFeature.class).up();
+        final ShortestPathInterface<T> routingInterface = residualGraph.fetch(ShortestPathFeature.class).up();
         final double[][] weights = routingInterface.getShortestPathWeights();
 
         final WeightedMatchDouble weightedMatch = new WeightedMatchDouble(weights);

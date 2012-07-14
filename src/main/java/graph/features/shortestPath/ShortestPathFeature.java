@@ -15,30 +15,30 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package graph.features.degree;
+package graph.features.shortestPath;
 
 import graph.UndirectedGraph;
 import graph.features.FeatureInterface;
 
-public final class DegreeFeature implements FeatureInterface {
+public final class ShortestPathFeature implements FeatureInterface {
 
     private final UndirectedGraph<?> graph;
 
-    private DegreeInterface<?> instance = null;
+    private ShortestPathInterface<?> instance = null;
 
-    public DegreeFeature(final UndirectedGraph<?> graph) {
+    public ShortestPathFeature(final UndirectedGraph<?> graph) {
         this.graph = graph;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> DegreeInterface<T> up() {
-        if (this.instance == null) this.instance = Degree.from(this.graph);
-        return (Degree<T>) this.instance;
+    public <T> ShortestPathInterface<T> up() {
+        if (this.instance == null) this.instance = ShortestPath.from(this.graph);
+        return (ShortestPath<T>) this.instance;
     }
 
     @Override
-    public <T> DegreeInterface<T> getInterface() {
+    public <T> ShortestPathInterface<T> getInterface() {
         return this.up();
     }
 

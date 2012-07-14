@@ -15,31 +15,16 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package graph.features.routing;
+package graph.features.cpp;
 
-import graph.UndirectedGraph;
-import graph.features.FeatureInterface;
+import matching.MatchingAlgorithmInterface;
 
-public final class RoutingFeature implements FeatureInterface {
+public interface OpenCPPInterface<T> {
 
-    private final UndirectedGraph<?> graph;
+    final static MatchingAlgorithmInterface DEFAULT_MATCHING_ALGORITHM = new matching.edmonds1.Matching(); // TODO
 
-    private Routing<?> instance = null;
+    Double getLowerBoundCost();
 
-    public RoutingFeature(final UndirectedGraph<?> graph) {
-        this.graph = graph;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> Routing<T> up() {
-        if (this.instance == null) this.instance = Routing.from(this.graph);
-        return (Routing<T>) this.instance;
-    }
-
-    @Override
-    public <T> Routing<T> getInterface() {
-        return this.up();
-    }
+    public OpenCPPSolution<T> solveFrom(final T startingMazeNode);
 
 }

@@ -17,8 +17,8 @@
 
 package pocman.demo;
 
-import graph.Path;
 import graph.WeightedEdge;
+import graph.features.shortestPath.PathInterface;
 
 import java.util.List;
 import java.util.Map;
@@ -76,7 +76,7 @@ public class MazeDemo1 {
         //final MazeNode node2 = maze.getNearestGraphNode(nextCoinNode);
         //System.out.println(node2);
 
-        Path<MazeNode> shortestPath = null;
+        PathInterface<MazeNode> shortestPath = null;
         for (final Entry<MazeNode, Entry<Move, Integer>> entry : graphNodeRange.entrySet()) {
             shortestPath = maze.getShortestPath(node1, entry.getKey());
             System.out.println(shortestPath);

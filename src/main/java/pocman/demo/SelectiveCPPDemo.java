@@ -3,8 +3,13 @@ package pocman.demo;
 
 import graph.UndirectedGraph;
 import graph.WeightedEdge;
+import graph.features.cpp.OpenCPPFeature;
+import graph.features.cpp.OpenCPPInterface;
+import graph.features.cpp.OpenCPPSolution;
 import graph.features.degree.DegreeFeature;
 import graph.features.degree.DegreeInterface;
+import graph.features.eulerianTrail.EulerianTrailFeature;
+import graph.features.eulerianTrail.EulerianTrailInterface;
 
 import java.util.List;
 import java.util.Map;
@@ -20,10 +25,6 @@ import pocman.view.MazeView;
 
 import com.google.common.base.Function;
 import com.google.common.base.Stopwatch;
-
-import cpp.EulerianTrail;
-import cpp.OpenCPP;
-import cpp.OpenCPPSolution;
 
 // TODO MazeNode != GraphNode ( + between nodes)
 // TODO MazePath
@@ -82,9 +83,15 @@ public class SelectiveCPPDemo {
 
         System.out.println(view.render(maze));
 
-        final OpenCPP<MazeNode> openCPP = OpenCPP.from(maze);
-        final OpenCPPSolution<MazeNode> solution = openCPP.solveFrom(maze.getNearestGraphNode(maze.find(Tile.COIN)));
-        final List<MazeNode> trail = EulerianTrail.from(maze, solution.getTraversalByEdge(), solution.getEndPoint());
+        final OpenCPPInterface<MazeNode> openCPPInterface = maze.get().fetch(OpenCPPFeature.class).up(); // TODO
+        final OpenCPPSolution<MazeNode> solution = openCPPInterface.solveFrom(maze.getNearestGraphNode(maze.find(Tile.COIN)));
+
+        final EulerianTrailInterface<MazeNode> eulerianTrailInterface = maze.get().fetch(EulerianTrailFeature.class).up();
+        final List<MazeNode> trail = eulerianTrailInterface.getEulerianTrail(solution.getEndPoint(), solution.getTraversalByEdge());
+
+        for (final MazeNode mazeNode : trail) {
+            System.out.println(mazeNode);
+        }
 
         debug(originalMaze, trail, 160);
 
@@ -194,9 +201,12 @@ public class SelectiveCPPDemo {
             final int childNodeId = trail.get(i).getId();
             final MazeNode childNode = maze.getNode(childNodeId);
             final Move move = findMove(parentNode, childNode);
+            System.out.println(move);
+            System.out.println(childNode);
             MazeNode node = parentNode;
             while (!node.equals(childNode)) {
                 node = maze.getNode(node.getId() + move.getDelta());
+                System.out.println(node);
                 board[node.getId() + move.getOpposite().getDelta()] = move.toString().charAt(0);
                 board[node.getId()] = Tile.POCMAN.toCharacter();
                 System.out.println(view.render(board));

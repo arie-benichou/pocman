@@ -15,31 +15,16 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package graph.features.degree;
+package graph.features.eulerianTrail;
 
-import graph.UndirectedGraph;
-import graph.features.FeatureInterface;
+import graph.WeightedEdge;
 
-public final class DegreeFeature implements FeatureInterface {
+import java.util.List;
+import java.util.Map;
 
-    private final UndirectedGraph<?> graph;
+public interface EulerianTrailInterface<T> {
 
-    private DegreeInterface<?> instance = null;
-
-    public DegreeFeature(final UndirectedGraph<?> graph) {
-        this.graph = graph;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> DegreeInterface<T> up() {
-        if (this.instance == null) this.instance = Degree.from(this.graph);
-        return (Degree<T>) this.instance;
-    }
-
-    @Override
-    public <T> DegreeInterface<T> getInterface() {
-        return this.up();
-    }
+    // TODO ?! directed graph
+    List<T> getEulerianTrail(final T startingMazeNode, final Map<WeightedEdge<T>, Integer> traversalByEdge);
 
 }

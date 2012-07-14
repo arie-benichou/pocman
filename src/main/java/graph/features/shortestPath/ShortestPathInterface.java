@@ -15,31 +15,13 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package graph.features.degree;
+package graph.features.shortestPath;
 
-import graph.UndirectedGraph;
-import graph.features.FeatureInterface;
 
-public final class DegreeFeature implements FeatureInterface {
+public interface ShortestPathInterface<T> {
 
-    private final UndirectedGraph<?> graph;
+    PathInterface<T> getShortestPath(final T endPoint1, final T endPoint2);
 
-    private DegreeInterface<?> instance = null;
-
-    public DegreeFeature(final UndirectedGraph<?> graph) {
-        this.graph = graph;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> DegreeInterface<T> up() {
-        if (this.instance == null) this.instance = Degree.from(this.graph);
-        return (Degree<T>) this.instance;
-    }
-
-    @Override
-    public <T> DegreeInterface<T> getInterface() {
-        return this.up();
-    }
+    double[][] getShortestPathWeights();
 
 }

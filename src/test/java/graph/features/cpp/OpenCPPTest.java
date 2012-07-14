@@ -25,7 +25,6 @@ import graph.features.cpp.ClosedCPPSolution;
 
 import org.junit.Test;
 
-import cpp.OpenCPP;
 
 
 public class OpenCPPTest {

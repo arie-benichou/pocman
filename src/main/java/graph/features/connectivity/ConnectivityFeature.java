@@ -24,7 +24,7 @@ public final class ConnectivityFeature implements FeatureInterface {
 
     private final UndirectedGraph<?> graph;
 
-    private Connectivity<?> instance = null;
+    private ConnectivityInterface<?> instance = null;
 
     public ConnectivityFeature(final UndirectedGraph<?> graph) {
         this.graph = graph;
@@ -32,13 +32,13 @@ public final class ConnectivityFeature implements FeatureInterface {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> Connectivity<T> up() {
+    public <T> ConnectivityInterface<T> up() {
         if (this.instance == null) this.instance = Connectivity.from(this.graph);
         return (Connectivity<T>) this.instance;
     }
 
     @Override
-    public <T> Connectivity<T> getInterface() {
+    public <T> ConnectivityInterface<T> getInterface() {
         return this.up();
     }
 

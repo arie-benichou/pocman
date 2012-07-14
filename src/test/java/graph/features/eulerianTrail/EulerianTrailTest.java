@@ -15,12 +15,12 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package graph.features.cpp;
+package graph.features.eulerianTrail;
 
 import static org.junit.Assert.assertTrue;
-
 import graph.UndirectedGraph;
-import graph.features.cpp.ClosedCPP;
+import graph.features.cpp.ClosedCPPFeature;
+import graph.features.cpp.ClosedCPPInterface;
 import graph.features.cpp.ClosedCPPSolution;
 
 import java.util.HashSet;
@@ -28,28 +28,34 @@ import java.util.List;
 
 import org.junit.Test;
 
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
-import cpp.EulerianTrail;
 
 public class EulerianTrailTest {
 
     @Test
     public void testFrom1() {
-        final UndirectedGraph<String> input = new UndirectedGraph.Builder<String>(2)
+
+        final UndirectedGraph<String> graph = new UndirectedGraph.Builder<String>(2)
                 .addEdge("A", "B", 1.0)
                 .build();
         final List<String> expectedTrail = Lists.newArrayList("A", "B", "A");
-        final ClosedCPPSolution<String> solution = ClosedCPP.from(input).solve();
-        final List<String> actualTrail = EulerianTrail.from(input, solution.getTraversalByEdge(), "A");
+
+        // TODO ! soit:
+        // - écrire une classe de graphe non orienté écrite ?
+        // - eulerianTrail résoud avant le CPP open/close ?
+        final ClosedCPPInterface<String> closedCPPInterface = graph.fetch(ClosedCPPFeature.class).up();
+        final ClosedCPPSolution<String> solution = closedCPPInterface.solve();
+
+        final EulerianTrailInterface<String> eulerianTrailInterface = graph.fetch(EulerianTrailFeature.class).up();
+        final List<String> actualTrail = eulerianTrailInterface.getEulerianTrail("A", solution.getTraversalByEdge());
+
         assertTrue(actualTrail.equals(expectedTrail));
     }
 
     @Test
     public void testFrom2() {
-        final UndirectedGraph<String> input = new UndirectedGraph.Builder<String>(3)
+        final UndirectedGraph<String> graph = new UndirectedGraph.Builder<String>(3)
                 .addEdge("A", "B", 1.0)
                 .addEdge("B", "C", 1.0)
                 .addEdge("C", "A", 1.0)
@@ -57,8 +63,16 @@ public class EulerianTrailTest {
         final HashSet<List<String>> expected = Sets.newHashSet();
         expected.add(Lists.newArrayList("A", "B", "C", "A"));
         expected.add(Lists.newArrayList("A", "C", "B", "A"));
-        final ClosedCPPSolution<String> solution = ClosedCPP.from(input).solve();
-        final List<String> actualTrail = EulerianTrail.from(input, solution.getTraversalByEdge(), "A");
+
+        // TODO ! soit:
+        // - écrire une classe de graphe non orienté écrite ?
+        // - eulerianTrail résoud avant le CPP open/close ?
+        final ClosedCPPInterface<String> closedCPPInterface = graph.fetch(ClosedCPPFeature.class).up();
+        final ClosedCPPSolution<String> solution = closedCPPInterface.solve();
+
+        final EulerianTrailInterface<String> eulerianTrailInterface = graph.fetch(EulerianTrailFeature.class).up();
+        final List<String> actualTrail = eulerianTrailInterface.getEulerianTrail("A", solution.getTraversalByEdge());
+
         assertTrue(expected.contains(actualTrail));
     }
 

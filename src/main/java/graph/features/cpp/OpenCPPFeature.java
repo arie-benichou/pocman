@@ -15,14 +15,31 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package graph.features.routing;
+package graph.features.cpp;
 
-import graph.Path;
+import graph.UndirectedGraph;
+import graph.features.FeatureInterface;
 
-public interface RoutingInterface<T> {
+public final class OpenCPPFeature implements FeatureInterface {
 
-    Path<T> getShortestPath(final T endPoint1, final T endPoint2);
+    private final UndirectedGraph<?> graph;
 
-    double[][] getShortestPathWeights();
+    private OpenCPPInterface<?> instance = null;
+
+    public OpenCPPFeature(final UndirectedGraph<?> graph) {
+        this.graph = graph;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> OpenCPPInterface<T> up() {
+        if (this.instance == null) this.instance = OpenCPP.from(this.graph);
+        return (OpenCPP<T>) this.instance;
+    }
+
+    @Override
+    public <T> OpenCPPInterface<T> getInterface() {
+        return this.up();
+    }
 
 }

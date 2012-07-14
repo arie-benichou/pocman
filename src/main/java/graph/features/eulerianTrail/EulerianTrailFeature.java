@@ -15,30 +15,30 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package graph.features.degree;
+package graph.features.eulerianTrail;
 
 import graph.UndirectedGraph;
 import graph.features.FeatureInterface;
 
-public final class DegreeFeature implements FeatureInterface {
+public final class EulerianTrailFeature implements FeatureInterface {
 
     private final UndirectedGraph<?> graph;
 
-    private DegreeInterface<?> instance = null;
+    private EulerianTrailInterface<?> instance = null;
 
-    public DegreeFeature(final UndirectedGraph<?> graph) {
+    public EulerianTrailFeature(final UndirectedGraph<?> graph) {
         this.graph = graph;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> DegreeInterface<T> up() {
-        if (this.instance == null) this.instance = Degree.from(this.graph);
-        return (Degree<T>) this.instance;
+    public <T> EulerianTrailInterface<T> up() {
+        if (this.instance == null) this.instance = EulerianTrail.from(this.graph);
+        return (EulerianTrail<T>) this.instance;
     }
 
     @Override
-    public <T> DegreeInterface<T> getInterface() {
+    public <T> EulerianTrailInterface<T> getInterface() {
         return this.up();
     }
 

@@ -30,7 +30,6 @@ import org.junit.Test;
 
 import com.google.common.collect.ImmutableMap;
 
-import cpp.OpenCPPSolution;
 
 public class SolutionTest {
 

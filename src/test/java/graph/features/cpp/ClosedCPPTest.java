@@ -30,7 +30,6 @@ import org.junit.Test;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 
-import cpp.OpenCPPSolution;
 
 public class ClosedCPPTest {
 

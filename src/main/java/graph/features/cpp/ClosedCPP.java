@@ -17,15 +17,15 @@
 
 package graph.features.cpp;
 
-import graph.Path;
 import graph.UndirectedGraph;
 import graph.WeightedEdge;
 import graph.features.connectivity.ConnectivityFeature;
 import graph.features.connectivity.ConnectivityInterface;
 import graph.features.degree.DegreeFeature;
 import graph.features.degree.DegreeInterface;
-import graph.features.routing.RoutingFeature;
-import graph.features.routing.RoutingInterface;
+import graph.features.shortestPath.PathInterface;
+import graph.features.shortestPath.ShortestPathFeature;
+import graph.features.shortestPath.ShortestPathInterface;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +46,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import cpp.NodeOfDegree1Pruning;
 
 // TODO ? réduire les noeuds de type corner
 @ThreadSafe
@@ -101,12 +100,12 @@ final class ClosedCPP<T> implements ClosedCPPInterface<T> {
         final UndirectedGraph.Builder<T> residualGraphBuilder = new UndirectedGraph.Builder<T>(oddVertices.size(), UndirectedGraph.SUPERVISER_MODE);
         final Set<WeightedEdge<T>> edges = Sets.newHashSet();
 
-        final RoutingInterface<T> pathFeature = originalGraph.fetch(RoutingFeature.class).up();
+        final ShortestPathInterface<T> pathFeature = originalGraph.fetch(ShortestPathFeature.class).up();
 
         for (final T endPoint1 : oddVertices)
             for (final T endPoint2 : oddVertices)
                 if (!endPoint1.equals(endPoint2)) { // TODO contains(u, v, w)
-                    final Path<T> shortestPath = pathFeature.getShortestPath(endPoint1, endPoint2);
+                    final PathInterface<T> shortestPath = pathFeature.getShortestPath(endPoint1, endPoint2);
                     final WeightedEdge<T> edge = WeightedEdge.from(endPoint1, endPoint2, shortestPath.getWeight());
                     //if (!residualGraphBuilder.contains(edge)) residualGraphBuilder.addEdge(edge);
                     if (!edges.contains(edges)) edges.add(edge);
@@ -128,12 +127,12 @@ final class ClosedCPP<T> implements ClosedCPPInterface<T> {
         for (final WeightedEdge<T> edge : edges)
             map.put(edge, 1);
 
-        final RoutingInterface<T> pathFeature = originalGraph.fetch(RoutingFeature.class).up();
+        final ShortestPathInterface<T> pathFeature = originalGraph.fetch(ShortestPathFeature.class).up();
 
         for (final Entry<T, T> entry : matching.entrySet()) {
             final T endPoint1 = entry.getKey();
             final T endPoint2 = entry.getValue();
-            final Path<T> path = pathFeature.getShortestPath(endPoint1, endPoint2);
+            final PathInterface<T> path = pathFeature.getShortestPath(endPoint1, endPoint2);
             for (final WeightedEdge<T> edge : path.getEdges()) {
                 map.put(edge, (map.get(edge) + 1) % 2 == 0 ? 2 : 1);
             }

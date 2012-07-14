@@ -17,8 +17,8 @@
 
 package pocman.game;
 
-import graph.Path;
 import graph.UndirectedGraph;
+import graph.features.shortestPath.PathInterface;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -76,7 +76,7 @@ public final class Maze implements Supplier<UndirectedGraph<MazeNode>> {
     }
 
     // TODO ? retourner un MazePath (liste de vertices)
-    public Path<MazeNode> getShortestPath(final MazeNode endPoint1, final MazeNode endPoint2) {
+    public PathInterface<MazeNode> getShortestPath(final MazeNode endPoint1, final MazeNode endPoint2) {
         return this.mazeAsGraph.getShortestPath(endPoint1, endPoint2);
     }
 

@@ -17,13 +17,13 @@
 
 package pocman.game;
 
-import graph.Path;
 import graph.UndirectedGraph;
 import graph.WeightedEdge;
 import graph.features.connectivity.ConnectivityFeature;
 import graph.features.connectivity.ConnectivityInterface;
-import graph.features.routing.RoutingFeature;
-import graph.features.routing.RoutingInterface;
+import graph.features.shortestPath.PathInterface;
+import graph.features.shortestPath.ShortestPathFeature;
+import graph.features.shortestPath.ShortestPathInterface;
 
 import java.util.HashSet;
 import java.util.List;
@@ -182,8 +182,8 @@ public final class MazeAsGraph implements Supplier<UndirectedGraph<MazeNode>> {
         return this.graph;
     }
 
-    public Path<MazeNode> getShortestPath(final MazeNode endPoint1, final MazeNode endPoint2) {
-        final RoutingInterface<MazeNode> feature = this.graph.fetch(RoutingFeature.class).up();
+    public PathInterface<MazeNode> getShortestPath(final MazeNode endPoint1, final MazeNode endPoint2) {
+        final ShortestPathInterface<MazeNode> feature = this.graph.fetch(ShortestPathFeature.class).up();
         return feature.getShortestPath(endPoint1, endPoint2);
     }
 

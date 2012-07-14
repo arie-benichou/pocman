@@ -15,14 +15,11 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package cpp;
+package graph.features.cpp;
 
 import graph.UndirectedGraph;
 import graph.UndirectedGraph.Builder;
 import graph.WeightedEdge;
-import graph.features.cpp.ClosedCPPFeature;
-import graph.features.cpp.ClosedCPPInterface;
-import graph.features.cpp.ClosedCPPSolution;
 import graph.features.degree.DegreeFeature;
 import graph.features.degree.DegreeInterface;
 
@@ -38,8 +35,7 @@ import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 
 // TODO vérifier que le graphe est connecté
-// TODO ! make it a graph feature
-public final class OpenCPP<T> {
+final class OpenCPP<T> implements OpenCPPInterface<T> {
 
     //public final static MatchingAlgorithmInterface DEFAULT_MATCHING_ALGORITHM = ClosedCPP.DEFAULT_MATCHING_ALGORITHM;
     public final static MatchingAlgorithmInterface DEFAULT_MATCHING_ALGORITHM = new matching.edmonds1.Matching(); // TODO
@@ -91,7 +87,7 @@ public final class OpenCPP<T> {
         if (this.closedCPPSolution == null) {
             final ClosedCPPInterface<T> closedCPPInterface = this.getGraph().fetch(ClosedCPPFeature.class).up();
             //this.closedCPPSolution = ClosedCPP.from(this.getGraph(), this.matchingAlgorithm).solve(); //TODO
-            this.closedCPPSolution = closedCPPInterface.solve();
+            this.closedCPPSolution = closedCPPInterface.solve(); // TODO !! inutile
 
         }
         return this.closedCPPSolution;
@@ -99,7 +95,7 @@ public final class OpenCPP<T> {
 
     private UndirectedGraph<Box<T>> boxedGraph;
     private final MatchingAlgorithmInterface matchingAlgorithm;
-    private ClosedCPPSolution<T> closedCPPSolution;
+    private ClosedCPPSolution<T> closedCPPSolution; // TODO !! à virer: pouvoir obtenir un LowerBound du graphe
 
     public static <T> OpenCPP<T> from(final UndirectedGraph<T> graph, final MatchingAlgorithmInterface matchingAlgorithm) {
         Preconditions.checkArgument(graph != null);
@@ -156,6 +152,7 @@ public final class OpenCPP<T> {
         this.closedCPPSolution = closedCPPSolution;
     }
 
+    @Override
     public Double getLowerBoundCost() {
         return this.getClosedCPPSolution().getLowerBoundCost();
     }
@@ -180,6 +177,7 @@ public final class OpenCPP<T> {
         return builder.build();
     }
 
+    @Override
     public OpenCPPSolution<T> solveFrom(final T startingMazeNode) {
 
         Preconditions.checkArgument(startingMazeNode != null);
